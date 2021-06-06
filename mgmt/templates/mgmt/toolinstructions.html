@@ -1,0 +1,88 @@
+{% extends 'mgmt/index.html'%}
+{% load static%}
+{% block content %}
+{% load widget_tweaks %}
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
+    <style>
+         .sb-btn{
+            border-radius: 15px;           
+            float: right;
+            transition: all .2s ease-in-out; 
+           
+        }
+        .sb-btn:hover{
+            transform: scale(1.1);
+        }
+        .circleme{
+            border-radius: 15px;
+        }
+        .btnedit{
+            padding-right:5px;
+            display: flex;
+           
+        }
+        .poschahnge{
+            float: right;
+        }
+        .pdfLink:hover{
+            transform: scale(1.2)
+
+        }
+
+    </style>
+</head>
+<br>
+<br>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+    
+            </div>
+            
+            <div class="col-md-4">
+                <!--Specificy we want to take up 5/12 content blocks-->
+                <div class="mx-auto" style="text-align:center">
+                    <h4> TOOL INSTRUCTIONS <img src="https://img.icons8.com/ios/50/000000/user-manual.png"/></h4>
+                </div>
+                <hr>
+                <div class="card card-body reciever circleme">
+            
+                   
+                            <h5><strong>Step 1:</strong></h5>
+                            <hr>
+
+                         
+                                        <p><strong>1. Navigate to the <u>Calibrated Tool </u>Shelf.</strong></p> 
+                                        <p><strong>4. Place Tool on Shelf.</strong></p> 
+
+                    
+                            
+                            <hr>
+                            <h5><strong>Step 2:</strong></h5>
+                            <hr>
+                            <p><strong>1. Print barcode and place on the Tool.</strong></p> 
+                            <a class="btn btn-info sb-btn" style="width: 200px; font-size:20px;" href="{{tools.barcode.url}}" target="_blank"><img src="https://img.icons8.com/material-outlined/48/000000/barcode.png"/> Print <img src="https://img.icons8.com/material-outlined/48/000000/barcode.png"/></a>
+                            
+                            <hr>
+                            <br>
+                                                
+                            <div class="text-center" style="margin:auto">
+                                <a class="btn btn-success sb-btn" style="width: 200px; float:right;" href="{% url 'tools' %}">Back to Tools</a>
+                            
+                                
+
+                            </div>
+                         
+
+              
+                        
+                    </div>
+                </div>
+              
+            </div>
+</body>
+
+{% endblock%}

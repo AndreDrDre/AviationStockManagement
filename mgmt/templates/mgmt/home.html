@@ -1,0 +1,171 @@
+{%extends 'mgmt/index.html'%}
+{% load static%}
+{% block content %}
+
+{%include 'mgmt/status.html'%}
+
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
+  
+  <link rel="stylesheet" src="{% static 'js/home.js' %}">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <section class="pb-5 pt-5" id="services">
+      <div class="container">
+          <div class="row">
+              <div class="col-lg-12">
+                  <div class="center-heading">
+                  
+                
+             
+                    
+                      <h2 class="section-title">INVENTORY MANAGEMENT FUNCTIONS</h2>
+                  </div>
+              </div>
+              <div class="offset-lg-3 col-lg-6">
+                  <div class="center-text">
+                      <p>Select a window to start tracking, recording and updating inventory.</p>
+                  </div>
+              </div>
+          </div>
+
+          <div class="row">
+
+            <div class="col-lg-3 col-sm-6">
+                <a href="{%url 'InterimOrder' %}" class="services-small-item">
+                    <div class="icon">
+                      <img src="https://img.icons8.com/fluent/96/000000/deliver-food.png"/>
+                    </div>
+                    <br>
+                    <h5 class="services-title">ORDER/RECEIVE PARTS</h5>
+                    <p>Parts are received in a multitude of ways. Enter the window to determine the most suitable scanerio for your Part.</p>
+                    <div class="button">
+                      
+                    </div>
+                </a>
+                <div class="item-bg"></div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+              <a href="{%url 'store' %}" class="services-small-item">
+                  <div class="icon">
+                    <img src="https://img.icons8.com/fluent/96/000000/garage-closed.png"/>
+                  </div>
+                  <br>
+                  <h5 class="services-title">INVENTORY MANAGEMENT</h5>
+                  <p>Enter this window to gain all the functionallity associated with : Stock, Reserved and Quarantine Inventory. </p>
+                  <div class="button">
+              
+                  </div>
+              </a>
+              <div class="item-bg"></div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                  <a href="{%url 'workorders' %}" class="services-small-item">
+                      <div class="icon">
+                        <img src="https://img.icons8.com/fluent/96/000000/task.png"/>
+                      </div>
+                      <br>
+                      <h5 class="services-title">WORK ORDERS</h5>
+                      <p>Create and View work-orders here! </p>
+                      <div class="button">
+                    
+                      </div>
+                  </a>
+                  <div class="item-bg"></div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+                  <a href="{%url 'tools' %}" class="services-small-item">
+                      <div class="icon">
+                        <img src="https://img.icons8.com/fluent/96/000000/full-tool-storage-box-.png"/>
+                      </div>
+                      <br>
+                      <h4 class="services-title">TOOL BOX</h4>
+                      <p>Enter this window to gain access to the functionallity asociated with Calibrated and UnCalibrated Tools. </p>
+                      <div class="button">
+                        
+                      </div>
+                  </a>
+                  <div class="item-bg"></div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+              <a href="{% url 'historical_inventory' %}" class="services-small-item">
+                  <div class="icon">
+                    <img src="https://img.icons8.com/dusk/96/000000/data-backup.png"/>
+                  </div>
+                  <br>
+                  <h4 class="services-title">HISTORICAL DATA</h4>
+                  <p>View Parts and Work-Orders that are no longer active.  </p>
+                  <div class="button">
+                    
+                  </div>
+              </a>
+              <div class="item-bg"></div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+              <a href="{% url 'orderhistory' %}" class="services-small-item">
+                  <div class="icon">
+                    <img src="https://img.icons8.com/dusk/96/000000/order-history.png"/>
+                  </div>
+                  <br>
+                  <h5 class="services-title">ORDER HISTORY</h5>
+                  <p>All Orders that have been created will be represented in this window.</p>
+                  <div class="button">
+              
+                  </div>
+              </a>
+              <div class="item-bg"></div>
+            </div>
+            
+
+            <div class="col-lg-3 col-sm-6">
+              <a href="{% url 'reorderParts'%}"  class="services-small-item">
+                  <div class="icon">
+                    <img src="https://img.icons8.com/cotton/96/000000/reorder.png"/>
+                  </div>
+                  <br>
+                  <h5 class="services-title">RE-ORDER INVENTORY</h5>
+                  <p>Create quick-orders for P# that require more Inventory to comply with the minimum stock quantity.</p>
+                  <div class="button">
+              
+                  </div>
+              </a>
+              <div class="item-bg"></div>
+            </div>
+
+            <div class="col-lg-3 col-sm-6">
+              <a href="{% url 'adminpage'%}" class="services-small-item">
+                  <div class="icon">
+                    <img src="https://img.icons8.com/fluent/96/000000/admin-settings-male.png"/>
+                  </div>
+                  <br>
+                  <h5 class="services-title">ADMINISTRATION PANEL</h5>
+                  <p>Create new Employees etc</p>
+                  <div class="button">
+              
+                  </div>
+              </a>
+              <div class="item-bg"></div>
+            </div>
+
+
+
+      
+        
+          </div>
+    
+    </div>
+  </section>
+</body>
+
+
+{% endblock%}

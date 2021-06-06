@@ -1,0 +1,123 @@
+<head>
+    <style>
+
+        .container-fluid-status{
+            
+            padding-left: 220px;
+            padding-right: 220px;
+        }
+	
+		#display {
+			background: linear-gradient(135deg, #80d0c7 0%, #13547a 100%);
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			border-radius: 30px; 
+            height: 150px;   
+        }
+
+        .card-title{
+            font-size:23px;
+        }
+
+        /* .card-body-status{
+            display: flex;
+            justify-content: center;
+            align-items: center; 
+        } */
+
+        .card-body h3{
+            font-size:28px;
+        }
+
+        #display:hover{
+
+            transform:scale(1.1)
+        }
+        #total {
+			background:linear-gradient(135deg, #ce961c 0%, #ca1616 100%);
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			border-radius: 30px;
+            height: 150px;   
+        }
+
+
+        #total:hover{
+            transform:scale(1.1)
+            }
+
+
+		
+	</style>
+</head>
+<br>
+
+<div class="container-fluid-status"> 
+    <div class="row justify-content-md-center">  
+
+        <div class="col">
+            <div class="col-md">
+                <a href="{% url 'workorders' %}">
+                <div class="card text-center text-white mb-4"  id = "display">
+                    <div class="card-header">
+                        <h5 class="card-title">WORK-ORDERS OPEN</h5>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">{{workordercount}}</h3>
+                    </div>
+                </div>
+            </a>
+            </div>
+        </div>   
+        
+            <div class="col">
+                <div class="col-md">
+                    <a href="{% url 'historical_inventory' %}">
+                    <div class="card text-center text-white mb-4"  id = "display">
+                        <div class="card-header">
+                            <h5 class="card-title">COMPLETED W/O</h5>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">{{workordercountclosed}}</h3>
+                        </div>
+                    </div>
+                </a>   
+                </div>
+            </div>
+
+         
+       
+        <div class="col">
+            <div class="col-md">
+                <a href="{% url 'reorderParts'%}" >
+                <div class="card text-center text-white mb-4"  id = "total">
+                    <div class="card-header">
+                        <h5 class="card-title">RE-ORDER ITEMS</h5>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">{{reorderparts}}</h3>
+                    </div>
+                </div>
+                </a>
+            </div>
+        </div>  
+
+        
+        <div class="col">
+            <div class="col-md">
+                <a href="{% url 'orderpart' %}">
+                <div class="card text-center text-white mb-4"  id = "total">
+                    <div class="card-header">
+                        <h5 class="card-title">PENDING ORDERS</h5>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">{{orderpending}}</h3>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </a>
+    </div>
+ </div>
