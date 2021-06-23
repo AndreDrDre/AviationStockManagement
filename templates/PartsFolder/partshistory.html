@@ -1,0 +1,264 @@
+{%extends 'mgmt/index.html'%}
+{% load static%}
+{% block content %}
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
+    <style>
+        .container-fluid{
+            
+            padding-left: 200px;
+            padding-right: 200px;
+        }
+        btn-pos{
+            display: flex;
+            align-items: center;
+            align-content:center;
+            
+        }
+     
+       
+        .export:hover{
+        transform: scale(1.05);
+            }
+
+        .container{   
+            
+            
+        } 
+        .circleme{
+            border-radius: 15px;
+            border: 1px solid;
+        }
+        .reciever{
+            background:  #afb4b97c ;  
+        }
+    
+        .btn-dre{
+            border-radius:30px;
+            font-size:18px;
+            width:100%;
+            padding: 10px;
+            border-radius: 15px;
+          
+            float: right;
+            transition: all .2s ease-in-out; 
+        }
+        .btn-dre:hover{
+            transform: scale(1.1);
+        }
+
+        .sb-btn{
+            border-radius: 15px;
+          
+            float: right;
+            transition: all .2s ease-in-out; 
+        }
+        .sb-btn:hover{
+            transform: scale(1.1);
+        }
+
+        .export-layout{
+            display:flex;
+            margin: 0 auto;
+            padding-bottom:20px;
+        }
+
+        .sb-export{
+            border-radius: 15px;
+            background: linear-gradient(135deg, #4fb945 0%, #10d13a60 100%);
+            float: right;
+            transition: all .2s ease-in-out; 
+            font-size: 20px;
+            width: 200px;
+        }
+        .sb-export:hover{
+            transform: scale(1.1);
+        }
+
+
+        .btn-comp{
+            border-radius: 15px;
+            background:linear-gradient(135deg, #ce961c 0%, #ca1616 100%);
+            float: right;
+            transition: all .2s ease-in-out; 
+        }
+
+        .btn-comp:hover{
+            transform: scale(1.1);
+        }
+    
+           
+    </style>
+</head>
+
+<body>
+    <br>
+    <br>
+    <div class="container-fluid">        
+        <div class="row">
+            <div class="col-md-2">                
+                    
+            </div>
+            
+            <div class="col-md-8">
+                <!--Specificy we want to take up 7/12 content blocks-->
+                <div class="mx-auto" style="width: 600px;">
+                    <h3 style="text-align:center"> <img src="https://img.icons8.com/plasticine/48/000000/order-history.png"/> PART HISTORY <img src="https://img.icons8.com/plasticine/48/000000/order-history.png"/></h3>  
+                    <br>
+                    <div class="card card-body circleme">
+                        <h5 style="text-align:center">This is the History of : {{partspecific.description}}  </h5> 
+                        <h6 style="text-align:center">Part Type : {{partspecific.part_type}}</h5> 
+                        <h6 style="text-align:center">P# : {{partspecific.part_number}} </h5> 
+    
+                        {%if partspecific.serial_number%}
+                        <h6 style="text-align:center">S# : {{partspecific.serial_number}} </h5> 
+                        {%else%}
+                        <h6 style="text-align:center">Batch# : {{partspecific.batch_no}}</h5> 
+                        {%endif%}
+    
+                        <h6 style="text-align:center">Total Qty Issued : <strong>{{counter}}</strong> </h6>
+
+
+                    </div>
+                  
+
+
+                </div>
+                <hr>   
+                <br> 
+              
+                
+            </div>
+
+       
+        <br>
+          
+        </div>
+        <div class="row">
+
+            <div class="col-md-5"></div>
+            <div class="col-md-2">
+                <div class= 'card card-body circleme btn-pos '>
+                            <a style="margin-left: 20px; margin-right: 20px ;" class="btn  btn-danger sb-btn" href="{% url 'historical_inventory' %}">Back</a>
+                           
+                       
+                </div>
+                <hr>
+
+
+            </div>
+            <div class="col-md-5"></div>
+        </div>
+    </div>
+    <div class="container-fluid">
+
+        <div class="row">  
+       
+            <div class="col-md-6">
+                <div class="mx-auto" style="width: 400px;">
+                    
+                    <br>
+                    <br>
+                    <h4 style="text-align:center">PARTS ISSUED <img src="https://img.icons8.com/ios-filled/50/000000/passport.png"/></h4>
+                </div>
+                <hr>
+                <div class="card card-body circleme">
+                    <table class="table table-max table-md">
+                        <tr>
+                            
+                                                
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Issued to W/0:</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Job-Card:</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Issued By:</th>
+
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Qty</th>    
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Unit Price</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Issued</th>
+                           
+          
+                           
+                        </tr>
+                        {% for instance in parthistory %}
+                        <tr>
+                            
+                                              
+                            <td style="text-align:center">{{instance.workorder}}</td>
+                            <td style="text-align:center">{{instance.jobCardNumber}}</td>
+                            <td style="text-align:center">{{instance.issued_by}}</td>                           
+                            <td style="text-align:center">{{instance.issue_quantity}}</td>      
+                            <td style="text-align:center">$ {{instance.part.price}}</td>
+                            <td style="text-align:center">{{instance.created_at|date:"M d, Y" }}</td>
+                            
+                           
+                            
+                             
+                  
+                        </tr>
+                        {% endfor%}
+                        
+                    </table>
+                    <br>
+
+                    
+                </div>
+            </div>  
+
+            <div class="col-md-6">
+                <div class="mx-auto" style="width: 400px;">
+                
+                    <br>
+                    <br>
+                    <h4 style="text-align:center">PARTS REMOVED <img src="https://img.icons8.com/plasticine/50/000000/fighter-jet.png"/></h4>
+                </div>
+                <hr>
+                <div class="card card-body circleme">
+                    <table class="table table-max table-md">
+                        <tr>
+                            
+                                                
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Issued to W/0:</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Job-Card:</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Removed By:</th>
+
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Removed From:</th>    
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Removed:</th>
+                           
+          
+                           
+                        </tr>
+                        {% for instance in parthistoryRemoved %}
+                        <tr>
+                            
+                                              
+                            <td style="text-align:center">{{instance.workorder}}</td>
+                            <td style="text-align:center">{{instance.jobCardNumber}}</td>
+                            <td style="text-align:center">{{instance.removed_by}}</td>                           
+                            <td style="text-align:center">{{instance.removed_from}}</td>      
+                       
+                            <td style="text-align:center">{{instance.updated_at|date:"M d, Y" }}</td>
+                            
+                           
+                            
+                             
+                  
+                        </tr>
+                        {% endfor%}
+                        
+                    </table>
+                    <br>
+
+                    
+                </div>
+            </div>  
+    
+    </div>
+      
+</body>
+
+
+
+
+
+
+{% endblock%}

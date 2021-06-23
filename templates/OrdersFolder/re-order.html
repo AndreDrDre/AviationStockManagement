@@ -1,0 +1,85 @@
+{% extends 'mgmt/index.html'%}
+{% load static%}
+{% block content %}
+{% load widget_tweaks %}
+
+<head>
+    <style>
+         .sb-btn{
+            border-radius: 15px;           
+            float: right;
+            transition: all .2s ease-in-out; 
+           
+        }
+        .sb-btn:hover{
+            transform: scale(1.1);
+        }
+        .circleme{
+            border-radius: 15px;
+        }
+        .btnedit{
+            padding-right:5px;
+            display: flex;
+           
+        }
+        .poschahnge{
+            float: right;
+        }
+
+    </style>
+</head>
+<br>
+<br>
+<body>
+   
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+    
+            </div>
+            
+            <div class="col-md-4">
+                <!--Specificy we want to take up 5/12 content blocks-->
+                <div class="mx-auto" style="text-align:center">
+                    <h4><img src="https://img.icons8.com/cotton/48/000000/reorder.png"/> RE-ORDER PART <img src="https://img.icons8.com/cotton/48/000000/reorder.png"/></h4>
+                </div>
+                <hr>
+                <div class="card card-body reciever circleme" >
+                    <div class="form-group" >
+                        <h5>Description : {{queryset.description}}</h5>
+                        <h6>Part # : {{queryset.part_number}}</h6>
+                        <h6>Part-Type : {{queryset.part_type}}</h6>
+                 
+                        <hr>
+                       
+                        <br>
+                     
+                   
+                        <form action="#" method="POST">
+                            {% csrf_token %}
+                        
+                            {{form.as_p}}
+                            <hr>
+                            <button class="btn btn-success sb-btn" type="submit">Confirm Entry</button>
+                            <a class="btn btn-danger sb-btn" href="{% url 'reorderParts' %}">Cancel</a>
+                            
+                        </form>
+                        
+                        
+                    </div>
+                </div>
+                <hr>
+            </div>
+    
+            <div class="col-md-4">
+                
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+
+{% endblock%}

@@ -1,0 +1,151 @@
+{%extends 'mgmt/index.html'%}
+{% load static%}
+{% block content %}
+{% load widget_tweaks %}
+<!-- {%include 'mgmt/status.html'%} -->
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
+    
+    <link rel="stylesheet" src="{% static 'js/home.js' %}">
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+  
+  
+</head>
+
+<body>
+
+    <section class="pb-5 pt-5" id="services">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="center-heading">
+                        <h2 class="section-title">INVENTORY MANAGEMENT</h2>
+                    </div>
+                </div>
+                <div class="offset-lg-3 col-lg-6">
+                    <div class="center-text">
+                        <p>Select a window to gain access and functionallity to inventory avaliable to you.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="row">
+
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                    <div class= 'card card-body circleme '>
+                        <form method="get">
+                           {{partfilter.form}} 
+                           <button class="btn btn-info sb-btn" type="submit"><img src="https://img.icons8.com/pastel-glyph/24/000000/search--v1.png"/></button>
+                      </form>
+                    </div>
+
+
+                    <div class="row">  
+                        <div class="col-md-12">
+                            <div class="card card-body circleme">
+                                <table class="table">
+                                    <tr>
+                                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Description</th>
+                                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P/N</th>  
+                                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">location</th>  
+                               
+            
+                                       
+                                    </tr>
+                                    {% for instance in queryset %}
+                                    <tr>
+                         
+                                    </tr>
+                                    {% endfor%}
+                    
+                                </table>
+                    </div>
+                        </div>
+                    <hr>
+                    <br>
+    
+                </div>
+                </div>
+                
+                
+                
+                <div class="col-md-4"></div>
+            </div> -->
+        
+          <br>
+  
+            <div class="row">
+                <div class="col-lg-3 col-sm-6">
+
+                </div>
+            
+            <div class="col-md-2 ">
+                    <a href="{%url 'Rinventory'  %}" class="services-small-item">
+                        <div class="icon">
+                          <img src="https://img.icons8.com/color/96/000000/scan-stock.png"/>
+                         <!--<img src="https://img.icons8.com/fluent/96/000000/plastic-food-container.png"/>--> 
+                        </div>
+                        <br>
+                        <h5 class="services-title">RESERVED INVENTORY</h5>
+                        <p>Inventory pertaining to a specific airframe.</p>
+                        <div class="button">
+                          
+                        </div>
+                    </a>
+                    <div class="item-bg"></div>
+                </div>
+  
+              <div class="col-md-2 ">
+                  <a href="{%url 'Qinventory' %}" class="services-small-item">
+                      <div class="icon">
+                        <img src="https://img.icons8.com/color/96/000000/contactless-delivery.png"/>
+                      
+                      </div>
+                      <br>
+                      <h5 class="services-title">QUARATINE INVENTORY</h5>
+                      <p>Inventory not suitable to receive the status of serviceable.</p>
+                      <div class="button">
+                        
+                      </div>
+                  </a>
+                  <div class="item-bg"></div>
+              </div>
+  
+              <div class="col-md-2 ">
+                <a href="{%url 'inventory' %}" class="services-small-item">
+                    <div class="icon">
+                        <img src="https://img.icons8.com/color/96/000000/open-box.png"/>
+                    </div>
+                    <br>
+                    <h5 class="services-title">STOCK INVENTORY</h5>
+                    <p>Inventory represented as general stock.</p>
+                    <div class="button">
+                
+                    </div>
+                </a>
+                <div class="item-bg"></div>
+              </div>
+  
+              <div class="col-lg-3 col-sm-6">
+            </div>
+            
+  
+              
+              
+        
+          
+            </div>
+      
+      </div>
+    </section>
+    
+</body>
+
+
+	
+
+{% endblock%}

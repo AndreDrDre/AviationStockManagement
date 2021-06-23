@@ -221,7 +221,7 @@ def Rinventory(request):
         "partfilter": Partfilter,
         "reorderparts": reorderparts,
     }
-    return render(request, "mgmt/RInventory.html", context)
+    return render(request, "PartsFolder/RInventory.html", context)
 
 
 @login_required(login_url='signin')
@@ -266,7 +266,7 @@ def Qinventory(request):
         "querysetShop": querysetShop,
         "querysetInhouse": querysetInhouse,
     }
-    return render(request, "mgmt/QInventory.html", context)
+    return render(request, "PartsFolder/QInventory.html", context)
 
 
 @login_required(login_url='signin')
@@ -330,7 +330,7 @@ def repairReturn(request, pk):
 
     context = {"form": form, "queryset": queryset, }
 
-    return render(request, "mgmt/receiveRepair.html", context)
+    return render(request, "PartsFolder/receiveRepair.html", context)
 
 
 @login_required(login_url='signin')
@@ -376,7 +376,7 @@ def inventory(request):
         "partfilter": Partfilter,
         "reorderparts": reorderparts
     }
-    return render(request, "mgmt/Inventory.html", context)
+    return render(request, "PartsFolder/Inventory.html", context)
 
 
 @login_required(login_url='signin')
@@ -539,7 +539,7 @@ def addToInventory(request, Type):
                 return redirect('instructions', pk=p.id)
 
     context = {"form": form, "check": check}
-    return render(request, "mgmt/add_Inventory.html", context)
+    return render(request, "PartsFolder/add_Inventory.html", context)
 
 
 @login_required(login_url='signin')
@@ -603,13 +603,13 @@ def addToQuarentine(request):
 
     context = {"form": form}
 
-    return render(request, "mgmt/addToQuarentine.html", context)
+    return render(request, "PartsFolder/addToQuarentine.html", context)
 
 
 @login_required(login_url='signin')
 def interimtransfer(request):
 
-    return render(request, 'mgmt/InterimTransfer.html')
+    return render(request, 'PartsFolder/InterimTransfer.html')
 
 
 @login_required(login_url='signin')
@@ -635,7 +635,7 @@ def createneworder(request, pk):
             'part': part,
         }
 
-    return render(request, 'mgmt/createneworder.html', context)
+    return render(request, 'OrdersFolder/createneworder.html', context)
 
 
 @login_required(login_url='signin')
@@ -678,7 +678,7 @@ def issuePart(request, pk):
                 return redirect('Rinventory')
 
     context = {'form': form, 'queryset': queryset, }
-    return render(request, 'mgmt/issuePart.html', context)
+    return render(request, 'PartsFolder/issuePart.html', context)
 
 
 @login_required(login_url='signin')
@@ -697,7 +697,7 @@ def reorder_level(request, pk):
         'queryset': queryset,
         'form': form,
     }
-    return render(request, "mgmt/re-order.html", context)
+    return render(request, "OrdersFolder/re-order.html", context)
 
 
 @login_required(login_url='signin')
@@ -716,7 +716,7 @@ def edit_part(request, pk):
         'queryset': queryset,
         'form': form,
     }
-    return render(request, "mgmt/editpart.html", context)
+    return render(request, "PartsFolder/editpart.html", context)
 #------------------------------------------#
 
 #Historical--------------------------------#
@@ -760,7 +760,7 @@ def historical_inventory(request):
         "workOrderFilter": myFilter_workorder,
 
     }
-    return render(request, "mgmt/historical_Inventory.html", context)
+    return render(request, "PartsFolder/historical_Inventory.html", context)
 
 
 @login_required(login_url='signin')
@@ -783,7 +783,7 @@ def historialWO(request, pk):
         "parthistoryRemoved": parthistoryRemoved,
 
     }
-    return render(request, "mgmt/partshistory.html", context)
+    return render(request, "PartsFolder/partshistory.html", context)
 #------------------------------------------#
 
 #Work-Order Logic Start--------------------#
@@ -832,7 +832,7 @@ def workorders(request):
         "orderpending": orderpending,
         "reorderparts": reorderparts,
     }
-    return render(request, "mgmt/workorder.html", context)
+    return render(request, "WorkorderFolder/workorder.html", context)
 
 
 @login_required(login_url='signin')
@@ -893,9 +893,9 @@ def partslink(request, pk, Type):
     }
 
     if Type == "NotHistorical":
-        return render(request, "mgmt/work-Orderlink.html", context)
+        return render(request, "WorkorderFolder/work-Orderlink.html", context)
     else:
-        return render(request, "mgmt/work-order-history.html", context)
+        return render(request, "WorkorderFolder/work-order-history.html", context)
 
 
 @login_required(login_url='signin')
@@ -957,7 +957,7 @@ def changeWorkOrderCali(request, pk):
                 return redirect('workorders')
 
     context = {'formissueCali': formissueCali, "calitool": calitool}
-    return render(request, 'mgmt/issueworkorderCali.html', context)
+    return render(request, 'ToolsFolder/issueworkorderCali.html', context)
 
 
 @login_required(login_url='signin')
@@ -1039,7 +1039,7 @@ def orderhistory(request):
         "reorderparts": reorderparts,
     }
 
-    return render(request, "mgmt/orderhistory.html", context)
+    return render(request, "OrdersFolder/orderhistory.html", context)
 
 
 @login_required(login_url='signin')
@@ -1064,7 +1064,7 @@ def waybill(request, pk):
 
     context = {"queryset": queryset, "form": form}
 
-    return render(request, "mgmt/waybill.html", context)
+    return render(request, "OrdersFolder/waybill.html", context)
 
 
 @login_required(login_url='signin')
@@ -1100,7 +1100,7 @@ def pricechange(request, pk):
             return redirect('orderpart')
 
     context = {"queryset": queryset, "form": form}
-    return render(request, "mgmt/pricechange.html", context)
+    return render(request, "PartsFolder/pricechange.html", context)
 
 
 @login_required(login_url='signin')
@@ -1283,7 +1283,7 @@ def orderpart(request):
         "orderpending": orderpending,
         "reorderparts": reorderparts,
     }
-    return render(request, "mgmt/orderpart.html", context)
+    return render(request, "OrdersFolder/orderpart.html", context)
 
 
 @login_required(login_url='signin')
@@ -1315,7 +1315,7 @@ def reorderParts(request):
         "filter": filter
     }
 
-    return render(request, 'mgmt/reorderParts.html', context)
+    return render(request, 'OrdersFolder/reorderParts.html', context)
 
 
 @login_required(login_url='signin')
@@ -1342,7 +1342,7 @@ def InterimOrder(request):
         "reorderparts": reorderparts,
     }
 
-    return render(request, "mgmt/interim-order.html", context)
+    return render(request, "PartsFolder/interim-order.html", context)
 
 
 @login_required(login_url='signin')
@@ -1442,7 +1442,7 @@ def recieveorder(request, pk):
     context = {'receiveForm': receiveForm,
                "part": part, 'time': time_received, }
 
-    return render(request, "mgmt/recieveorder.html", context)
+    return render(request, "OrdersFolder/recieveorder.html", context)
 
 
 @login_required(login_url='signin')
@@ -1519,7 +1519,7 @@ def instructions(request, pk):
         pass
 
     context = {'part': part, 'label': label, 'check': check}
-    return render(request, 'mgmt/recieveInstructions.html', context)
+    return render(request, 'OrdersFolder/recieveInstructions.html', context)
 
 
 @login_required(login_url='signin')
@@ -1532,7 +1532,7 @@ def exportorder(request):
     queryset = myFilter_order.qs
 
     context = {"queryset": queryset, "myfilter": myFilter_order, }
-    return render(request, "mgmt/exportorders.html", context)
+    return render(request, "OrdersFolder/exportorders.html", context)
 
 
 @login_required(login_url='signin')
@@ -1680,7 +1680,7 @@ def tools(request):
         "Check": Check,
     }
 
-    return render(request, "mgmt/tools.html", context)
+    return render(request, "ToolsFolder/tools.html", context)
 
 
 @login_required(login_url='signin')
@@ -1688,7 +1688,7 @@ def toolinstructions(request, pk):
     tools = Tools_Calibrated.objects.get(user=request.user, id=pk)
 
     context = {"tools": tools}
-    return render(request, "mgmt/toolinstructions.html", context)
+    return render(request, "ToolsFolder/toolinstructions.html", context)
 
 
 @login_required(login_url='signin')
@@ -1730,7 +1730,7 @@ def editCali(request, pk):
             return redirect('tools')  # redirect to home page
 
     context = {'formCali': formCali}
-    return render(request, 'mgmt/editCali.html', context)
+    return render(request, 'ToolsFolder/editCali.html', context)
 
 
 @login_required(login_url='signin')
@@ -1748,7 +1748,7 @@ def editUnCali(request, pk):
             return redirect('tools')  # redirect to home page
 
     context = {'UnCaliform': UnCaliform}
-    return render(request, 'mgmt/editUnCali.html', context)
+    return render(request, 'ToolsFolder/editUnCali.html', context)
 
 
 @login_required(login_url='signin')
@@ -1771,7 +1771,7 @@ def issueworkorderCali(request, pk):
                 return redirect('tools')
 
     context = {'formissueCali': formissueCali, "calitool": calitool}
-    return render(request, 'mgmt/issueworkorderCali.html', context)
+    return render(request, 'ToolsFolder/issueworkorderCali.html', context)
 
 
 @login_required(login_url='signin')
@@ -1796,7 +1796,7 @@ def issueUnCali(request, pk):
 
     context = {'formissueUnCali': formissueUnCali,
                'Uncalitool': Uncalitool}
-    return render(request, 'mgmt/issueUncali.html', context)
+    return render(request, 'ToolsFolder/issueUncali.html', context)
 
 
 @login_required(login_url='signin')
@@ -1817,7 +1817,7 @@ def calicomplete(request, pk):
             return redirect('tools')  # redirect to home page
 
     context = {'formCaliComp': formCaliComp, "calitool": calitool}
-    return render(request, 'mgmt/calibrationcomplete.html', context)
+    return render(request, 'ToolsFolder/calibrationcomplete.html', context)
 #-----------------------------------------#
 
 #Exporting Logic---------------------------#
@@ -2025,7 +2025,7 @@ def exportPDForder(request):
 
     date = timezone.now()
     html_string = render_to_string(
-        'mgmt/pdfoutput.html', {'orders': queryset, 'total': queryset.count(), "date": date})
+        'PDFFolder/pdfoutput.html', {'orders': queryset, 'total': queryset.count(), "date": date})
     html = HTML(string=html_string)
     result = html.write_pdf()
 
@@ -2065,7 +2065,7 @@ def exportPDFWorkorder(request, pk):
     workordernumber = workorder_specific.workorder_number
 
     date = timezone.now()
-    html_string = render_to_string('mgmt/pdfoutputWorkorders.html',
+    html_string = render_to_string('PDFFolder/pdfoutputWorkorders.html',
                                    {'partsIssue': partsIssue, 'partsReceived': partsReceived,
                                     'querysetDisplay': querysetDisplay, "total": total, "date": date})
     html = HTML(string=html_string)

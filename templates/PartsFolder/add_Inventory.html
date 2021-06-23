@@ -1,0 +1,99 @@
+{% extends 'mgmt/index.html'%}
+{% load static %}
+{% block content %}
+{% load widget_tweaks %}
+
+<head>
+    <style>
+         .sb-btn{
+            border-radius: 15px;           
+            float: right;
+            transition: all .2s ease-in-out; 
+           
+        }
+        .sb-btn:hover{
+            transform: scale(1.1);
+        }
+        .circleme{
+            border-radius: 15px;
+        }
+        .btnedit{
+            padding-right:5px;
+            display: flex;
+           
+        }
+        .poschahnge{
+            float: right;
+        }
+
+    </style>
+       
+</head>
+<br>
+<br>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4">
+    
+            </div>
+            
+            <div class="col-md-4">
+                <!--Specificy we want to take up 5/12 content blocks-->
+                <div class="mx-auto" style="text-align:center">
+                    {% if check == 0 or check == 1 %}
+                    <h4> <img src="https://img.icons8.com/plasticine/45/000000/move-stock.png"/> ADD PART <img src="https://img.icons8.com/plasticine/45/000000/move-stock.png"/></h4>
+                    
+                    {% else %}
+                    <h4> <img src="https://img.icons8.com/plasticine/45/000000/move-stock.png"/> REMOVE PART <img src="https://img.icons8.com/plasticine/45/000000/move-stock.png"/></h4>
+                    {%endif%}    
+
+                    
+                </div>
+                <hr>
+                <div class="card card-body reciever circleme">
+                    <div class="form-group">
+                       
+                        <form enctype="multipart/form-data" action="#" method="POST">
+                            {% if check == 0 or check == 1 %}
+                   
+                            <p><strong >Note:</strong> If the document you are planning to upload is more than <strong>1</strong> page in length. Please combine the documents! <a class = "pdfLink" href="https://products.aspose.app/pdf/merger/png-to-jpg" target="_blank"><strong style=" color:rgb(13, 130, 240)"><u>(Link)</u></strong></a></p>
+                            <hr>
+                            {% else %}
+                           
+                            {%endif%}    
+                            
+                            {{ form.management_data }}
+                            {% csrf_token %}                        
+                            <table border="0.5" style="padding: 20px;">
+                                {{form}} 
+                              </table>   
+                            <hr>
+                            <button class="btn btn-success sb-btn poschahnge" type="submit">Confirm Entry</button>
+
+                            {% if check == 0 %}
+                            <a class="btn btn-danger sb-btn" href="{% url 'interimtransfer' %}">Cancel</a>
+                            {% elif check == 1 %}
+                            <a class="btn btn-danger sb-btn" href="{% url 'interimtransfer' %}">Cancel</a>
+                            {% else %}
+                            <a class="btn btn-danger sb-btn" href="{% url 'InterimOrder' %}">Cancel</a>
+                            {%endif%}                       
+                        </form>
+                        
+                        
+                    </div>
+                </div>
+                <hr>
+            </div>
+    
+            <div class="col-md-4">
+                
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+
+{% endblock%}

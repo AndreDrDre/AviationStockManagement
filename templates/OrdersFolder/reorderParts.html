@@ -1,0 +1,238 @@
+{%extends 'mgmt/index.html'%}
+{% load static%}
+{% block content %}
+{% load widget_tweaks %}
+{%include 'mgmt/status.html'%}
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
+    <style>
+        .container-fluid{
+            
+            padding-left: 200px;
+            padding-right: 200px;
+        }
+
+        .a{
+            color:black;
+        }
+       
+        .export:hover{
+        transform: scale(1.05);
+            }
+
+        .container{   
+            
+            
+        } 
+        .circleme{
+            border-radius: 15px;
+            border: 1px solid;
+        }
+        .reciever{
+            background:  #afb4b97c ;  
+        }
+    
+        .btn-dre{
+            border-radius:30px;
+            font-size:18px;
+            width:100%;
+            padding: 10px;
+            border-radius: 15px;
+          
+            float: right;
+            transition: all .2s ease-in-out; 
+        }
+        .btn-dre:hover{
+            transform: scale(1.1);
+        }
+
+        .sb-btn{
+            border-radius: 15px;
+          
+            float: right;
+            transition: all .2s ease-in-out; 
+        }
+        .sb-btn:hover{
+            transform: scale(1.1);
+        }
+
+        .export-layout{
+            display:flex;
+            margin: 0 auto;
+            padding-bottom:20px;
+        }
+
+        .sb-export{
+            border-radius: 15px;
+            background: linear-gradient(135deg, #4fb945 0%, #10d13a60 100%);
+            float: right;
+            transition: all .2s ease-in-out; 
+            font-size: 20px;
+            width: 200px;
+        }
+        .sb-export:hover{
+            transform: scale(1.1);
+        }
+
+
+        .btn-comp{
+            border-radius: 15px;
+            background:linear-gradient(135deg, #ce961c 0%, #ca1616 100%);
+            float: right;
+            transition: all .2s ease-in-out; 
+        }
+
+        .btn-comp:hover{
+            transform: scale(1.1);
+        }
+        .display {
+            display:inline-block;
+            
+         
+            }
+    
+           
+    </style>
+</head>
+
+<body>
+    <script type="text/javascript">
+      
+
+        function confirmDelete()
+        {
+        var txt;
+        var agree=confirm("Are you sure you want to delete this item?");
+        if (agree){
+         
+         return true ;}
+        else
+         return false ;
+        }
+           
+    </script>
+    
+     
+            
+    <br>
+    <br>
+
+    <div class="container-fluid">        
+        <div class="row">
+            <div class="mx-auto" style="width: 800px;">
+                <div class="center-heading">
+                    <h2 class="section-title"> RE-ORDER PARTS</h2>
+                </div>
+            </div>
+            <div class="offset-lg-3 col-lg-6">
+                <div class="center-text">
+                    <p style="text-align:center">Below is list of all the P# that are currenlty located in Stock and Reserved Invenotry. Place a quick order to replenish the stock.</p>                  
+                </div>
+                <hr>
+            </div>
+            
+        </div>
+
+          
+     
+   
+  
+      <br>
+    </div> 
+ 
+
+
+
+
+
+    
+    <div class="container-fluid">
+       
+        <div class="row"> 
+            <div class="col-md-1">
+                
+            </div>
+            <div class="col-md-10">
+            <div class= 'card card-body circleme '>
+                <form method="get">
+                   {{filter.form}} 
+                   <button class="btn btn-info sb-btn" type="submit"><img src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png"/></button>
+              </form>
+            </div>
+            </div>
+            <div class="col-md-1">
+
+            </div>
+         
+        </div>  
+
+        <br>
+
+        <div class="row"> 
+            <div class="col-md-1">
+
+            </div> 
+            <div class="col-md-10">
+                <div class="card card-body circleme">
+                    <table class="table table-max table-md">
+                        <tr>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P #</th>  
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Description</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Part-Type</th>  
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">QTY</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Re-Order Lvl</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Unit Price</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Total Store Value</th>
+ 
+                           
+                        </tr>
+                        {% for instance in queryset %}
+                        <tr>
+
+                            {%if instance.reorder_level > instance.quantity%}
+                            <td style="text-align:center; position:relative; vertical-align:middle; background-color:rgba(255, 0, 0, 0.486)" >{{instance.part_number}}</td>
+                            {%else%}
+
+                            <td style="text-align:center; position:relative; vertical-align:middle; " >{{instance.part_number}}</td>
+                            {%endif%}
+
+
+
+                            <td style="text-align:center; position:relative; vertical-align:middle;" >{{instance.description}}</td>                                  
+                            <td style="text-align:center; position:relative; vertical-align:middle;" >{{instance.part_type}}</td>
+                            <td style="text-align:center; position:relative; vertical-align:middle;"><strong>{{instance.quantity}}</strong></td>
+                            <td style="text-align:center; position:relative; vertical-align:middle;">{{instance.reorder_level}}</td>
+                            <td style="text-align:center; position:relative; vertical-align:middle;">$ {{instance.price}}</td>
+                            <td style="text-align:center; position:relative; vertical-align:middle;"><strong>$ {% widthratio instance.price 1 instance.quantity %}</strong> </td>
+
+                            <td style="text-align:center;"><a class="btn btn-sm btn-warning sb-btn" href="{% url 'reorder_level' instance.id %}"  style="font-size:16px;">Re-Order Level</a></td>
+                            <td style="text-align:center"><a class="btn btn-sm btn-primary sb-btn" href="{% url 'quickOrder' instance.id %}" style="font-size:16px;">Order Now</a></td>
+
+                        </tr>
+                        {% endfor%}
+        
+                    </table>
+                </div>
+            </div>     
+            <div class="col-md-1">
+
+            </div>      
+    </div >
+   
+    <br>
+    <br> 
+    
+        <script type="text/javascript">
+        document.getElementById("id_SRN").focus();
+        console.log("hi there")
+        </script>
+
+      
+</body>
+
+
+  
+	
+
+{% endblock%}
