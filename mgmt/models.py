@@ -11,32 +11,26 @@ from datetime import datetime
 import random
 from django.contrib.auth.models import User
 
-AIRFRAME_CHOICES = (
-    ("Stock", "Stock"),
-    ("N192WW", "N192WW"),
-    ("N193WW", "N193WW"),
-    ("N194WW", "N194WW"),
-    ("N195WW", "N195WW"),
-    ("N196WW", "N196WW"),
-    ("N197WW", "N197WW"),
-    ("N198WW", "N198WW"),
-    ("N190WW", "N190WW"),
-    ("N906WW", "N906WW"),
-    ("N3830S", "N3830S"),
-    ("N323WW", "N323WW"),
-    ("N491AK", "N491AK"),
-    ("N492AK", "N492AK"),
-    ("N725WW", "N725WW"),
-    ("N789WW", "N789WW"),
-    ("N921WW", "N921WW"),
-)
-NAMES_CHOICES = (
-    ("Terence", "Terence"),
-    ("James", "James"),
-    ("Denten", "Denten"),
-    ("Ivin", "Ivin"),
-    ("Ester", "Ester"),
-)
+# AIRFRAME_CHOICES = (
+#     ("Stock", "Stock"),
+#     ("N192WW", "N192WW"),
+#     ("N193WW", "N193WW"),
+#     ("N194WW", "N194WW"),
+#     ("N195WW", "N195WW"),
+#     ("N196WW", "N196WW"),
+#     ("N197WW", "N197WW"),
+#     ("N198WW", "N198WW"),
+#     ("N190WW", "N190WW"),
+#     ("N906WW", "N906WW"),
+#     ("N3830S", "N3830S"),
+#     ("N323WW", "N323WW"),
+#     ("N491AK", "N491AK"),
+#     ("N492AK", "N492AK"),
+#     ("N725WW", "N725WW"),
+#     ("N789WW", "N789WW"),
+#     ("N921WW", "N921WW"),
+# )
+
 PARTTYPE_CHOICES = (
     ("Rotable", "Rotable"),
     ("Tires", "Tires"),
@@ -60,6 +54,24 @@ REPAIRS = (
     ("INHOUSE", "INHOUSE"),
     ("SHOP", "SHOP"),
 )
+
+
+class TailNumber(models.Model):
+
+    name = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        if self is not None:
+            return self.name
+
+
+class Employees(models.Model):
+
+    name = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        if self is not None:
+            return self.name
 
 
 class Profile(models.Model):
@@ -93,32 +105,14 @@ def calculateCheck(EAN13):
 
 class WorkOrders(models.Model):
  # Add new aircraft here
-    AIRFRAME_CHOICES = (
-        ("N192WW", "N192WW"),
-        ("N193WW", "N193WW"),
-        ("N194WW", "N194WW"),
-        ("N195WW", "N195WW"),
-        ("N196WW", "N196WW"),
-        ("N197WW", "N197WW"),
-        ("N198WW", "N198WW"),
-        ("N190WW", "N190WW"),
-        ("N906WW", "N906WW"),
-        ("N3830S", "N3830S"),
-        ("N323WW", "N323WW"),
-        ("N491AK", "N491AK"),
-        ("N492AK", "N492AK"),
-        ("N725WW", "N725WW"),
-        ("N789WW", "N789WW"),
-        ("N921WW", "N921WW"),
-    )
 
     WORKORDER_CHOICES = (
         ("OPEN", "OPEN"),
         ("COMPLETED", "COMPLETED"),
     )
 
-    tail_number = models.CharField(
-        max_length=20, choices=AIRFRAME_CHOICES, default='AirFrame')
+    tail_number = models.ForeignKey(
+        TailNumber, null=True, blank=True, on_delete=models.SET_NULL, verbose_name="Tail #")
     status = models.CharField(
         max_length=20, choices=WORKORDER_CHOICES, default='OPEN')
     description = models.TextField(blank=True, null=True)
@@ -180,24 +174,30 @@ class Parts(models.Model):
     exported = models.BooleanField(default='False', blank=True, null=True)
 
     bin_number = models.CharField(max_length=50, blank=True, null=True)
-    inspector = models.CharField(
-        max_length=20, choices=NAMES_CHOICES, default='')
+
     cert_document = models.ImageField(upload_to="Cert-Parts",
                                       blank=True, null=True, verbose_name='Certification Document')
     SRN = models.CharField(max_length=50, blank=True, null=True)
     barcode = models.ImageField(
         upload_to="barcode-Parts", blank=True, null=True)
 
-    ordered_by = models.CharField(
-        max_length=20, choices=NAMES_CHOICES, default='', verbose_name="Ordered by:")
-    tail_number = models.CharField(
-        max_length=20, choices=AIRFRAME_CHOICES, default='AirFrame', verbose_name="Tail #")
+    inspector = models.ForeignKey(
+        Employees, null=True, blank=True, related_name='inspector', on_delete=models.SET_NULL, verbose_name="Inspector:")
+
+    ordered_by = models.ForeignKey(
+        Employees, null=True, blank=True, related_name='ordered_by', on_delete=models.SET_NULL, verbose_name="Ordered by:")
+
+    tail_number = models.ForeignKey(
+        TailNumber, null=True, blank=True, on_delete=models.SET_NULL, verbose_name="Tail #")
+
+    issued_by = models.ForeignKey(
+        Employees, null=True, blank=True, related_name='issued_by', on_delete=models.SET_NULL, verbose_name="Issued by:")
+
     part_type = models.CharField(
         max_length=20, choices=PARTTYPE_CHOICES, default='Rotable', verbose_name="Part-Type")
     condition = models.CharField(
         max_length=20, choices=CONDITIONS, default='NEW')
-    issued_by = models.CharField(
-        max_length=20, choices=NAMES_CHOICES, default='', verbose_name="Issued by:")
+
     repaired_by = models.CharField(max_length=20, choices=REPAIRS, default='')
 
     workorders = models.ManyToManyField(
@@ -237,12 +237,6 @@ class Parts(models.Model):
 
 class PartWorkOrders(models.Model):
 
-    NAMES_CHOICES = (
-        ("Terence", "Terence"),
-        ("James", "James"),
-        ("Denten", "Denten"),
-        ("Ivin", "Ivin"),
-    )
     part = models.ForeignKey(
         Parts, null=True, on_delete=models.SET_NULL)
     workorder = models.ForeignKey(
@@ -261,11 +255,10 @@ class PartWorkOrders(models.Model):
     receivedRepair = models.BooleanField(
         default='False', blank=True, null=True)
 
-    issued_by = models.CharField(
-        max_length=20,
-        choices=NAMES_CHOICES,
-        default='',
-        verbose_name="Issued by:")
+    # issued_by = models.ForeignKey(
+    #     Employees, null=True, blank=True, related_name='issued_by', on_delete=models.SET_NULL, verbose_name="Issued by:")
+
+    issued_by = models.CharField(max_length=50, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -289,41 +282,6 @@ class PartWorkOrders(models.Model):
 
 class OrderHistory(models.Model):
 
-    AIRFRAME_CHOICES = (
-        ("Stock", "Stock"),
-        ("N192WW", "N192WW"),
-        ("N193WW", "N193WW"),
-        ("N194WW", "N194WW"),
-        ("N195WW", "N195WW"),
-        ("N196WW", "N196WW"),
-        ("N197WW", "N197WW"),
-        ("N198WW", "N198WW"),
-        ("N190WW", "N190WW"),
-        ("N906WW", "N906WW"),
-        ("N3830S", "N3830S"),
-        ("N323WW", "N323WW"),
-        ("N491AK", "N491AK"),
-        ("N492AK", "N492AK"),
-        ("N725WW", "N725WW"),
-        ("N789WW", "N789WW"),
-        ("N921WW", "N921WW"),
-    )
-    NAMES_CHOICES = (
-        ("Terence", "Terence"),
-        ("James", "James"),
-        ("Denten", "Denten"),
-        ("Ivin", "Ivin"),
-
-    )
-
-    PARTTYPE_CHOICES = (
-        ("Rotable", "Rotable"),
-        ("Tires", "Tires"),
-        ("AGS", "AGS"),
-        ("Consumables", "Consumables"),
-        ("Shelf-life", "Shelf-life"),
-
-    )
     description = models.CharField(max_length=50, blank=True, null=True)
     part_number = models.CharField(max_length=50, blank=True, null=True)
     date_ordered = models.DateTimeField(auto_now=True)
@@ -333,19 +291,8 @@ class OrderHistory(models.Model):
 
     ipc_reference = models.CharField(max_length=50, blank=True, null=True)
     vendor = models.CharField(max_length=50, blank=True, null=True)
-
-    ordered_by = models.CharField(
-        max_length=20,
-        choices=NAMES_CHOICES,
-        default='',
-        verbose_name="Ordered by:")
-
-    tail_number = models.CharField(
-        max_length=20,
-        choices=AIRFRAME_CHOICES,
-        default='AirFrame',
-        verbose_name="Tail #"
-    )
+    ordered_by = models.CharField(max_length=50, blank=True, null=True)
+    tail_number = models.CharField(max_length=50, blank=True, null=True)
     part_type = models.CharField(
         max_length=20,
         choices=PARTTYPE_CHOICES,
@@ -465,17 +412,7 @@ class ReorderItems(models.Model):
     part_number = models.CharField(max_length=50, blank=True, null=True)
     ipc_reference = models.CharField(max_length=50, blank=True, null=True)
 
-    tail_number = models.CharField(
-        max_length=20,
-        choices=AIRFRAME_CHOICES,
-        default='AirFrame',
-        verbose_name="Tail #"
-    )
-    ordered_by = models.CharField(
-        max_length=20,
-        choices=NAMES_CHOICES,
-        default='',
-        verbose_name="Ordered by:")
+    tail_number = models.CharField(max_length=50, blank=True, null=True)
 
     date_ordered = models.DateTimeField(auto_now=True)
     price = models.IntegerField(blank=True, null=True)

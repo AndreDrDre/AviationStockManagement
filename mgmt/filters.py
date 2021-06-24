@@ -2,14 +2,19 @@ import django_filters
 from django_filters import DateFilter
 from .models import *
 from django import forms
+from django.db.models import Q
 
 
 class WorkOrderFilter(django_filters.FilterSet):
+
+    tail_number = django_filters.ModelChoiceFilter(
+        queryset=TailNumber.objects.filter(~Q(name='Stock')))
+
     class Meta:
         model = WorkOrders
         fields = '__all__'
         exclude = ['type_airframe', 'ldgs_at_open', "date_added",
-                   'status', 'hours_at_open', 'date_closed']
+                   'status', 'hours_at_open', 'date_closed', 'user']
 
     def __init__(self, *args, **kwargs):
         super(WorkOrderFilter, self).__init__(*args, **kwargs)
@@ -97,6 +102,9 @@ class ReservedFilter(django_filters.FilterSet):
 
 
 class OHFilter(django_filters.FilterSet):
+    ordered_by = django_filters.ModelChoiceFilter(
+        queryset=Employees.objects.all())
+
     class Meta:
         model = OrderHistory
         fields = ['description', 'part_number', 'part_type', 'ordered_by']
@@ -117,7 +125,6 @@ class reOrderFilter(django_filters.FilterSet):
             'description': forms.TextInput(attrs={'class': 'form-control'}),
             'part_number': forms.TextInput(attrs={'class': 'form-control'}),
             'part_type': forms.Select(attrs={'class': 'form-control'}),
-
 
         }
 

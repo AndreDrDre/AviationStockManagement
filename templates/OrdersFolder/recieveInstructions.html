@@ -54,7 +54,7 @@
                             <h5><strong>Step 1:</strong></h5>
                             <hr>
 
-                            {%if part.tail_number != 'Stock'%}
+                            {%if part.tail_number.name != 'Stock'%}
                             <h6><strong >1. Insert part directly into Reserved Bin <u>{{part.tail_number}}</u></strong> </h6>
                            
                             {%else%}

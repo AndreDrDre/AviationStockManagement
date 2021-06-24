@@ -196,7 +196,7 @@ def Rinventory(request):
 
     #statuc bar#
     queryset = Parts.objects.filter(~Q(condition="REPAIRABLE"),
-                                    tail_number__startswith="N", user=request.user, Quarentine=False, Historical=False,
+                                    tail_number__name__startswith="N", user=request.user, Quarentine=False, Historical=False,
                                     recieve_part=True,).order_by('date_received').reverse()
 
     #filter--------------------------------------------------------#
@@ -348,7 +348,7 @@ def inventory(request):
         user=request.user, reorder_level__gte=F('quantity')).count()
 
     #statuc bar#
-    queryset = Parts.objects.filter(user=request.user, tail_number='Stock', Historical=False, Quarentine=False,
+    queryset = Parts.objects.filter(user=request.user, tail_number__name__contains='Stock', Historical=False, Quarentine=False,
                                     recieve_part=True).order_by('date_received').reverse()
 
     # condition='REPAIRABLE', Historical=False, recieve_part=True, Repaired=False)
@@ -366,7 +366,6 @@ def inventory(request):
     if queryset.count() == 1:
         for i in queryset:
             checkerQ = i.SRN
-            print(checkerQ)
 
     context = {
         "workordercount": workordercount,
@@ -405,7 +404,9 @@ def addToInventory(request, Type):
             price = form.cleaned_data['price']
 
         elif Type == "Stock":
-            tail_number = 'Stock'
+
+            tail_number = TailNumber.objects.all().reverse()[0]
+            print(tail_number)
             vendor = form.cleaned_data['vendor']
             order_quantity = form.cleaned_data['order_quantity']
             price = form.cleaned_data['price']
@@ -644,7 +645,6 @@ def issuePart(request, pk):
     queryset = Parts.objects.get(user=request.user, id=pk)
     check = queryset.tail_number
     sender = queryset.id
-    print(sender)
 
     form = issueWorkForm(instance=queryset, user=request.user)
 
@@ -669,7 +669,7 @@ def issuePart(request, pk):
                 for x in quersetReOrder:
                     if x.part_number == queryset.part_number:
                         x.quantity = x.quantity - queryset.issue_quantity
-                        print(x.quantity)
+
                         x.save(update_fields=['quantity'])
 
             if check == 'Stock':
@@ -1075,9 +1075,9 @@ def deletepart(request, pk):
     if part.recieve_part == False:
         return redirect('orderpart')
     else:
-        if part.tail_number == 'Stock':
+        if part.tail_number.name == 'Stock':
             return redirect('inventory')
-        if part.tail_number != 'Stock' and part.condition != 'REPAIRABLE':
+        if part.tail_number.name != 'Stock' and part.condition != 'REPAIRABLE':
             return redirect('Rinventory')
         if part.condition == 'REPAIRABLE':
             return redirect('Qinventory')
@@ -1455,7 +1455,6 @@ def instructions(request, pk):
     # obtain the specific the part link
     part = Parts.objects.get(user=request.user, id=pk)
 
-    # Distinguish the part catagory
     catagory = part.part_type
 
     # create a list of unique part numbers pertaining to a certain catagory.
@@ -1470,14 +1469,11 @@ def instructions(request, pk):
     PartNumberList = sorted(set(PartNumberList))
 
     listPart = PlaceNewPartNumber(part.part_number, PartNumberList)
-    print(catagory)
-    print(PartNumberList)
-    print(listPart)
 
     part.recieve_part = True
     part.save(update_fields=['recieve_part'])
 
-    if part.part_type != 'Consumables' and part.tail_number == 'Stock':
+    if part.part_type != 'Consumables' and part.tail_number.name == 'Stock':
         part.bin_number = listPart[1]
         part.save(update_fields=['bin_number'])
     else:
@@ -1490,11 +1486,10 @@ def instructions(request, pk):
         label = listPart[1]
 
     quersetReOrder = ReorderItems.objects.all()
-    if part.tail_number == 'Stock':
+    if part.tail_number.name == 'Stock':
         for x in quersetReOrder:
             if x.part_number == part.part_number:
                 x.quantity = x.quantity + part.quantity
-                print(x.quantity)
                 x.save(update_fields=['quantity'])
                 reorderExist = True
                 break
@@ -1502,7 +1497,7 @@ def instructions(request, pk):
                 pass
 
     if not reorderExist:
-        if part.tail_number == 'Stock':
+        if part.tail_number.name == 'Stock':
             reOrderParts = ReorderItems(part_type=part.part_type,
                                         description=part.description,
                                         part_number=part.part_number,
@@ -1913,8 +1908,6 @@ def exportXlsInventory(request, Type):
     namefile = ""
     columns = []
 
-    print(Type)
-
     if Type == 'Stock':
         name = 'Stock Inventory'
         namefile = 'attachment; filename="StockInventory.xls"'
@@ -1945,7 +1938,6 @@ def exportXlsInventory(request, Type):
 
         # lst = [50,"Python","JournalDev",100]
         lst_tuple = [x for x in zip(*[iter(tups)]*8)]
-        print(lst_tuple)
 
     if Type == "Reserved":
         name = 'Reserved Inventory'
@@ -1973,7 +1965,6 @@ def exportXlsInventory(request, Type):
 
         # lst = [50,"Python","JournalDev",100]
     lst_tuple = [x for x in zip(*[iter(tups)]*8)]
-    print(lst_tuple)
 
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = namefile

@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.db.models import Q
 
 
 NAMES_CHOICES = (
@@ -105,7 +106,7 @@ class CreateWorkorder(forms.ModelForm):
         # I only want to display certain fields from a model
         model = WorkOrders
         fields = ['tail_number', 'type_airframe',
-                  'ldgs_at_open', 'hours_at_open', 'workorder_number', 'description']
+                  'ldgs_at_open', 'hours_at_open', 'workorder_number', ]
 
         widgets = {
             'tail_number': forms.Select(attrs={'class': 'form-control'}),
@@ -113,8 +114,13 @@ class CreateWorkorder(forms.ModelForm):
             'ldgs_at_open': forms.TextInput(attrs={'class': 'form-control'}),
             'hours_at_open': forms.TextInput(attrs={'class': 'form-control'}),
             'workorder_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'description': forms.Textarea(attrs={'class': 'form-control'}),
+
         }
+
+    def __init__(self, *args, **kwargs):
+        super(CreateWorkorder, self).__init__(*args, **kwargs)
+        self.fields['tail_number'] = forms.ModelChoiceField(label='Tail #',
+                                                            queryset=TailNumber.objects.filter(~Q(name='Stock')))
 #-------------------------------------------------------------------#
 
 #Add parts not from an order----------------------------------------#
@@ -139,8 +145,11 @@ class CreateOrder(forms.Form):
     ipc_reference = forms.CharField(max_length=200)
 
     order_quantity = forms.IntegerField(label='Order quantity')
-    tail_number = forms.ChoiceField(choices=AIRFRAME_CHOICES)
-    ordered_by = forms.ChoiceField(choices=NAMES_CHOICES)
+
+    tail_number = forms.ModelChoiceField(label='Tail #',
+                                         queryset=TailNumber.objects.all())
+    ordered_by = forms.ModelChoiceField(label='Ordered by',
+                                        queryset=Employees.objects.all())
 
 
 #-------------------------------------------------------------------#
@@ -174,8 +183,8 @@ class PriceForm(forms.ModelForm):
 class AddInventory(forms.Form):
 
     # Order-Part
-    tail_number = forms.ChoiceField(
-        choices=AIRFRAME_CHOICES[1::], label='Reserved For:')
+    tail_number = forms.ModelChoiceField(label='Tail #',
+                                         queryset=TailNumber.objects.filter(~Q(name='Stock')))
 
     part_type = forms.ChoiceField(choices=PARTTYPE_CHOICES)
     description = forms.CharField(max_length=100)
@@ -190,7 +199,8 @@ class AddInventory(forms.Form):
     cert_document = forms.ImageField(
         label='Certification Document')
 
-    inspector = forms.ChoiceField(choices=NAMES_CHOICES)
+    inspector = forms.ModelChoiceField(label='Inspector',
+                                       queryset=Employees.objects.all())
 
     condition = forms.ChoiceField(
         choices=CONDITIONS_CHOICES)
@@ -257,7 +267,8 @@ class addQuaretineInventory(forms.Form):
     cert_document = forms.ImageField(
         label='Certification Document', required=False)
 
-    inspector = forms.ChoiceField(choices=NAMES_CHOICES)
+    inspector = forms.ModelChoiceField(label='Inspector',
+                                       queryset=Employees.objects.all())
     condition = forms.ChoiceField(
         choices=CONDITIONS_CHOICES)
 

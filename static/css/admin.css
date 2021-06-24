@@ -1,0 +1,48 @@
+#header {
+    margin-top: 20px;;
+    height: 50px;
+    background: #10284e;
+    color: #fff;
+  }
+  
+  .admin-heading{
+      display: inline-block;
+  }
+
+  .admin-heading img{
+    height:60px;
+    width:280px;
+    background-color: white;
+
+  }
+  
+  #branding h1 {
+    color: #fff;
+    
+  }
+  
+  a:link,
+  a:visited {
+    color:#10284e;
+  }
+  
+  div.breadcrumbs {
+    background: #454950;
+    color: white;
+  }
+  
+  div.breadcrumbs a {
+    color:white;
+    font-size: 18px;
+  }
+  
+  .module h2, .module caption, .inline-group h2 {
+    background: #10284e;
+    color:white;
+    font-size:  20px;
+  }
+  
+  .button, input[type=submit], input[type=button], .submit-row input, a.button {
+    background: #10284e;
+    color: #fff;
+  }
