@@ -87,7 +87,8 @@
                         $('#id_form').attr('validated', true);
                         $('#id_form').submit();
                     } else {
-                        $(".cirlceme").hide();
+                        $(".circleme").hide();
+                        $("#id_form").hide();
                         $("#form_response").show();
                         $("#form_response").fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
                         $("#form_response").html(response.success);

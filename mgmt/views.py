@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 import django_filters
 import datetime
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -24,6 +24,7 @@ import tempfile
 from django.db.models import Sum
 from django.db.models import F
 from django.db.models import Q
+from django.urls import reverse
 
 # Class imports
 # from .decorators import unauth_user, allowed_users, admin_only
@@ -458,15 +459,13 @@ def addToInventory(request, Type):
                     p.Quarentine = True
                     p.save(update_fields=["Quarentine"])
                     if request.is_ajax():
-                        return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
-
+                        return JsonResponse({'success': 'Adding Removed Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
                     return redirect('Qinventory')
                 else:
-                    p.tail_number = "Stock"
+                    p.tail_number.name = "Stock"
                     p.save(update_fields=["tail_number"])
                     if request.is_ajax():
-                        return JsonResponse({'success': 'Adding Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
-
+                        return JsonResponse({'success': 'Adding Removed Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
                     return redirect('instructions', pk=p.id)
             else:
                 p = Parts(part_type=part_type,
@@ -496,7 +495,7 @@ def addToInventory(request, Type):
                     p.save(update_fields=["Quarentine"])
                     return redirect('Qinventory')
                 else:
-                    p.tail_number = "Stock"
+                    p.tail_number.name = "Stock"
                     p.save(update_fields=["tail_number"])
                     return redirect('inventory')
 

@@ -7,33 +7,6 @@ from django.contrib.auth.models import User
 from django.db.models import Q
 
 
-NAMES_CHOICES = (
-    ("Terence", "Terence"),
-    ("James", "James"),
-    ("Denten", "Denten"),
-    ("Ivin", "Ivin"),
-
-)
-AIRFRAME_CHOICES = (
-    ("Stock", "Stock"),
-    ("N192WW", "N192WW"),
-    ("N193WW", "N193WW"),
-    ("N194WW", "N194WW"),
-    ("N195WW", "N195WW"),
-    ("N196WW", "N196WW"),
-    ("N197WW", "N197WW"),
-    ("N198WW", "N198WW"),
-    ("N190WW", "N190WW"),
-    ("N906WW", "N906WW"),
-    ("N3830S", "N3830S"),
-    ("N323WW", "N323WW"),
-    ("N491AK", "N491AK"),
-    ("N492AK", "N492AK"),
-    ("N725WW", "N725WW"),
-    ("N789WW", "N789WW"),
-    ("N921WW", "N921WW"),
-)
-
 PARTTYPE_CHOICES = (
     ("Rotable", "Rotable"),
     ("Tires", "Tires"),
@@ -128,7 +101,10 @@ class CreateWorkorder(forms.ModelForm):
 
 class ReOrderForm(forms.Form):
 
-    ordered_by = forms.ChoiceField(choices=NAMES_CHOICES)
+    ordered_by = forms.ModelChoiceField(
+        label='Ordered By', queryset=Employees.objects.all(), required=True)
+    tail_number = forms.ModelChoiceField(
+        label='Tail #', queryset=TailNumber.objects.all(), required=True)
     orderQTY = forms.IntegerField(label='Order quantity')
 
     def __init__(self, *args, **kwargs):
@@ -197,10 +173,10 @@ class AddInventory(forms.Form):
     # Receive-Part
     order_quantity = forms.IntegerField(label="Quantity")
     cert_document = forms.ImageField(
-        label='Certification Document')
+        label='Certification Document', required=False)
 
     inspector = forms.ModelChoiceField(label='Inspector',
-                                       queryset=Employees.objects.all())
+                                       queryset=Employees.objects.all(), required=True)
 
     condition = forms.ChoiceField(
         choices=CONDITIONS_CHOICES)
@@ -209,7 +185,7 @@ class AddInventory(forms.Form):
         queryset=WorkOrders.objects.filter(status='OPEN'))
 
     jobCardNumber = forms.CharField(max_length=100, label="Work Card #")
-    price = forms.IntegerField(label="Price")
+    price = forms.IntegerField(label="Price", required=False)
 
     def clean_order_quantity(self):
 
