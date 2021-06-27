@@ -407,7 +407,6 @@ def addToInventory(request, Type):
         elif Type == "Stock":
 
             tail_number = TailNumber.objects.all().reverse()[0]
-            print(tail_number)
             vendor = form.cleaned_data['vendor']
             order_quantity = form.cleaned_data['order_quantity']
             price = form.cleaned_data['price']
@@ -424,7 +423,7 @@ def addToInventory(request, Type):
         part_type = form.cleaned_data['part_type']
         description = form.cleaned_data['description']
         part_number = form.cleaned_data['part_number']
-        ipc_reference = form.cleaned_data['ipc_reference']
+
         indentifier = form.cleaned_data['indentifier']
         cert_document = form.cleaned_data['cert_document']
         inspector = form.cleaned_data['inspector']
@@ -435,7 +434,6 @@ def addToInventory(request, Type):
                 p = Parts(part_type=part_type,
                           description=description,
                           part_number=part_number,
-                          ipc_reference=ipc_reference,
                           vendor=vendor,
                           serial_number=indentifier,
                           cert_document=cert_document,
@@ -477,7 +475,6 @@ def addToInventory(request, Type):
                 p = Parts(part_type=part_type,
                           description=description,
                           part_number=part_number,
-                          ipc_reference=ipc_reference,
                           vendor=vendor,
                           batch_no=indentifier,
                           cert_document=cert_document,
@@ -514,7 +511,6 @@ def addToInventory(request, Type):
                 p = Parts(part_type=part_type,
                           description=description,
                           part_number=part_number,
-                          #   ipc_reference=ipc_reference,
                           vendor=vendor,
                           serial_number=indentifier,
                           cert_document=cert_document,
@@ -540,7 +536,6 @@ def addToInventory(request, Type):
                 p = Parts(part_type=part_type,
                           description=description,
                           part_number=part_number,
-                          #   ipc_reference=ipc_reference,
                           vendor=vendor,
                           batch_no=indentifier,
                           cert_document=cert_document,
