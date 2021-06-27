@@ -4,6 +4,7 @@
 {% load widget_tweaks %}
 
 <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
     <style>
          .sb-btn{
             border-radius: 15px;           
@@ -51,10 +52,11 @@
                     
                 </div>
                 <hr>
+                <div id="form_response" class="mb-4 text-center"></div>
                 <div class="card card-body reciever circleme">
                     <div class="form-group">
                        
-                        <form enctype="multipart/form-data" action="#" method="POST">
+                        <form id="id_form" enctype="multipart/form-data" action="#" method="POST">
                             {% if check == 0 or check == 1 %}
                    
                             <p><strong >Note:</strong> If the document you are planning to upload is more than <strong>1</strong> page in length. Please combine the documents! <a class = "pdfLink" href="https://products.aspose.app/pdf/merger/png-to-jpg" target="_blank"><strong style=" color:rgb(13, 130, 240)"><u>(Link)</u></strong></a></p>

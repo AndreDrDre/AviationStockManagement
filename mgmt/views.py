@@ -457,11 +457,15 @@ def addToInventory(request, Type):
                 if p.condition == "REPAIRABLE":
                     p.Quarentine = True
                     p.save(update_fields=["Quarentine"])
+                    if request.is_ajax():
+                        return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
 
                     return redirect('Qinventory')
                 else:
                     p.tail_number = "Stock"
                     p.save(update_fields=["tail_number"])
+                    if request.is_ajax():
+                        return JsonResponse({'success': 'Adding Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
 
                     return redirect('instructions', pk=p.id)
             else:

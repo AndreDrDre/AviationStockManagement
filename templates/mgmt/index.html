@@ -75,7 +75,33 @@
   
     
   </script>
-    
+  <script>
+    $("#id_form").submit(() => {
+        if(!$("#id_form").attr('validated')) {
+            $.ajax({
+                url :"{{ request.path }}",
+                method: "POST",
+                data: $("#id_form").serialize(),
+                success (response) {
+                    if ('error' in response) {
+                        $('#id_form').attr('validated', true);
+                        $('#id_form').submit();
+                    } else {
+                        $(".cirlceme").hide();
+                        $("#form_response").show();
+                        $("#form_response").fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
+                        $("#form_response").html(response.success);
+                        setTimeout(() => {
+                            window.location.href = response.redirect_to;
+                        }, 5000);
+                    }
+                }
+            });
+            return false;
+        }
+        return true
+    });
+  </script>
 
 
   </body>
