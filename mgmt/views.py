@@ -440,7 +440,7 @@ def addToInventory(request, Type):
                           serial_number=indentifier,
                           cert_document=cert_document,
                           quantity=order_quantity,
-                          tail_number=tail_number,
+                          tail_number=TailNumber.objects.all().reverse()[0],
                           inspector=inspector,
                           condition=condition,
                           date_received=timezone.now(),
@@ -455,6 +455,46 @@ def addToInventory(request, Type):
                     part=p, workorder=workorder, jobCardNumber=jobCardNumber, receivedRepair=True,
                     cert_document=cert_document, removed_from=tail_number, removed_by=inspector)
 
+                # Now we need establish the condition of the removed part( serviceable or not)
+
+                if p.condition == "REPAIRABLE":
+                    p.Quarentine = True
+                    p.save(update_fields=["Quarentine"])
+
+                    if request.is_ajax():
+                        return JsonResponse({'success': 'Adding Removed Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
+                    return redirect('Qinventory')
+                else:
+                    p.tail_number.name = "Stock"
+                    p.save(update_fields=["tail_number"])
+
+                    if request.is_ajax():
+                        return JsonResponse({'success': 'Adding Removed Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
+                    return redirect('instructions', pk=p.id)
+
+                # removed parts that are not serialised (AGS Parts)
+            else:
+                p = Parts(part_type=part_type,
+                          description=description,
+                          part_number=part_number,
+                          ipc_reference=ipc_reference,
+                          vendor=vendor,
+                          batch_no=indentifier,
+                          cert_document=cert_document,
+                          quantity=order_quantity,
+                          tail_number=tail_number,
+                          inspector=inspector,
+                          condition=condition,
+                          date_received=timezone.now(),
+                          Historical=False,
+                          recieve_part=True,
+                          Quarentine=False,
+                          user=request.user
+                          )
+                p.save()
+                PartWorkOrders.objects.create(
+                    part=p, workorder=workorder, jobCardNumber=jobCardNumber, receivedRepair=True,
+                    cert_document=cert_document, removed_from=tail_number, removed_by=inspector)
                 if p.condition == "REPAIRABLE":
                     p.Quarentine = True
                     p.save(update_fields=["Quarentine"])
@@ -466,45 +506,15 @@ def addToInventory(request, Type):
                     p.save(update_fields=["tail_number"])
                     if request.is_ajax():
                         return JsonResponse({'success': 'Adding Removed Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
-                    return redirect('instructions', pk=p.id)
-            else:
-                p = Parts(part_type=part_type,
-                          description=description,
-                          part_number=part_number,
-                          ipc_reference=ipc_reference,
-                          vendor=vendor,
-                          batch_no=indentifier,
-                          cert_document=cert_document,
-                          quantity=order_quantity,
-                          bin_number=bin_number,
-                          tail_number=tail_number,
-                          inspector=inspector,
-                          condition=condition,
-                          date_received=timezone.now(),
-                          Historical=False,
-                          recieve_part=True,
-                          Quarentine=False,
-                          user=request.user
-                          )
-                p.save()
-                PartWorkOrders.objects.create(
-                    part=p, workorder=workorder, jobCardNumber=jobCardNumber, receivedRepair=True,
-                    cert_document=cert_document, removed_from=tail_number, removed_by=inspector)
-                if p.condition == "REPAIRABLE":
-                    p.Quarentine = True
-                    p.save(update_fields=["Quarentine"])
-                    return redirect('Qinventory')
-                else:
-                    p.tail_number.name = "Stock"
-                    p.save(update_fields=["tail_number"])
                     return redirect('inventory')
 
+        # Parts not removed from an aircraft! Cosignment added Parts
         else:
             if part_type == 'Rotable' or part_type == 'Tires':
                 p = Parts(part_type=part_type,
                           description=description,
                           part_number=part_number,
-                          ipc_reference=ipc_reference,
+                          #   ipc_reference=ipc_reference,
                           vendor=vendor,
                           serial_number=indentifier,
                           cert_document=cert_document,
@@ -519,13 +529,18 @@ def addToInventory(request, Type):
                           )
 
                 p.save()
+                if request.is_ajax():
+                    if p.tail_number.name == "Stock":
+                        return JsonResponse({'success': 'Adding Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
+                    else:
+                        return JsonResponse({'success': 'Adding Part to Reserved Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
                 return redirect('instructions', pk=p.id)
 
             else:
                 p = Parts(part_type=part_type,
                           description=description,
                           part_number=part_number,
-                          ipc_reference=ipc_reference,
+                          #   ipc_reference=ipc_reference,
                           vendor=vendor,
                           batch_no=indentifier,
                           cert_document=cert_document,
@@ -540,9 +555,16 @@ def addToInventory(request, Type):
                           )
 
                 p.save()
+                if request.is_ajax():
+                    if p.tail_number.name == "Stock":
+                        return JsonResponse({'success': 'Adding Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
+                    else:
+                        return JsonResponse({'success': 'Adding Part to Reserved Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
                 return redirect('instructions', pk=p.id)
 
     context = {"form": form, "check": check}
+    if request.is_ajax():
+        return JsonResponse({'error': True})
     return render(request, "PartsFolder/add_Inventory.html", context)
 
 
@@ -557,15 +579,12 @@ def addToQuarentine(request):
     if form.is_valid():
 
         order_quantity = form.cleaned_data['condition']
-
         condition = form.cleaned_data['condition']
         part_type = form.cleaned_data['part_type']
         description = form.cleaned_data['description']
         part_number = form.cleaned_data['part_number']
-
         indentifier = form.cleaned_data['indentifier']
         cert_document = form.cleaned_data['cert_document']
-
         inspector = form.cleaned_data['inspector']
 
         if part_type == 'Rotable' or part_type == 'Tires':
@@ -585,6 +604,8 @@ def addToQuarentine(request):
                       user=request.user
                       )
             p.save()
+            if request.is_ajax():
+                return JsonResponse({'success': 'Adding Removed Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
             return redirect('Qinventory')
         else:
             p = Parts(part_type=part_type,
@@ -603,9 +624,13 @@ def addToQuarentine(request):
                       user=request.user
                       )
             p.save()
+            if request.is_ajax():
+                return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
             return redirect('Qinventory')
 
     context = {"form": form}
+    if request.is_ajax():
+        return JsonResponse({'error': True})
 
     return render(request, "PartsFolder/addToQuarentine.html", context)
 
@@ -1120,13 +1145,12 @@ def quickOrder(request, pk):
 
         orderedBy = form.cleaned_data['ordered_by']
         orderQTY = form.cleaned_data['orderQTY']
+        tail_number = form.cleaned_data['tail_number']
 
         description = queryset.description
         part_number = queryset.part_number
         order_quantity = orderQTY
         ipc_reference = queryset.ipc_reference
-
-        tail_number = queryset.tail_number
         ordered_by = orderedBy
         part_type = queryset.part_type
 
@@ -1154,6 +1178,11 @@ def quickOrder(request, pk):
                              part_type=part_type,
                              user=request.user)
             h.save()
+            if request.is_ajax():
+                if p.tail_number.name == "Stock":
+                    return JsonResponse({'success': 'Placing new Stock Order...', 'redirect_to': reverse('reorderParts')})
+                else:
+                    return JsonResponse({'success': 'Placing new Reserved Stock Order......', 'redirect_to': reverse('reorderParts')})
             return redirect('reorderParts')
 
         else:
@@ -1183,8 +1212,10 @@ def quickOrder(request, pk):
             return redirect('reorderParts')
 
     context = {"form": form, "queryset": queryset}
+    if request.is_ajax():
+        return JsonResponse({'error': True})
 
-    return render(request, "mgmt/re-order.html", context)
+    return render(request, "OrdersFolder/re-order.html", context)
 
 
 @login_required(login_url='signin')

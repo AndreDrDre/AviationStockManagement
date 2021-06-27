@@ -11,25 +11,6 @@ from datetime import datetime
 import random
 from django.contrib.auth.models import User
 
-# AIRFRAME_CHOICES = (
-#     ("Stock", "Stock"),
-#     ("N192WW", "N192WW"),
-#     ("N193WW", "N193WW"),
-#     ("N194WW", "N194WW"),
-#     ("N195WW", "N195WW"),
-#     ("N196WW", "N196WW"),
-#     ("N197WW", "N197WW"),
-#     ("N198WW", "N198WW"),
-#     ("N190WW", "N190WW"),
-#     ("N906WW", "N906WW"),
-#     ("N3830S", "N3830S"),
-#     ("N323WW", "N323WW"),
-#     ("N491AK", "N491AK"),
-#     ("N492AK", "N492AK"),
-#     ("N725WW", "N725WW"),
-#     ("N789WW", "N789WW"),
-#     ("N921WW", "N921WW"),
-# )
 
 PARTTYPE_CHOICES = (
     ("Rotable", "Rotable"),

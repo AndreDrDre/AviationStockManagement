@@ -105,7 +105,7 @@ class ReOrderForm(forms.Form):
         label='Ordered By', queryset=Employees.objects.all(), required=True)
     tail_number = forms.ModelChoiceField(
         label='Tail #', queryset=TailNumber.objects.all(), required=True)
-    orderQTY = forms.IntegerField(label='Order quantity')
+    orderQTY = forms.IntegerField(label='Order quantity', required=True)
 
     def __init__(self, *args, **kwargs):
         super(ReOrderForm, self).__init__(*args, **kwargs)
@@ -167,7 +167,7 @@ class AddInventory(forms.Form):
     part_number = forms.CharField(max_length=50, label='Part #')
     indentifier = forms.CharField(max_length=50, label="S#/B#")
 
-    ipc_reference = forms.CharField(max_length=200)
+    # ipc_reference = forms.CharField(max_length=200)
     vendor = forms.CharField(max_length=200)
 
     # Receive-Part
@@ -182,9 +182,10 @@ class AddInventory(forms.Form):
         choices=CONDITIONS_CHOICES)
 
     workorder = forms.ModelChoiceField(
-        queryset=WorkOrders.objects.filter(status='OPEN'))
+        queryset=WorkOrders.objects.filter(status='OPEN'), required=True)
 
-    jobCardNumber = forms.CharField(max_length=100, label="Work Card #")
+    jobCardNumber = forms.CharField(
+        max_length=100, label="Work Card #", required=True)
     price = forms.IntegerField(label="Price", required=False)
 
     def clean_order_quantity(self):
