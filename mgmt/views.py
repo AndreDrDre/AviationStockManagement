@@ -1208,6 +1208,11 @@ def quickOrder(request, pk):
                              part_type=part_type,
                              user=request.user)
             h.save()
+            if request.is_ajax():
+                if p.tail_number.name == "Stock":
+                    return JsonResponse({'success': 'Placing new Stock Order...', 'redirect_to': reverse('reorderParts')})
+                else:
+                    return JsonResponse({'success': 'Placing new Reserved Stock Order......', 'redirect_to': reverse('reorderParts')})
 
             return redirect('reorderParts')
 
