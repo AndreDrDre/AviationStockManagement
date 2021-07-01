@@ -1,30 +1,23 @@
+{% load static %}
 <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
     <style>
 
-        .container-fluid-status{
-            
-            padding-left: 220px;
-            padding-right: 220px;
-        }
-	
+      
 		#display {
 			background: linear-gradient(135deg, #80d0c7 0%, #13547a 100%);
 			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 			-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 			-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 			border-radius: 30px; 
-            height: 150px;   
+            height: 150px;
+            width: 280px;   
         }
 
         .card-title{
             font-size:23px;
         }
 
-        /* .card-body-status{
-            display: flex;
-            justify-content: center;
-            align-items: center; 
-        } */
 
         .card-body h3{
             font-size:28px;
@@ -40,7 +33,8 @@
 			-webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 			-moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 			border-radius: 30px;
-            height: 150px;   
+            height: 150px; 
+            width: 280px;   
         }
 
 
@@ -54,7 +48,7 @@
 </head>
 <br>
 
-<div class="container-fluid-status"> 
+<div class="container-fluid-status "> 
     <div class="row justify-content-md-center">  
 
         <div class="col">
@@ -62,7 +56,7 @@
                 <a href="{% url 'workorders' %}">
                 <div class="card text-center text-white mb-4"  id = "display">
                     <div class="card-header">
-                        <h5 class="card-title">WORK-ORDERS OPEN</h5>
+                        <h5 class="card-title">OPEN W/O</h5>
                     </div>
                     <div class="card-body">
                         <h3 class="card-title">{{workordercount}}</h3>

@@ -405,7 +405,6 @@ def addToInventory(request, Type):
             price = form.cleaned_data['price']
 
         elif Type == "Stock":
-
             tail_number = TailNumber.objects.all().reverse()[0]
             vendor = form.cleaned_data['vendor']
             order_quantity = form.cleaned_data['order_quantity']
@@ -423,7 +422,6 @@ def addToInventory(request, Type):
         part_type = form.cleaned_data['part_type']
         description = form.cleaned_data['description']
         part_number = form.cleaned_data['part_number']
-
         indentifier = form.cleaned_data['indentifier']
         cert_document = form.cleaned_data['cert_document']
         inspector = form.cleaned_data['inspector']
@@ -479,7 +477,7 @@ def addToInventory(request, Type):
                           batch_no=indentifier,
                           cert_document=cert_document,
                           quantity=order_quantity,
-                          tail_number=tail_number,
+                          tail_number=TailNumber.objects.all().reverse()[0],
                           inspector=inspector,
                           condition=condition,
                           date_received=timezone.now(),
@@ -712,10 +710,17 @@ def reorder_level(request, pk):
     form = ReorderLevelForm(request.POST or None, instance=queryset)
 
     if form.is_valid():
-        instance = form.save(commit=False)
-        instance.save()
+        form.save()
 
+        # instance = form.save(commit=False)
+        # instance.save()
+        if request.is_ajax():
+            return JsonResponse({'success': 'Updating Re-Order Level...', 'redirect_to': reverse('reorderParts')})
         return redirect('reorderParts')
+
+    else:
+        form = ReorderLevelForm(request.POST or None, instance=queryset)
+
     context = {
         'queryset': queryset,
         'form': form,
@@ -1436,9 +1441,16 @@ def recieveorder(request, pk):
                 receiveForm.save()  # save the form into the database
 
                 if part.Quarentine == False:
-                    return redirect('instructions', pk=part.id)
+                    if request.is_ajax():
+                        if part.tail_number.name == "Stock":
+                            return JsonResponse({'success': 'Adding Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': part.id})})
+                        else:
+                            return JsonResponse({'success': 'Adding Part to Reserved Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': part.id})})
+                    # return redirect('instructions', pk=part.id)
                 else:
-                    return redirect('orderpart')
+                    if request.is_ajax():
+                            return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('orderpart')})
+                    # return redirect('orderpart')
 
             else:
                 qtyleftOver = 0
@@ -1469,12 +1481,20 @@ def recieveorder(request, pk):
                 p.save()
 
                 if part.Quarentine == False:
-                    return redirect('instructions', pk=part.id)
-                else:
-                    return redirect('orderpart')
+                    if request.is_ajax():
+                        if part.tail_number.name == "Stock":
+                            return JsonResponse({'success': 'Adding Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': part.id})})
+                        else:
+                            return JsonResponse({'success': 'Adding Part to Reserved Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': part.id})})
+                    else:
+                        if request.is_ajax():
+                            return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('orderpart')})
+                        # return redirect('orderpart')
 
     context = {'receiveForm': receiveForm,
                "part": part, 'time': time_received, }
+    if request.is_ajax():
+        return JsonResponse({'error': True})
 
     return render(request, "OrdersFolder/recieveorder.html", context)
 

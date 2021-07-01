@@ -1,100 +1,109 @@
-{% extends 'mgmt/index.html'%}
-{% load static%}
-{% block content %}
-{% load widget_tweaks %}
+{% extends 'mgmt/index.html'%} {% load static%} {% block content %}
 
 <head>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
-    <style>
-         .sb-btn{
-            border-radius: 15px;           
-            float: right;
-            transition: all .2s ease-in-out; 
-           
-        }
-        .sb-btn:hover{
-            transform: scale(1.1);
-        }
-        .circleme{
-            border-radius: 15px;
-        }
-        .btnedit{
-            padding-right:5px;
-            display: flex;
-           
-        }
-        .poschahnge{
-            float: right;
-        }
-        .pdfLink:hover{
-            transform: scale(1.2)
-
-        }
-
-    </style>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}" />
+  <style>
+    .sb-btn {
+      border-radius: 15px;
+      float: right;
+      transition: all 0.2s ease-in-out;
+    }
+    .sb-btn:hover {
+      transform: scale(1.1);
+    }
+    .circleme {
+      border-radius: 15px;
+    }
+    .btnedit {
+      padding-right: 5px;
+      display: flex;
+    }
+    .poschahnge {
+      float: right;
+    }
+    .pdfLink:hover {
+      transform: scale(1.2);
+    }
+    #form_check {
+      display: None;
+    }
+  </style>
 </head>
-<br>
-<br>
+<br />
+<br />
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-4">
-    
-            </div>
-            
-            <div class="col-md-4">
-                <!--Specificy we want to take up 5/12 content blocks-->
-                <div class="mx-auto" style="text-align:center">
-                    <h4> RECIEVE ORDER <img src="https://img.icons8.com/fluent/48/000000/mailbox-coins.png"/></h4>
-                </div>
-                <hr>
-                <div class="card card-body reciever circleme">
-                    <div class="form-group">
-                        <form enctype="multipart/form-data" action="#" method="POST">
-                            {{ receiveForm.management_data }}
-                            {% csrf_token %}
-                            <h5><strong>PART INFORMATION</strong></h5>
-                            <hr>
-                            <h6>Receiving For : {{part.tail_number}} </h6>
-                            <h6>Part description : {{part.description}}</h6>
-                            <h6>Part Catagory : {{part.part_type}} </h6>                            
-                            <h6>Receiving Part # : {{part.part_number}}</h6>
-                            <h6>Receiving Qty : {{part.order_quantity}} </h6>
-                            
-                            
-                            <h6>Receiving @ : {{time}}</h6>
-                          
-                            <hr>
-                           
-                            <!-- <p><strong>Note:</strong> If the document you are planning to upload is more than <strong>1</strong> page in length. Please combine the documents! <a class = "pdfLink" href="https://products.aspose.app/pdf/merger/png-to-jpg" target="_blank"><strong style=" color:rgb(13, 130, 240)"><u>(Link)</u></strong></a></p> -->
-                            
-                           
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-4"></div>
 
-                            <table>
-                                {{receiveForm.as_p}}
-
-                            </table>
-
-                            
-                       
-                            <button class="btn btn-success sb-btn" type="submit">Confirm Entry</button>
-                            <a class="btn btn-danger sb-btn" href="{% url 'orderpart' %}">Cancel</a>
-
-                        </form>
-                        
-                    </div>
-                </div>
-                <hr>
-            </div>
-    
-            <div class="col-md-4">
-                
-            </div>
+      <div class="col-md-4">
+        <!--Specificy we want to take up 5/12 content blocks-->
+        <div class="mx-auto" style="text-align: center">
+          <h4>
+            RECIEVE ORDER
+            <img
+              src="https://img.icons8.com/fluent/48/000000/mailbox-coins.png"
+            />
+          </h4>
         </div>
+        <hr />
+        <div id="form_response" class="mb-4 text-center"></div>
+
+        <div id="form_check" class="mb-4 text-center">
+          <div>
+            <p>
+              You have omitted either the price or certification document from
+              this part, do you wish to continue?
+            </p>
+          </div>
+          <div>
+            <a id="submit-check-false" class="btn btn-danger">Back</a>
+            <a id="submit-check" class="btn btn-success">Continue</a>
+          </div>
+        </div>
+
+        <div class="card card-body reciever circleme">
+          <div class="form-group">
+            <form
+              id="id_form"
+              enctype="multipart/form-data"
+              action="#"
+              method="POST"
+            >
+              {{ receiveForm.management_data }} {% csrf_token %}
+              <h5><strong>PART INFORMATION</strong></h5>
+              <hr />
+              <h6>Receiving For : {{part.tail_number}}</h6>
+              <h6>Part description : {{part.description}}</h6>
+              <h6>Part Catagory : {{part.part_type}}</h6>
+              <h6>Receiving Part # : {{part.part_number}}</h6>
+              <h6>Receiving Qty : {{part.order_quantity}}</h6>
+
+              <h6>Receiving @ : {{time}}</h6>
+
+              <hr />
+
+              <!-- <p><strong>Note:</strong> If the document you are planning to upload is more than <strong>1</strong> page in length. Please combine the documents! <a class = "pdfLink" href="https://products.aspose.app/pdf/merger/png-to-jpg" target="_blank"><strong style=" color:rgb(13, 130, 240)"><u>(Link)</u></strong></a></p> -->
+
+              <table>
+                {{receiveForm.as_p}}
+              </table>
+
+              <button class="btn btn-success sb-btn" type="submit">
+                Confirm Entry
+              </button>
+              <a class="btn btn-danger sb-btn" href="{% url 'orderpart' %}"
+                >Cancel</a
+              >
+            </form>
+          </div>
+        </div>
+        <hr />
+      </div>
+
+      <div class="col-md-4"></div>
     </div>
-
+  </div>
 </body>
-
-
 
 {% endblock%}

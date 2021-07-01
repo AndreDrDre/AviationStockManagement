@@ -62,7 +62,7 @@ class EditPartForm(forms.ModelForm):
 class ReorderLevelForm(forms.ModelForm):
     class Meta:
         model = ReorderItems
-        fields = ['reorder_level', ]
+        fields = ['reorder_level']
         widgets = {
 
             'reorder_level': forms.TextInput(attrs={'class': 'form-control'}),
@@ -98,7 +98,6 @@ class CreateWorkorder(forms.ModelForm):
 
 #Add parts not from an order----------------------------------------#
 
-
 class ReOrderForm(forms.Form):
 
     ordered_by = forms.ModelChoiceField(
@@ -111,7 +110,6 @@ class ReOrderForm(forms.Form):
         super(ReOrderForm, self).__init__(*args, **kwargs)
 
         self.fields['orderQTY'].label = "Order Qty:"
-
 
 class CreateOrder(forms.Form):
 
@@ -132,7 +130,6 @@ class CreateOrder(forms.Form):
 
 #Order Forms----------------------------------------------------------#
 
-
 class waybillForm(forms.ModelForm):
     class Meta:
         model = Parts
@@ -142,7 +139,6 @@ class waybillForm(forms.ModelForm):
             'waybill': forms.TextInput(attrs={'class': 'form-control'}),
 
         }
-
 
 class PriceForm(forms.ModelForm):
     class Meta:
@@ -155,13 +151,11 @@ class PriceForm(forms.ModelForm):
 
 #Consignment Inventory Form-------------------#
 
-
 class AddInventory(forms.Form):
 
     # Order-Part
     tail_number = forms.ModelChoiceField(label='Tail #',
                                          queryset=TailNumber.objects.filter(~Q(name='Stock')))
-
     part_type = forms.ChoiceField(choices=PARTTYPE_CHOICES)
     description = forms.CharField(max_length=100)
     part_number = forms.CharField(max_length=50, label='Part #')
@@ -172,8 +166,9 @@ class AddInventory(forms.Form):
 
     # Receive-Part
     order_quantity = forms.IntegerField(label="Quantity")
-    cert_document = forms.ImageField(
-        label='Certification Document', required=False)
+    # cert_document = forms.ImageField(
+    #     label='Certification Document', required=False)
+    cert_document = forms.FileField(required=False)
 
     inspector = forms.ModelChoiceField(label='Inspector',
                                        queryset=Employees.objects.all(), required=True)
@@ -187,6 +182,24 @@ class AddInventory(forms.Form):
     jobCardNumber = forms.CharField(
         max_length=100, label="Work Card #", required=True)
     price = forms.IntegerField(label="Price", required=False)
+
+    
+
+    def clean_cert_document(self):
+        uploaded_file = self.cleaned_data['cert_document']
+        try:
+            # create an ImageField instance
+            im = forms.ImageField()
+            # now check if the file is a valid image
+            im.to_python(uploaded_file)
+        except forms.ValidationError:
+            # file is not a valid image;
+            # so check if it's a pdf
+            name, ext = os.path.splitext(uploaded_file.name)
+            if ext not in ['.pdf', '.PDF']:
+                raise forms.ValidationError(
+                    "Only images and PDF files allowed")
+        return uploaded_file
 
     def clean_order_quantity(self):
 
@@ -273,7 +286,6 @@ class addQuaretineInventory(forms.Form):
             choices=PARTTYPE_CHOICES[0:5])
 #-------------------------------------------#
 
-
 #When ordering a part from a supplier---------#
 class RecieveOrder(forms.ModelForm):
     class Meta:
@@ -297,7 +309,6 @@ class RecieveOrder(forms.ModelForm):
 
         self.fields['condition'].label = "Condition"
 
-
 #partial oders come through here--------------#
 class RecieveAgs(forms.ModelForm):
     class Meta:
@@ -318,8 +329,6 @@ class RecieveAgs(forms.ModelForm):
     def __init__(self, pt, *args, **kwargs):
         super(RecieveAgs, self).__init__(*args, **kwargs)
 
-        # if pt != 'Stock':
-        #     del self.fields['bin_number']
     def clean_receive_quantity(self):
 
         orderQTY = self.instance.order_quantity
@@ -327,11 +336,14 @@ class RecieveAgs(forms.ModelForm):
 
         if ReceiveQTY > orderQTY:
             raise ValidationError(
-                "You cannot receive more than what you ordered!")
+                "ERROR : You cannot receive more than what you ordered!")
+        elif ReceiveQTY == 0 or ReceiveQTY == "":
+            raise ValidationError(
+                "ERROR : You cannot receive 0 of this Invenotry Item!")
+
         else:
             return ReceiveQTY
         return ReceiveQTY
-
 
 class RecieveconsumShelf(forms.ModelForm):
     class Meta:
@@ -362,17 +374,17 @@ class RecieveconsumShelf(forms.ModelForm):
 
         if ReceiveQTY > orderQTY:
             raise ValidationError(
-                "You cannot receive more than what you ordered!")
+                "ERROR : You cannot receive more than what you ordered!")
+        elif ReceiveQTY == 0 or ReceiveQTY == "":
+            raise ValidationError(
+                "ERROR : You cannot receive 0 of this Invenotry Item!")
         else:
             return ReceiveQTY
         return ReceiveQTY
 
-
 #--------------------------------------------#
 
 #--------------------------------------------#
-
-
 class CreateNewOrder(forms.ModelForm):
     class Meta:
         model = Parts
@@ -386,7 +398,6 @@ class CreateNewOrder(forms.ModelForm):
             'purchase_order_number': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
-
 class RepairForm(forms.ModelForm):
     class Meta:
         model = Parts
@@ -396,7 +407,6 @@ class RepairForm(forms.ModelForm):
             'repaired_by': forms.Select(attrs={'class': 'form-control'}),
 
         }
-
 
 class repairReturnForm(forms.ModelForm):
     class Meta:
@@ -423,7 +433,6 @@ class repairReturnForm(forms.ModelForm):
             del self.fields['price']
 
         self.fields['cert_document'].label = "Condition Document"
-
 
 class issueWorkForm(forms.ModelForm):
     workorder = forms.ModelChoiceField(queryset=None)
@@ -470,9 +479,7 @@ class issueWorkForm(forms.ModelForm):
         self.fields['jobCardNumber'].label = "Work Card #"
         self.fields['workorder'].label = "Work Order #"
 
-
 #Tools Forms--------------------------------------------------------#
-
 
 class ChooseToolType(forms.ModelForm):
     class Meta:
@@ -481,7 +488,6 @@ class ChooseToolType(forms.ModelForm):
         widgets = {
             'tool_type': forms.Select(attrs={'class': 'form-control'}),
         }
-
 
 class CalibratedToolForm(forms.ModelForm):
     class Meta:
@@ -522,7 +528,6 @@ class CalibratedToolForm(forms.ModelForm):
 
     #     return data
 
-
 class UnCalibratedToolForm(forms.ModelForm):
 
     class Meta:
@@ -534,7 +539,6 @@ class UnCalibratedToolForm(forms.ModelForm):
             'serial_number': forms.TextInput(attrs={'class': 'form-control'}),
             'part_number': forms.TextInput(attrs={'class': 'form-control'}),
         }
-
 
 class CreateWorkOrderFormCali(forms.ModelForm):
 
@@ -549,7 +553,6 @@ class CreateWorkOrderFormCali(forms.ModelForm):
 
         }
 
-
 class CreateWorkOrderFormUnCali(forms.ModelForm):
 
     workorder_no = forms.ModelChoiceField(
@@ -563,7 +566,6 @@ class CreateWorkOrderFormUnCali(forms.ModelForm):
             'workorder_no': forms.Select(attrs={'class': 'form-control'}),
 
         }
-
 
 class CompleteCalibrationForm(forms.ModelForm):
     class Meta:
@@ -590,5 +592,5 @@ class CompleteCalibrationForm(forms.ModelForm):
                 return data
         return data
 
-
 #End Tool Forms------------------------------------------------------#
+   

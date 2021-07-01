@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     
     <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
     <link href="{% static 'js/nprogress.css' %}" rel="stylesheet">
     
     <title>Inventory Manager</title>
@@ -87,14 +88,37 @@
                         $('#id_form').attr('validated', true);
                         $('#id_form').submit();
                     } else {
-                        $(".circleme").hide();
-                        $("#id_form").hide();
-                        $("#form_response").show();
-                        $("#form_response").fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
-                        $("#form_response").html(response.success);
-                        setTimeout(() => {
-                            window.location.href = response.redirect_to;
-                        }, 5000);
+                        if ($("#id_price").val()== "" ||$("#id_cert_document").val()== ""  ){
+                            $(".circleme").hide();
+                            $("#id_form").hide();
+                            $("#form_check").show();
+
+                            $("#submit-check").click(function() {
+                                $("#form_check").hide();
+                                $("#form_response").show();
+                                $("#form_response").fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
+                                $("#form_response").html(response.success);
+                                setTimeout(() => {
+                                    window.location.href = response.redirect_to;
+                                }, 5000);});
+
+                            $("#submit-check-false").click(function() {
+                                console.log("back clicked")
+                                $("#form_check").hide();
+                                $(".circleme").show();
+                                $("#id_form").show();
+                            });                   
+                    }
+                        else{
+                            $(".circleme").hide();
+                            $("#form_response").show();
+                            $("#form_response").fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
+                            $("#form_response").html(response.success);
+                            setTimeout(() => {
+                                window.location.href = response.redirect_to;
+                            }, 5000);
+
+                        }                         
                     }
                 }
             });
