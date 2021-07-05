@@ -13,6 +13,13 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
     <link href="{% static 'js/nprogress.css' %}" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+    <!-- Fengyuan Chen's Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
     
     <title>Inventory Manager</title>
     <style>
@@ -77,57 +84,79 @@
     
   </script>
   <script>
-    $("#id_form").submit(() => {
-        if(!$("#id_form").attr('validated')) {
+      
+
+    $("#id_form").submit((event) => {
+       if(!$("#id_form").attr('validated')) {  
+            //$("#id_form") = $(this)
+            //$form = $(this)
+            //var formData = new FormData(this);          
+            //var formData = new FormData();
+            
             $.ajax({
                 url :"{{ request.path }}",
                 method: "POST",
-                data: $("#id_form").serialize(),
+                data: $('#id_form').serialize(),
+                //data: formData,
                 success (response) {
                     if ('error' in response) {
                         $('#id_form').attr('validated', true);
                         $('#id_form').submit();
                     } else {
-                        if ($("#id_price").val()== "" ||$("#id_cert_document").val()== ""  ){
+                        if ($("#id_price").val() == "" ||$("#id_cert_document").val() == ""  ){
+                            
+                            $("#Turbine").hide();
                             $(".circleme").hide();
                             $("#id_form").hide();
                             $("#form_check").show();
 
                             $("#submit-check").click(function() {
                                 $("#form_check").hide();
+                                $("#Turbine").show();
                                 $("#form_response").show();
                                 $("#form_response").fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
                                 $("#form_response").html(response.success);
                                 setTimeout(() => {
                                     window.location.href = response.redirect_to;
-                                }, 5000);});
+                                }, 5000);
+                                data.append('cert_document',$('#id_cert_document'))[0].files;
+                            });
 
                             $("#submit-check-false").click(function() {
                                 console.log("back clicked")
                                 $("#form_check").hide();
                                 $(".circleme").show();
                                 $("#id_form").show();
-                            });                   
+                                
+                                
+                            });                  
                     }
                         else{
+                            //formData.append('cert_document',$('#id_cert_document'))[0].files;
                             $(".circleme").hide();
+                            $("#Turbine").show();
                             $("#form_response").show();
-                            $("#form_response").fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
+                            $("#form_response").fadeOut(1000).fadeIn(2000).fadeOut(1000).fadeIn(2000);
                             $("#form_response").html(response.success);
                             setTimeout(() => {
                                 window.location.href = response.redirect_to;
                             }, 5000);
+                            data.append('cert_document',$('#id_cert_document'))[0].files;
 
                         }                         
                     }
                 }
             });
+
+    
+           
             return false;
-        }
+       }
         return true
     });
   </script>
 
+ 
 
   </body>
 </html>

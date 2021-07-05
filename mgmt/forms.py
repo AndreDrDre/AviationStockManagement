@@ -98,6 +98,7 @@ class CreateWorkorder(forms.ModelForm):
 
 #Add parts not from an order----------------------------------------#
 
+
 class ReOrderForm(forms.Form):
 
     ordered_by = forms.ModelChoiceField(
@@ -110,6 +111,7 @@ class ReOrderForm(forms.Form):
         super(ReOrderForm, self).__init__(*args, **kwargs)
 
         self.fields['orderQTY'].label = "Order Qty:"
+
 
 class CreateOrder(forms.Form):
 
@@ -135,10 +137,9 @@ class waybillForm(forms.ModelForm):
         model = Parts
         fields = ['waybill']
         widgets = {
-
             'waybill': forms.TextInput(attrs={'class': 'form-control'}),
-
         }
+
 
 class PriceForm(forms.ModelForm):
     class Meta:
@@ -150,6 +151,7 @@ class PriceForm(forms.ModelForm):
         }
 
 #Consignment Inventory Form-------------------#
+
 
 class AddInventory(forms.Form):
 
@@ -166,9 +168,13 @@ class AddInventory(forms.Form):
 
     # Receive-Part
     order_quantity = forms.IntegerField(label="Quantity")
-    # cert_document = forms.ImageField(
-    #     label='Certification Document', required=False)
-    cert_document = forms.FileField(required=False)
+    invoice_number = forms.CharField(label="Invoice No.", required=False)
+    purchase_order_number = forms.CharField(
+        label="Purchase Order No.", required=False)
+
+    cert_document = forms.ImageField(
+        label='Certification Document', required=False)
+    # cert_document = forms.FileField(required=False)
 
     inspector = forms.ModelChoiceField(label='Inspector',
                                        queryset=Employees.objects.all(), required=True)
@@ -183,23 +189,25 @@ class AddInventory(forms.Form):
         max_length=100, label="Work Card #", required=True)
     price = forms.IntegerField(label="Price", required=False)
 
-    
+    expiry_date = DateInput()
 
-    def clean_cert_document(self):
-        uploaded_file = self.cleaned_data['cert_document']
-        try:
-            # create an ImageField instance
-            im = forms.ImageField()
-            # now check if the file is a valid image
-            im.to_python(uploaded_file)
-        except forms.ValidationError:
-            # file is not a valid image;
-            # so check if it's a pdf
-            name, ext = os.path.splitext(uploaded_file.name)
-            if ext not in ['.pdf', '.PDF']:
-                raise forms.ValidationError(
-                    "Only images and PDF files allowed")
-        return uploaded_file
+    # DateInput()
+
+    # def clean_cert_document(self):
+    #     uploaded_file = self.cleaned_data['cert_document']
+    #     try:
+    #         # create an ImageField instance
+    #         im = forms.ImageField()
+    #         # now check if the file is a valid image
+    #         im.to_python(uploaded_file)
+    #     except forms.ValidationError:
+    #         # file is not a valid image;
+    #         # so check if it's a pdf
+    #         name, ext = os.path.splitext(uploaded_file.name)
+    #         if ext not in ['.pdf', '.PDF']:
+    #             raise forms.ValidationError(
+    #                 "Only images and PDF files allowed")
+    #     return uploaded_file
 
     def clean_order_quantity(self):
 
@@ -229,8 +237,11 @@ class AddInventory(forms.Form):
             self.fields['condition'] = forms.ChoiceField(
                 choices=CONDITIONS_CHOICES[2:5])
             del self.fields['price']
+            del self.fields['purchase_order_number']
+            del self.fields['invoice_number']
             del self.fields['vendor']
             del self.fields['order_quantity']
+            del self.fields['expiry_date']
             self.fields['workorder'].label = "Work Order #"
             self.fields['tail_number'].label = "Removed from:"
             self.fields['cert_document'].label = "Condition Document:"
@@ -287,6 +298,8 @@ class addQuaretineInventory(forms.Form):
 #-------------------------------------------#
 
 #When ordering a part from a supplier---------#
+
+
 class RecieveOrder(forms.ModelForm):
     class Meta:
         model = Parts
@@ -310,6 +323,8 @@ class RecieveOrder(forms.ModelForm):
         self.fields['condition'].label = "Condition"
 
 #partial oders come through here--------------#
+
+
 class RecieveAgs(forms.ModelForm):
     class Meta:
         model = Parts
@@ -345,6 +360,7 @@ class RecieveAgs(forms.ModelForm):
             return ReceiveQTY
         return ReceiveQTY
 
+
 class RecieveconsumShelf(forms.ModelForm):
     class Meta:
         model = Parts
@@ -355,7 +371,6 @@ class RecieveconsumShelf(forms.ModelForm):
             'receive_quantity': forms.TextInput(attrs={'class': 'form-control'}),
             'inspector': forms.Select(attrs={'class': 'form-control'}),
             'invoice_number': forms.TextInput(attrs={'class': 'form-control'}),
-
             'batch_no': forms.TextInput(attrs={'class': 'form-control'}),
             'purchase_order_number': forms.TextInput(attrs={'class': 'form-control'}),
             'cert_document': forms.FileInput(attrs={'class': 'form-control', 'required': False, }),
@@ -385,6 +400,8 @@ class RecieveconsumShelf(forms.ModelForm):
 #--------------------------------------------#
 
 #--------------------------------------------#
+
+
 class CreateNewOrder(forms.ModelForm):
     class Meta:
         model = Parts
@@ -398,6 +415,7 @@ class CreateNewOrder(forms.ModelForm):
             'purchase_order_number': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
+
 class RepairForm(forms.ModelForm):
     class Meta:
         model = Parts
@@ -407,6 +425,7 @@ class RepairForm(forms.ModelForm):
             'repaired_by': forms.Select(attrs={'class': 'form-control'}),
 
         }
+
 
 class repairReturnForm(forms.ModelForm):
     class Meta:
@@ -433,6 +452,7 @@ class repairReturnForm(forms.ModelForm):
             del self.fields['price']
 
         self.fields['cert_document'].label = "Condition Document"
+
 
 class issueWorkForm(forms.ModelForm):
     workorder = forms.ModelChoiceField(queryset=None)
@@ -481,6 +501,7 @@ class issueWorkForm(forms.ModelForm):
 
 #Tools Forms--------------------------------------------------------#
 
+
 class ChooseToolType(forms.ModelForm):
     class Meta:
         model = ToolChecker
@@ -488,6 +509,7 @@ class ChooseToolType(forms.ModelForm):
         widgets = {
             'tool_type': forms.Select(attrs={'class': 'form-control'}),
         }
+
 
 class CalibratedToolForm(forms.ModelForm):
     class Meta:
@@ -501,7 +523,6 @@ class CalibratedToolForm(forms.ModelForm):
             'calibrated_date': DateInput(),
             'expiry_date': DateInput(),
             'range_no': forms.TextInput(attrs={'class': 'form-control'}),
-
             'calibration_certificate': forms.FileInput(attrs={'class': 'form-control', 'required': True, }),
 
         }
@@ -528,6 +549,7 @@ class CalibratedToolForm(forms.ModelForm):
 
     #     return data
 
+
 class UnCalibratedToolForm(forms.ModelForm):
 
     class Meta:
@@ -539,6 +561,7 @@ class UnCalibratedToolForm(forms.ModelForm):
             'serial_number': forms.TextInput(attrs={'class': 'form-control'}),
             'part_number': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
 
 class CreateWorkOrderFormCali(forms.ModelForm):
 
@@ -553,6 +576,7 @@ class CreateWorkOrderFormCali(forms.ModelForm):
 
         }
 
+
 class CreateWorkOrderFormUnCali(forms.ModelForm):
 
     workorder_no = forms.ModelChoiceField(
@@ -566,6 +590,7 @@ class CreateWorkOrderFormUnCali(forms.ModelForm):
             'workorder_no': forms.Select(attrs={'class': 'form-control'}),
 
         }
+
 
 class CompleteCalibrationForm(forms.ModelForm):
     class Meta:
@@ -593,4 +618,3 @@ class CompleteCalibrationForm(forms.ModelForm):
         return data
 
 #End Tool Forms------------------------------------------------------#
-   

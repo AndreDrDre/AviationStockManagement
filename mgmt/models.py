@@ -133,6 +133,7 @@ class Parts(models.Model):
     reorder_level = models.IntegerField(default='0', blank=True, null=True)
 
     # For receieving partial orders pertainng to AGS, Consumables and Shelflife
+
     receive_quantity = models.IntegerField(default='0', blank=True, null=True)
     order_quantity = models.IntegerField(default='0', blank=True, null=True)
     issue_quantity = models.IntegerField(default='0', blank=True, null=True)

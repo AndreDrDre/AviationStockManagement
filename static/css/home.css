@@ -3,14 +3,12 @@
 
 }
 
-
-
 body {
-  background-color: #f1f0f0;
+  background-color: #fbfcfdc5;
   }
 
   .reciever{
-    background:  #b2bbc46e ;  
+    background:  #b2bbc4b9 ;  
 }
 
 .container-fluid{
@@ -272,11 +270,30 @@ a {
     }
     
     #form_response{
-			background-color: rgba(128, 128, 128, 0.39);
+			background-color: rgba(128, 128, 128, 0.548);
 			color: #fff;
 			padding: 10px;
 			margin-top: 10px;
-      font-size: 18px;
+      font-size: 20px;
       border-radius:15px;
       display: none;
 		}
+
+    #Turbine{
+      display: None;
+      animation: rotation 5s infinite linear;
+    }
+
+    .turbinedisplay{
+      
+      display: flex;
+      justify-content: center;
+    }
+    @keyframes rotation {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(359deg);
+      }
+    }

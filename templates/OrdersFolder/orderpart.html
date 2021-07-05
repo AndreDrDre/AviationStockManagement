@@ -1,7 +1,7 @@
 {%extends 'mgmt/index.html'%}
 {% load static%}
 {% block content %}
-{%include 'mgmt/status.html'%}
+<!-- {%include 'mgmt/status.html'%} -->
 
 <head>
    
@@ -41,7 +41,7 @@
         .btn-dre{
             border-radius:30px;
             font-size:18px;
-            width:100%;
+            width:100px;
             padding: 10px;
             border-radius: 15px;
             
@@ -102,8 +102,6 @@
 
 <body>
     <script>
-      
-
         function confirmDelete()
         {
             var txt;
@@ -114,8 +112,7 @@
         else
          return false ;
         }
-        
-     
+             
     </script>
     <br>
     <br>
@@ -134,23 +131,19 @@
         </div>
 
         <div class="row">
-
-            <div class="col-md-4"></div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class= 'card card-body circleme btn-pos '>
-                            <a style="margin-left: 20px; margin-right: 20px ;" class="btn  btn-success sb-btn" href="{% url 'orderhistory' %}">View Order History</a>
-                           
-                       
+                    <a style="margin-left: 20px; margin-right: 20px ;" class="btn  btn-success sb-btn" href="{% url 'orderhistory' %}">View Order History</a>                      
                 </div>
                 <hr>
-
-
+            </div>
+            <div class="col-md-4">
+             
+               
             </div>
             <div class="col-md-4"></div>
-        </div>
-    
-      <br>
-       
+        </div>    
+      <br>       
     </div>
     <div class="container-fluid">        
         <div class="row">
@@ -166,11 +159,10 @@
                             {% csrf_token %}
                                   <table style="border:0.5">
                                     {{form}}
-                                  </table>                                                                           
-                           
+                                  </table>                                                                                                      
                             <br>
-                            <hr>
-
+                            <br>
+                         
                         <input class="btn btn-dark btn-dre" type="submit" valuename="Submit">
                         </form>                        
                     </div>
@@ -195,25 +187,17 @@
                     <div class="col-md-10">
                         <div class= 'card card-body circleme'>
                             <form class ="myfilter" method="get">
-
                                    {{myfilter.form}}   
-                                    <button class="btn btn-info sb-btn" type="submit"><img src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png"/></button>
-                                                                                                    
-                                
-                                                             
-                          </form>
-                          
+                                    <button class="btn btn-info sb-btn" type="submit"><img src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png"/></button>                                                             
+                            </form>                          
                         </div>
                     </div>
                     <div class="col-md-2">
                         <div class= 'card card-body circleme '>                                        
-                                <a class = "inflate" style="text-align:center" href="{% url 'exportorder' %}"> <img src="https://img.icons8.com/fluent/52/000000/supply-chain.png"/></a>                              
+                            <a class = "inflate" style="text-align:center" href="{% url 'exportorder' %}"> <img src="https://img.icons8.com/fluent/52/000000/supply-chain.png"/></a>                              
                         </div>                                 
                     </div>
-                </div>
-
-               
-            
+                </div>           
                 <br>
                 <div class="card card-body circleme">
                     <table class="table table-special table-md">
@@ -222,13 +206,10 @@
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Type</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P/N</th>                                                   
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Allocated To:</th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Ordered By:</th>
-                            
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Qty</th>
-                            
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Ordered By:</th>                           
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Qty</th>                            
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Waybill</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Unit Price</th>
-
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Ordered</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
@@ -238,13 +219,9 @@
                         <tr>
                             <td style="text-align:center; position:relative; vertical-align:middle;">{{instance.description}}</td>
                             <td style="text-align:center; position:relative; vertical-align:middle;">{{instance.part_type}}</td> 
-                            <td style="text-align:center; position:relative; vertical-align:middle;">{{instance.part_number}}</td> 
-                            
-
+                            <td style="text-align:center; position:relative; vertical-align:middle;">{{instance.part_number}}</td>                             
                             <td style="text-align:center; position:relative; vertical-align:middle;">{{instance.tail_number}}</td>
-                            <td style="text-align:center;position:relative; vertical-align:middle;">{{instance.ordered_by}}</td>
-                            
-                           
+                            <td style="text-align:center;position:relative; vertical-align:middle;">{{instance.ordered_by}}</td>                           
                             <td style="text-align:center;position:relative; vertical-align:middle;">{{instance.order_quantity}}</td>
                             
                             {% if instance.waybill %}
@@ -266,29 +243,17 @@
 
                             {% endif %}
                             
-
-
-
                             <td style="text-align:center;position:relative; vertical-align:middle;">{{instance.date_ordered|date:"M d, Y"}}</td>
                             <td style="text-align:center; position:relative; vertical-align:middle; "><a  class="btn btn-sm btn-danger btn-comp" onClick='return confirmDelete()' href="{% url 'deletepart' instance.id %}">Delete</a></td>
                             <td style="text-align:center; position:relative; vertical-align:middle; "><a class="btn btn-sm btn-primary sb-btn" href="{% url 'recieveorder' instance.id %}">Recieve</a></td>
-                            
-                            
-        
-                            
-                            
-                             
-                  
+                                              
                         </tr>
                         {% endfor%}
         
                     </table>
                 </div>
-                <br>
-               
-           
-            
-        </div>
+                <br>            
+            </div>
         </div>
     </div>
 </body>

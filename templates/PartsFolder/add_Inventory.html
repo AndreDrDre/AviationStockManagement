@@ -24,6 +24,7 @@
     #form_check {
       display: None;
     }
+   
   </style>
 </head>
 <br />
@@ -61,6 +62,10 @@
         <hr />
         <div id="form_response" class="mb-4 text-center"></div>
 
+        <div class="turbinedisplay">
+          <img id ="Turbine" src="https://img.icons8.com/ios-filled/100/000000/jet-engine.png"/>
+        </div>
+
         <div id="form_check" class="mb-4 text-center">
           <div>
             <p>
@@ -84,23 +89,9 @@
             >
               {% if check == 0 or check == 1 %}
 
-              <p>
-                <strong>Note:</strong> If the document you are planning to
-                upload is more than <strong>1</strong> page in length. Please
-                combine the documents!
-                <a
-                  class="pdfLink"
-                  href="https://products.aspose.app/pdf/merger/png-to-jpg"
-                  target="_blank"
-                  ><strong style="color: rgb(13, 130, 240)"
-                    ><u>(Link)</u></strong
-                  ></a
-                >
-              </p>
-              <hr />
-              {% else %} {%endif%} {{ form.management_data }} {% csrf_token %}
+              {% else %} {%endif%}
               <table border="0.5" style="padding: 20px">
-                {{form}}
+                {{ form.management_data }} {% csrf_token %} {{form}}
               </table>
               <hr />
               <button class="btn btn-success sb-btn poschahnge" type="submit">

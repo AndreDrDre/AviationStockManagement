@@ -26,6 +26,7 @@ from django.db.models import F
 from django.db.models import Q
 from django.urls import reverse
 
+
 # Class imports
 # from .decorators import unauth_user, allowed_users, admin_only
 from .models import *
@@ -155,7 +156,6 @@ def home(request):
 
 
 #Store Logic-------------------------------#
-
 
 @login_required(login_url='signin')
 def store(request):
@@ -382,9 +382,12 @@ def inventory(request):
 @login_required(login_url='signin')
 def addToInventory(request, Type):
 
+    print("somthing")
+
     check = 0
     checkType = 0
-    form = AddInventory(Type, request.POST or None, request.FILES or None)
+
+    # form = AddInventory(Type, request.POST or None, request.FILES or None)
 
     #The cancel Button---------#
 
@@ -396,167 +399,197 @@ def addToInventory(request, Type):
         check = 2
     #The cancel Button------------#
 
-    if form.is_valid():
+    if request.method == 'POST':
+        # data = request.POST
+        form = AddInventory(Type, request.POST, request.FILES)
 
-        if Type == "Reserved":
-            tail_number = form.cleaned_data['tail_number']
-            vendor = form.cleaned_data['vendor']
-            order_quantity = form.cleaned_data['order_quantity']
-            price = form.cleaned_data['price']
+        if form.is_valid():
+            print(request.is_ajax())
 
-        elif Type == "Stock":
-            tail_number = TailNumber.objects.all().reverse()[0]
-            vendor = form.cleaned_data['vendor']
-            order_quantity = form.cleaned_data['order_quantity']
-            price = form.cleaned_data['price']
+            if Type == "Reserved":
+                tail_number = form.cleaned_data['tail_number']
+                vendor = form.cleaned_data['vendor']
+                order_quantity = form.cleaned_data['order_quantity']
+                price = form.cleaned_data['price']
+                purchase_order_number = form.cleaned_data['purchase_order_number']
+                invoice_number = form.cleaned_data['invoice_number']
+                expiry_date = forms.cleaned_data['expiry_date']
 
-        else:  # Type = "RemoveFromAircraft"
-            vendor = ""
-            tail_number = form.cleaned_data['tail_number']
-            order_quantity = 1
-            workorder = form.cleaned_data['workorder']
-            jobCardNumber = form.cleaned_data['jobCardNumber']
-            checkType = 1
+            elif Type == "Stock":
+                tail_number = TailNumber.objects.all().reverse()[0]
+                vendor = form.cleaned_data['vendor']
+                order_quantity = form.cleaned_data['order_quantity']
+                price = form.cleaned_data['price']
+                purchase_order_number = form.cleaned_data['purchase_order_number']
+                invoice_number = form.cleaned_data['invoice_number']
+                expiry_date = forms.cleaned_data['expiry_date']
 
-        condition = form.cleaned_data['condition']
-        part_type = form.cleaned_data['part_type']
-        description = form.cleaned_data['description']
-        part_number = form.cleaned_data['part_number']
-        indentifier = form.cleaned_data['indentifier']
-        cert_document = form.cleaned_data['cert_document']
-        inspector = form.cleaned_data['inspector']
+            else:  # Type = "RemoveFromAircraft"
+                vendor = ""
+                tail_number = form.cleaned_data['tail_number']
+                order_quantity = 1
+                workorder = form.cleaned_data['workorder']
+                jobCardNumber = form.cleaned_data['jobCardNumber']
+                checkType = 1
 
-        # If the part has been removed from an aircraft under a workorder
-        if checkType == 1:
-            if part_type == 'Rotable' or part_type == 'Tires':
-                p = Parts(part_type=part_type,
-                          description=description,
-                          part_number=part_number,
-                          vendor=vendor,
-                          serial_number=indentifier,
-                          cert_document=cert_document,
-                          quantity=order_quantity,
-                          tail_number=TailNumber.objects.all().reverse()[0],
-                          inspector=inspector,
-                          condition=condition,
-                          date_received=timezone.now(),
-                          Historical=False,
-                          recieve_part=True,
-                          Quarentine=False,
-                          user=request.user
-                          )
-                p.save()
+            condition = form.cleaned_data['condition']
+            part_type = form.cleaned_data['part_type']
+            description = form.cleaned_data['description']
+            part_number = form.cleaned_data['part_number']
+            indentifier = form.cleaned_data['indentifier']
+            cert_document = form.cleaned_data['cert_document']
+            inspector = form.cleaned_data['inspector']
 
-                PartWorkOrders.objects.create(
-                    part=p, workorder=workorder, jobCardNumber=jobCardNumber, receivedRepair=True,
-                    cert_document=cert_document, removed_from=tail_number, removed_by=inspector)
+            # If the part has been removed from an aircraft under a workorder
+            if checkType == 1:
+                if part_type == 'Rotable' or part_type == 'Tires':
+                    p = Parts(part_type=part_type,
+                              description=description,
+                              part_number=part_number,
+                              vendor=vendor,
+                              serial_number=indentifier,
+                              cert_document=cert_document,
+                              quantity=order_quantity,
+                              tail_number=TailNumber.objects.all().reverse()[
+                                  0],
+                              inspector=inspector,
+                              condition=condition,
+                              date_received=timezone.now(),
+                              Historical=False,
+                              recieve_part=True,
+                              Quarentine=False,
+                              user=request.user
+                              )
+                    p.save()
 
-                # Now we need establish the condition of the removed part( serviceable or not)
+                    PartWorkOrders.objects.create(
+                        part=p, workorder=workorder, jobCardNumber=jobCardNumber, receivedRepair=True,
+                        cert_document=cert_document, removed_from=tail_number, removed_by=inspector)
 
-                if p.condition == "REPAIRABLE":
-                    p.Quarentine = True
-                    p.save(update_fields=["Quarentine"])
+                    # Now we need establish the condition of the removed part( serviceable or not)
 
-                    if request.is_ajax():
-                        return JsonResponse({'success': 'Adding Removed Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
-                    return redirect('Qinventory')
-                else:
-                    p.tail_number.name = "Stock"
-                    p.save(update_fields=["tail_number"])
+                    if p.condition == "REPAIRABLE":
+                        p.Quarentine = True
+                        p.save(update_fields=["Quarentine"])
+                        p.cert_document.save()
 
-                    if request.is_ajax():
-                        return JsonResponse({'success': 'Adding Removed Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
-                    return redirect('instructions', pk=p.id)
-
-                # removed parts that are not serialised (AGS Parts)
-            else:
-                p = Parts(part_type=part_type,
-                          description=description,
-                          part_number=part_number,
-                          vendor=vendor,
-                          batch_no=indentifier,
-                          cert_document=cert_document,
-                          quantity=order_quantity,
-                          tail_number=TailNumber.objects.all().reverse()[0],
-                          inspector=inspector,
-                          condition=condition,
-                          date_received=timezone.now(),
-                          Historical=False,
-                          recieve_part=True,
-                          Quarentine=False,
-                          user=request.user
-                          )
-                p.save()
-                PartWorkOrders.objects.create(
-                    part=p, workorder=workorder, jobCardNumber=jobCardNumber, receivedRepair=True,
-                    cert_document=cert_document, removed_from=tail_number, removed_by=inspector)
-                if p.condition == "REPAIRABLE":
-                    p.Quarentine = True
-                    p.save(update_fields=["Quarentine"])
-                    if request.is_ajax():
-                        return JsonResponse({'success': 'Adding Removed Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
-                    return redirect('Qinventory')
-                else:
-                    p.tail_number.name = "Stock"
-                    p.save(update_fields=["tail_number"])
-                    if request.is_ajax():
-                        return JsonResponse({'success': 'Adding Removed Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
-                    return redirect('inventory')
-
-        # Parts not removed from an aircraft! Cosignment added Parts
-        else:
-            if part_type == 'Rotable' or part_type == 'Tires':
-                p = Parts(part_type=part_type,
-                          description=description,
-                          part_number=part_number,
-                          vendor=vendor,
-                          serial_number=indentifier,
-                          cert_document=cert_document,
-                          quantity=1,
-                          tail_number=tail_number,
-                          inspector=inspector,
-                          condition=condition,
-                          date_received=timezone.now(),
-                          Historical=False,
-                          price=price,
-                          user=request.user
-                          )
-
-                p.save()
-                if request.is_ajax():
-                    if p.tail_number.name == "Stock":
-                        return JsonResponse({'success': 'Adding Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
+                        if request.is_ajax():
+                            # form.save()
+                            return JsonResponse({'success': 'Adding Removed Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
+                        # return redirect('Qinventory')
                     else:
-                        return JsonResponse({'success': 'Adding Part to Reserved Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
-                return redirect('instructions', pk=p.id)
+                        p.tail_number.name = "Stock"
+                        p.save(update_fields=["tail_number"])
 
-            else:
-                p = Parts(part_type=part_type,
-                          description=description,
-                          part_number=part_number,
-                          vendor=vendor,
-                          batch_no=indentifier,
-                          cert_document=cert_document,
-                          quantity=order_quantity,
-                          tail_number=tail_number,
-                          inspector=inspector,
-                          condition=condition,
-                          date_received=timezone.now(),
-                          Historical=False,
-                          price=price,
-                          user=request.user
-                          )
+                        if request.is_ajax():
+                            # form.save()
+                            return JsonResponse({'success': 'Adding Removed Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
+                        # return redirect('instructions', pk=p.id)
 
-                p.save()
-                if request.is_ajax():
-                    if p.tail_number.name == "Stock":
-                        return JsonResponse({'success': 'Adding Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
+                    # removed parts that are not serialised (AGS Parts)
+                else:
+                    p = Parts(part_type=part_type,
+                              description=description,
+                              part_number=part_number,
+                              vendor=vendor,
+                              batch_no=indentifier,
+                              cert_document=cert_document,
+                              quantity=order_quantity,
+                              tail_number=TailNumber.objects.all().reverse()[
+                                  0],
+                              inspector=inspector,
+                              condition=condition,
+                              date_received=timezone.now(),
+                              Historical=False,
+                              recieve_part=True,
+                              Quarentine=False,
+                              user=request.user
+                              )
+                    p.save()
+                    PartWorkOrders.objects.create(
+                        part=p, workorder=workorder, jobCardNumber=jobCardNumber, receivedRepair=True,
+                        cert_document=cert_document, removed_from=tail_number, removed_by=inspector)
+                    if p.condition == "REPAIRABLE":
+                        p.Quarentine = True
+                        p.save(update_fields=["Quarentine"])
+                        if request.is_ajax():
+                            return JsonResponse({'success': 'Adding Removed Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
+                        # return redirect('Qinventory')
                     else:
-                        return JsonResponse({'success': 'Adding Part to Reserved Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
-                return redirect('instructions', pk=p.id)
+                        p.tail_number.name = "Stock"
+                        p.save(update_fields=["tail_number"])
+                        if request.is_ajax():
+                            # form.save()
+                            return JsonResponse({'success': 'Adding Removed Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
+                        # return redirect('inventory')
 
+            # Parts not removed from an aircraft! Cosignment added Parts
+            else:
+                if part_type == 'Rotable' or part_type == 'Tires':
+                    p = Parts(part_type=part_type,
+                              description=description,
+                              part_number=part_number,
+                              vendor=vendor,
+                              serial_number=indentifier,
+                              cert_document=cert_document,
+                              quantity=1,
+                              tail_number=tail_number,
+                              inspector=inspector,
+                              purchase_order_number=purchase_order_number,
+                              invoice_number=invoice_number,
+                              condition=condition,
+                              date_received=timezone.now(),
+                              Historical=False,
+                              price=price,
+                              expiry_date=expiry_date,
+                              user=request.user
+                              )
+
+                    p.save()
+                    if request.is_ajax():
+                        if p.tail_number.name == "Stock":
+                            # form.save()
+                            return JsonResponse({'success': 'Adding Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
+                        else:
+                            # form.save()
+                            return JsonResponse({'success': 'Adding Part to Reserved Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
+                    # return redirect('instructions', pk=p.id)
+
+                else:
+                    p = Parts(part_type=part_type,
+                              description=description,
+                              part_number=part_number,
+                              vendor=vendor,
+                              batch_no=indentifier,
+                              cert_document=cert_document,
+                              quantity=order_quantity,
+                              tail_number=tail_number,
+                              inspector=inspector,
+                              purchase_order_number=purchase_order_number,
+                              invoice_number=invoice_number,
+                              condition=condition,
+                              date_received=timezone.now(),
+                              Historical=False,
+                              price=price,
+                              expiry_date=expiry_date,
+                              user=request.user
+                              )
+
+                    p.save()
+                    if request.is_ajax():
+                        if p.tail_number.name == "Stock":
+                            # form.save()
+                            return JsonResponse({'success': 'Adding Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
+                        else:
+                            # form.save()
+                            return JsonResponse({'success': 'Adding Part to Reserved Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': p.id})})
+                    # return redirect('instructions', pk=p.id)
+    else:
+        form = AddInventory(Type)
+        print(form.errors)
     context = {"form": form, "check": check}
     if request.is_ajax():
+        # form.save()
         return JsonResponse({'error': True})
     return render(request, "PartsFolder/add_Inventory.html", context)
 
@@ -599,7 +632,7 @@ def addToQuarentine(request):
             p.save()
             if request.is_ajax():
                 return JsonResponse({'success': 'Adding Removed Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
-            return redirect('Qinventory')
+            # return redirect('Qinventory')
         else:
             p = Parts(part_type=part_type,
                       description=description,
@@ -619,7 +652,7 @@ def addToQuarentine(request):
             p.save()
             if request.is_ajax():
                 return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
-            return redirect('Qinventory')
+            # return redirect('Qinventory')
 
     context = {"form": form}
     if request.is_ajax():
@@ -1449,7 +1482,7 @@ def recieveorder(request, pk):
                     # return redirect('instructions', pk=part.id)
                 else:
                     if request.is_ajax():
-                            return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('orderpart')})
+                        return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('orderpart')})
                     # return redirect('orderpart')
 
             else:

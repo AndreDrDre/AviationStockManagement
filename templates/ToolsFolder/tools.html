@@ -2,24 +2,18 @@
 {% load static%}
 {% block content %}
 {% load widget_tweaks %}
-{%include 'mgmt/status.html'%}
+<!-- {%include 'mgmt/status.html'%} -->
 
 
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
 <style>
 
-    #showHideBtn{
-        
-    }
     
     .export:hover{
         transform: scale(1.2);
     }
-    .container{   
-        
-        
-    } 
+
     .circleme{
         border-radius: 15px;
         border: 1px solid;
@@ -105,6 +99,8 @@ else
     </div>
 
   <br>
+  <hr>
+  <br>
    
 </div>
 
@@ -122,16 +118,12 @@ else
             <hr>
             <div class="card card-body reciever circleme">
                 <div class="form-group">
-                    <form action="#"  method="POST">
-                       
-                        {% csrf_token %}
-
-                    
+                    <form action="#"  method="POST">                       
+                        {% csrf_token %}                   
                         <table style="border: 0.5; padding: 20px;">
                             {{form}} 
                           </table>  
-                          <br> 
-                        
+                          <br>                        
                         <button class="btn btn-primary btn-search" name="choice" type="submit">Choose Tool Type</button>
                     </form>                 
                 </div>
@@ -140,29 +132,22 @@ else
             <div id = "showHideBtn" class="card card-body reciever circleme">
                 <div class="form-group">
                     <form action="#" enctype="multipart/form-data" method="POST">
-                        {% if Check == 1 %}
-                   
+                        {% if Check == 1 %}                   
                         <p><strong >Note:</strong> If the document you are planning to upload is more than <strong>1</strong> page in length. Please combine the documents! <a class = "pdfLink" href="https://products.aspose.app/pdf/merger/png-to-jpg" target="_blank"><strong style=" color:rgb(13, 130, 240)"><u>(Link)</u></strong></a></p>
                         <hr>
                         {% else %}
                        
                         {%endif%}    
-
-                 
-                        
-                        
+                                                
                         {{ displayform.management_data }}
                         {% csrf_token %}
 
                         <table style="border: 0.5; padding: 20px;">
                             {{displayform}}
-                          </table>   
-                      
-                        <br>
-                        
+                          </table>                         
+                        <br>                        
                         <button  class="btn btn-primary btn-search" name="Save" type="submit">Save Tool</button>
-                    </form>
-                    
+                    </form>                   
                 </div>
             </div>
             </div>

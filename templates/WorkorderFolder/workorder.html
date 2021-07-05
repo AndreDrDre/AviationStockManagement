@@ -1,12 +1,10 @@
 {%extends 'mgmt/index.html'%}
 {% load static%}
 {% block content %}
-{%include 'mgmt/status.html'%}
+<!-- {%include 'mgmt/status.html'%} -->
 
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
-
-
     <style>
         .btn-search {
             margin-top: 25px;
@@ -16,7 +14,6 @@
             float: right;
             transition: all .2s ease-in-out;
         }
-
 
         .card-body {
             max-width: 120%;
@@ -32,13 +29,16 @@
         }
 
         .btn-dre {
-            border-radius: 30px;
+            border-radius: 15px;
             font-size: 18px;
-            width: 75%;
+            width: 60%;
             padding: 10px;
             margin-top: 45px;
             float: right;
             transition: all .2s ease-in-out;
+        }
+        .btn-dre:hover {
+         transform: scale(1.1);
         }
 
         .sb-btn {
@@ -95,38 +95,27 @@
                 <div class="center-text">
                     <p>Search, Create, Comlete and View Work-orders. View all Tools and Parts associated with a specific
                         Work-order!</p>
-
                 </div>
-
-
-
-
-
-
-
             </div>
         </div>
+      
 
         <div class="row">
 
-            <div class="col-md-4"></div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class='card card-body circleme'>
-
-
-                    <a class="btn btn-primary sb-btn" style=" width: 350px; margin:auto;"
+                    <a class="btn btn-primary sb-btn" style=" width: 300px; margin:auto;"
                        href="{% url 'inventory'%}"><strong>Issue Stock Inventory </strong> <img
                              src="https://img.icons8.com/color/36/000000/open-box.png" /></a>
                     <br>
-                    <a class="btn btn-info sb-btn" style=" width: 350px; margin:auto;"
+                    <a class="btn btn-primary sb-btn" style=" width: 300px; margin:auto;"
                        href="{%url 'Rinventory'%}"><strong>Issue Reserved Inventory </strong> <img
                              src="https://img.icons8.com/color/36/000000/scan-stock.png" /></a>
-
-
                 </div>
                 <hr>
-
-
+            </div>
+            <div class="col-md-4">
+                               
             </div>
             <div class="col-md-4"></div>
         </div>
