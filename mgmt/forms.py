@@ -78,12 +78,12 @@ class CreateWorkorder(forms.ModelForm):
     class Meta:
         # I only want to display certain fields from a model
         model = WorkOrders
-        fields = ['tail_number', 'type_airframe',
+        fields = ['tail_number',
                   'ldgs_at_open', 'hours_at_open', 'workorder_number', ]
 
         widgets = {
             'tail_number': forms.Select(attrs={'class': 'form-control'}),
-            'type_airframe': forms.TextInput(attrs={'class': 'form-control'}),
+            # 'type_airframe': forms.TextInput(attrs={'class': 'form-control'}),
             'ldgs_at_open': forms.TextInput(attrs={'class': 'form-control'}),
             'hours_at_open': forms.TextInput(attrs={'class': 'form-control'}),
             'workorder_number': forms.TextInput(attrs={'class': 'form-control'}),

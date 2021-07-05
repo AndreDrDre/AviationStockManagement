@@ -40,6 +40,8 @@ REPAIRS = (
 class TailNumber(models.Model):
 
     name = models.CharField(max_length=50, blank=True, null=True)
+    type_airframe = models.CharField(max_length=50, blank=True, null=True)
+    serialno = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
         if self is not None:

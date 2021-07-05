@@ -872,10 +872,21 @@ def workorders(request):
     # forms
     form = CreateWorkorder(request.POST or None)
     form.instance.user = request.user
+    if request.method == 'POST':
+        if form.is_valid():
 
-    if form.is_valid():
-        form.save()
-        return redirect('workorders')
+            form.save()
+            idWo = form.instance.id
+            queryId = WorkOrders.objects.get(id=idWo)
+            queryId.type_airframe = queryId.tail_number.type_airframe
+            queryId.save(update_fields=['type_airframe'])
+
+            # type_airframe
+            if request.is_ajax():
+                return JsonResponse({'success': 'Creating a new WorkOrder', 'redirect_to': reverse('workorders')})
+            return redirect('workorders')
+    else:
+        form = CreateWorkorder()
     #----------------------------#
 
     #Filters#

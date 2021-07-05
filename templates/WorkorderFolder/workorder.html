@@ -112,9 +112,10 @@
                        href="{%url 'Rinventory'%}"><strong>Issue Reserved Inventory </strong> <img
                              src="https://img.icons8.com/color/36/000000/scan-stock.png" /></a>
                 </div>
-                <hr>
+                
             </div>
             <div class="col-md-4">
+            
                                
             </div>
             <div class="col-md-4"></div>
@@ -138,10 +139,11 @@
                 </div>
                 <hr>
                 <br>
+               
 
                 <div class="card card-body reciever circleme">
                     <div class="form-group">
-                        <form action="" method="POST">
+                        <form id="id_form" action="" method="POST">
                             {% csrf_token %}
                             {{form.as_p}}
                             <input class="btn btn-dark btn-dre" type="submit" valuename="Create Work-Order">
@@ -168,6 +170,11 @@
                     </form>
                 </div>
                 <br>
+                <div id="form_response" class="mb-4 text-center"></div>
+
+                <div class="turbinedisplay">
+                  <img id ="Turbine" src="https://img.icons8.com/ios-filled/100/000000/jet-engine.png"/>
+                </div>
                 <div class="card card-body circleme">
                     <table class="table table-special table-md">
                         <tr>

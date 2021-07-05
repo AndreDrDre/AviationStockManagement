@@ -3,6 +3,7 @@
 {% block content %}
 
 <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
     <style>
         .container-fluid{
             
@@ -14,10 +15,6 @@
         transform: scale(1.05);
             }
 
-        .container{   
-            
-            
-        } 
         .circleme{
             border-radius: 15px;
             border: 1px solid;
@@ -100,18 +97,16 @@
                     <br>
                     <p style="text-align:center">Please select the order/orders you would like to export to Excel or PDF!</p>                  
                 </div>
-                <hr>   
+                <br>
                 <br>       
             </div>
-
-       
-     
-       
+      
         </div>
     </div>
     <div class="container-fluid">
         <div class="row"> 
-            <div class="col-md-10">
+            <div class="col-md-2"></div>
+            <div class="col-md-7">
             <div class= 'card card-body circleme '>
                 <form method="get">
                    {{myfilter.form}} 
@@ -120,7 +115,7 @@
             </div>
             </div>
 
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <div class= 'card card-body circleme '>
                  
                     <div style="width: 100%; overflow: hidden;">
@@ -136,12 +131,13 @@
         <br>
 
         <div class="row">  
-            <div class="col-md-12">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
                 <div class="card card-body circleme">
                     <table class="table table-med table-md">
                         <tr>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Description</th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P/N</th>                        
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>                        
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Tail #</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Ordered By:</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">IPC</th>
@@ -154,28 +150,28 @@
                         </tr>
                         {% for instance in queryset %}
                         <tr>
-                            <td style="text-align:center">{{instance.description}}</td>
-                            <td style="text-align:center">{{instance.part_number}}</td>                         
-                            <td style="text-align:center">{{instance.tail_number}}</td>
-                            <td style="text-align:center">{{instance.ordered_by}}</td>
-                            <td style="text-align:center">{{instance.ipc_reference}}</td>
-                            <td style="text-align:center">{{instance.order_quantity}}</td>
-                            <td style="text-align:center">{{instance.date_ordered|date:"M d, Y"}}</td>
+                            <td style="text-align:center;position:relative; vertical-align:middle;">{{instance.description}}</td>
+                            <td style="text-align:center;position:relative; vertical-align:middle;">{{instance.part_number}}</td>                         
+                            <td style="text-align:center;position:relative; vertical-align:middle;">{{instance.tail_number}}</td>
+                            <td style="text-align:center;position:relative; vertical-align:middle;">{{instance.ordered_by}}</td>
+                            <td style="text-align:center;position:relative; vertical-align:middle;">{{instance.ipc_reference}}</td>
+                            <td style="text-align:center;position:relative; vertical-align:middle;">{{instance.order_quantity}}</td>
+                            <td style="text-align:center;position:relative; vertical-align:middle;">{{instance.date_ordered|date:"M d, Y"}}</td>
                             
 
                             {%if instance.exported == False %}                            
-                            <td style="color: red; text-align:center; border-radius: 50px; font-weight:bold"><img src="https://img.icons8.com/fluent/48/000000/cancel.png"/></td>
+                            <td style="color: red; text-align:center; border-radius: 50px; font-weight:bold"><img src="https://img.icons8.com/fluent/36/000000/cancel.png"/></td>
                             {%else%}
-                            <td style="color: green; text-align:center; border-radius: 50px; margin: auto; font-weight:bold"><img src="https://img.icons8.com/emoji/48/000000/check-mark-emoji.png"/></td>
+                            <td style="color: green; text-align:center; border-radius: 50px; margin: auto; font-weight:bold"><img src="https://img.icons8.com/emoji/36/000000/check-mark-emoji.png"/></td>
                             {%endif%}
                           
 
                             {%if instance.ticketed %}
                             <!-- <td style="color: green; text-align:center; border-radius: 50px; margin: auto; font-weight:bold">YES</td> -->
-                            <td style="color: green; text-align:center; border-radius: 50px; margin: auto; font-weight:bold"><a class="btn btn-success " href="{%url 'exportstatusdel' instance.id %}">YES</a></td>
+                            <td style="color: green; text-align:center; "><a class="btn btn-success " href="{%url 'exportstatusdel' instance.id %}">YES</a></td>
                             {% else %}
                             <!-- <td style="color: red; text-align:center; border-radius: 50px; font-weight:bold">NO</td> -->
-                            <td style="color: rgb(128, 26, 0); text-align:center; border-radius: 50px; margin: auto; font-weight:bold" ><a  class="btn btn-danger" href="{%url 'exportstatus' instance.id %}">NO</a></td>
+                            <td style="color: rgb(128, 26, 0); text-align:center; " ><a  class="btn btn-danger" href="{%url 'exportstatus' instance.id %}">NO</a></td>
                             {% endif %}
                              
                   
@@ -183,12 +179,28 @@
                         {% endfor%}
         
                     </table>
-                    <a style="float:left; width:100px; border-radius: 20px;" class="btn btn-danger btn-dre" href="{%url 'orderpart'%}">Back</a>
+                    
                 </div>
-        </div>           
+            </div>  
+            <div class="col-md-2"></div>         
         </div >
     </div>
-      
+    <br>
+    <br>
+    <br>
+    <div class="row">
+
+        <div style ="margin-left:10px; " class="col-md-1">
+            <div class= 'card card-body circleme display'>
+                <a style=" width: 100px;"  class="btn btn-danger sb-btn"  href="{%url 'orderpart'%}">Back</a>                     
+            </div>
+        </div>
+        <div class="col-md-5">
+           
+        </div>
+        <div class="col-md-5"></div>
+    </div>
+    
 </body>
 
 
