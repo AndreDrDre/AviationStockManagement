@@ -199,7 +199,7 @@
                             <td style="text-align:center;" >{{instance.inspector}}</td>
                             <td style="text-align:center; background-color:rgba(255, 255, 0, 0.356)" >{{instance.condition}}</td>
 
-                            {%if expiry_date%}
+                            {%if instance.expiry_date%}
                             <td style="text-align:center;" >{{instance.expiry_date|date:"M d, Y"}}</td>
                             {%else%}
                             <td style="text-align:center;" >N/A</td>

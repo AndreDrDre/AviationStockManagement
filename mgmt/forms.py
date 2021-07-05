@@ -189,25 +189,29 @@ class AddInventory(forms.Form):
         max_length=100, label="Work Card #", required=True)
     price = forms.IntegerField(label="Price", required=False)
 
-    expiry_date = DateInput()
+  # DateInput
+  # expiry_date = DateInput()
+    expiry_date = forms.DateField(
+        widget=DateInput(), required=False
+    )
 
-    # DateInput()
+   # DateInput()
 
-    # def clean_cert_document(self):
-    #     uploaded_file = self.cleaned_data['cert_document']
-    #     try:
-    #         # create an ImageField instance
-    #         im = forms.ImageField()
-    #         # now check if the file is a valid image
-    #         im.to_python(uploaded_file)
-    #     except forms.ValidationError:
-    #         # file is not a valid image;
-    #         # so check if it's a pdf
-    #         name, ext = os.path.splitext(uploaded_file.name)
-    #         if ext not in ['.pdf', '.PDF']:
-    #             raise forms.ValidationError(
-    #                 "Only images and PDF files allowed")
-    #     return uploaded_file
+   # def clean_cert_document(self):
+   #     uploaded_file = self.cleaned_data['cert_document']
+   #     try:
+   #         # create an ImageField instance
+   #         im = forms.ImageField()
+   #         # now check if the file is a valid image
+   #         im.to_python(uploaded_file)
+   #     except forms.ValidationError:
+   #         # file is not a valid image;
+   #         # so check if it's a pdf
+   #         name, ext = os.path.splitext(uploaded_file.name)
+   #         if ext not in ['.pdf', '.PDF']:
+   #             raise forms.ValidationError(
+   #                 "Only images and PDF files allowed")
+   #     return uploaded_file
 
     def clean_order_quantity(self):
 

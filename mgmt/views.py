@@ -413,7 +413,7 @@ def addToInventory(request, Type):
                 price = form.cleaned_data['price']
                 purchase_order_number = form.cleaned_data['purchase_order_number']
                 invoice_number = form.cleaned_data['invoice_number']
-                expiry_date = forms.cleaned_data['expiry_date']
+                expiry_date = form.cleaned_data['expiry_date']
 
             elif Type == "Stock":
                 tail_number = TailNumber.objects.all().reverse()[0]
@@ -422,7 +422,7 @@ def addToInventory(request, Type):
                 price = form.cleaned_data['price']
                 purchase_order_number = form.cleaned_data['purchase_order_number']
                 invoice_number = form.cleaned_data['invoice_number']
-                expiry_date = forms.cleaned_data['expiry_date']
+                expiry_date = form.cleaned_data['expiry_date']
 
             else:  # Type = "RemoveFromAircraft"
                 vendor = ""
