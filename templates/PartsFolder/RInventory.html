@@ -86,6 +86,19 @@
 </head>
 
 <body>
+  <script type="text/javascript">
+    function confirmDelete()
+    {
+    var txt;
+    var agree=confirm("Are you sure you want to delete this Part?");
+    if (agree){
+     
+     return true ;}
+    else
+     return false ;
+    }
+       
+</script>
   <br />
   <br />
 
@@ -258,9 +271,15 @@
               >
                 {{instance.condition}}
               </td>
+              {% if instance.expiry_date%}
               <td style="text-align: center">
                 {{instance.expiry_date|date:"M d, Y"}}
               </td>
+              {% else%}
+              <td style="text-align: center">
+                N/A
+              </td>
+              {% endif%}
 
               {% if instance.cert_document %}
               <td style="text-align: center">
@@ -284,7 +303,7 @@
                 >
               </td>
               <td style="text-align: center">
-                <a class="btn btn-sm btn-danger sb-btn" onClick="" href="#"
+                <a class="btn btn-sm btn-danger sb-btn" onClick='return confirmDelete()' href="{%url 'deletepart' instance.id%}"
                   >Delete</a
                 >
               </td>

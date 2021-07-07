@@ -436,8 +436,8 @@ class repairReturnForm(forms.ModelForm):
         model = Parts
         fields = ['inspector', 'cert_document', 'price']
         widgets = {
-            'inspector': forms.Select(attrs={'class': 'form-control'}),
-            'cert_document': forms.FileInput(attrs={'class': 'form-control'}),
+            'inspector': forms.Select(attrs={'class': 'form-control', 'required': True, }),
+            'cert_document': forms.FileInput(attrs={'class': 'form-control', 'required': True, }),
         }
 
     def __init__(self, conditionCheck, *args, **kwargs):

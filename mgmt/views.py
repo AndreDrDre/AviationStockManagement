@@ -249,10 +249,10 @@ def Qinventory(request):
     # ------------------------------------------------------------------#
 
     querysetShop = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False, recieve_part=True,
-                                        repaired_by='SHOP', Repaired=True).order_by('date_received').reverse()
+                                        repaired_by='SEND TO SHOP', Repaired=True).order_by('date_received').reverse()
 
     querysetInhouse = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False, recieve_part=True,
-                                           repaired_by='INHOUSE', Repaired=True).order_by('date_received').reverse()
+                                           repaired_by='INHOUSE REPAIR', Repaired=True).order_by('date_received').reverse()
 
     Partfilter = QuaratineFilter(request.GET, queryset=queryset)
     queryset = Partfilter.qs
@@ -292,7 +292,7 @@ def repair(request, pk):
 
     context = {"form": form, "queryset": queryset}
 
-    return render(request, "mgmt/repair.html", context)
+    return render(request, "PartsFolder/repair.html", context)
 
 
 @login_required(login_url='signin')
@@ -309,7 +309,7 @@ def repairReturn(request, pk):
         if form.is_valid():
 
             queryset.condition = 'SV'
-            queryset.tail_number = 'Stock'
+            queryset.tail_number.name = 'Stock'
             queryset.Repaired = False
             queryset.recieve_part = False
             queryset.Quarentine = False
@@ -442,6 +442,7 @@ def addToInventory(request, Type):
 
             # If the part has been removed from an aircraft under a workorder
             if checkType == 1:
+                # qy = TailNumber.objects.all()[0]
                 if part_type == 'Rotable' or part_type == 'Tires':
                     p = Parts(part_type=part_type,
                               description=description,
@@ -450,8 +451,7 @@ def addToInventory(request, Type):
                               serial_number=indentifier,
                               cert_document=cert_document,
                               quantity=order_quantity,
-                              tail_number=TailNumber.objects.all().reverse()[
-                                  0],
+                              tail_number=TailNumber.objects.all()[0],
                               inspector=inspector,
                               condition=condition,
                               date_received=timezone.now(),
@@ -470,8 +470,10 @@ def addToInventory(request, Type):
 
                     if p.condition == "REPAIRABLE":
                         p.Quarentine = True
+                        p.tail_number = tail_number
+
+                        p.save(update_fields=["tail_number"])
                         p.save(update_fields=["Quarentine"])
-                        p.cert_document.save()
 
                         if request.is_ajax():
                             # form.save()
@@ -495,8 +497,7 @@ def addToInventory(request, Type):
                               batch_no=indentifier,
                               cert_document=cert_document,
                               quantity=order_quantity,
-                              tail_number=TailNumber.objects.all().reverse()[
-                                  0],
+                              tail_number=TailNumber.objects.all()[0],
                               inspector=inspector,
                               condition=condition,
                               date_received=timezone.now(),
@@ -510,8 +511,11 @@ def addToInventory(request, Type):
                         part=p, workorder=workorder, jobCardNumber=jobCardNumber, receivedRepair=True,
                         cert_document=cert_document, removed_from=tail_number, removed_by=inspector)
                     if p.condition == "REPAIRABLE":
+                        p.tail_number = tail_number
+                        p.save(update_fields=["tail_number"])
                         p.Quarentine = True
                         p.save(update_fields=["Quarentine"])
+
                         if request.is_ajax():
                             return JsonResponse({'success': 'Adding Removed Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
                         # return redirect('Qinventory')
@@ -631,7 +635,7 @@ def addToQuarentine(request):
                       )
             p.save()
             if request.is_ajax():
-                return JsonResponse({'success': 'Adding Removed Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
+                return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
             # return redirect('Qinventory')
         else:
             p = Parts(part_type=part_type,
@@ -908,6 +912,41 @@ def workorders(request):
 
 
 @login_required(login_url='signin')
+def deleteWO(request, pk):
+
+    queryWo = WorkOrders.objects.get(user=request.user, id=pk)
+
+    # ForeignKeyValue__Child(self.varname)=>...
+
+    queryPartWO = PartWorkOrders.objects.filter(
+        workorder__workorder_number=queryWo.workorder_number)
+
+    QueryCalibrated = Tools_Calibrated.objects.filter(
+        user=request.user, workorder_no__workorder_number=queryWo.workorder_number)
+    QueryUnCalibrated = Tools_UnCalibrated.objects.filter(
+        user=request.user, workorder_no__workorder_number=queryWo.workorder_number)
+
+    queryPartWO.delete()
+
+    for calitool in QueryCalibrated:
+        print("deleting cali")
+        calitool.workorder_no = None
+        calitool.save(update_fields=['workorder_no'])
+        calitool.issued = False
+        calitool.save(update_fields=['issued'])
+    for uncalitool in QueryUnCalibrated:
+        print("deleting Uncali")
+        uncalitool.workorder_no = None
+        uncalitool.save(update_fields=['workorder_no'])
+        uncalitool.issued = False
+        uncalitool.save(update_fields=['issued'])
+
+    queryWo.delete()
+
+    return redirect('workorders')
+
+
+@login_required(login_url='signin')
 def partslink(request, pk, Type):
     total = 0
     #status bar#
@@ -968,6 +1007,16 @@ def partslink(request, pk, Type):
         return render(request, "WorkorderFolder/work-Orderlink.html", context)
     else:
         return render(request, "WorkorderFolder/work-order-history.html", context)
+
+
+@login_required(login_url='signin')
+def deleteWOpartlink(request, pk):
+    query = PartWorkOrders.objects.get(id=pk)
+    query.delete()
+    check = query.workorder.id
+
+    # give it the id of the workorder its asscoiated with
+    return redirect('partslink', check, 'NotHistorical')
 
 
 @login_required(login_url='signin')
@@ -1147,12 +1196,15 @@ def deletepart(request, pk):
     if part.recieve_part == False:
         return redirect('orderpart')
     else:
-        if part.tail_number.name == 'Stock':
-            return redirect('inventory')
-        if part.tail_number.name != 'Stock' and part.condition != 'REPAIRABLE':
-            return redirect('Rinventory')
         if part.condition == 'REPAIRABLE':
             return redirect('Qinventory')
+
+        if part.tail_number.name == 'Stock':
+            print(part.tail_number.name)
+            return redirect('inventory')
+        if part.tail_number.name != 'Stock' and part.condition != 'REPAIRABLE':
+            print(part.tail_number.name)
+            return redirect('Rinventory')
 
 
 @login_required(login_url='signin')
@@ -2011,11 +2063,14 @@ def exportXlsInventory(request, Type):
         namefile = 'attachment; filename="StockInventory.xls"'
         rows = []
         listx = []
-        queryset = Parts.objects.filter(user=request.user, tail_number='Stock', Historical=False,
+        queryset = Parts.objects.filter(user=request.user, tail_number__name='Stock', Historical=False,
                                         recieve_part=True).order_by('date_received').reverse()
 
+        for x in queryset:
+            print(x.inspector)
+
         rows = queryset.values_list('description', 'part_number', 'part_type', 'batch_no',
-                                    'serial_number', 'bin_number', 'quantity', 'inspector', 'condition')
+                                    'serial_number', 'bin_number', 'quantity', 'inspector__name', 'condition')
 
         columns = ['Description', 'Part #', 'Part-Type', 'S#/B#/L#', 'Bin #', 'Quantity', 'Inspector', 'Condition'
                    ]
@@ -2040,10 +2095,10 @@ def exportXlsInventory(request, Type):
     if Type == "Reserved":
         name = 'Reserved Inventory'
         namefile = 'attachment; filename="ReservedInventory.xls"'
-        queryset = Parts.objects.filter(user=request.user, tail_number__startswith="N", Historical=False,
+        queryset = Parts.objects.filter(user=request.user, tail_number__name__startswith="N", Historical=False,
                                         recieve_part=True).order_by('date_received').reverse()
-        rows = queryset.values_list('description', 'part_type', 'tail_number', 'part_number',
-                                    'batch_no', 'serial_number', 'quantity', 'inspector', 'condition')
+        rows = queryset.values_list('description', 'part_type', 'tail_number__name', 'part_number',
+                                    'batch_no', 'serial_number', 'quantity', 'inspector__name', 'condition')
         columns = ['Description', 'Part-Type', 'Reserved For:', 'Part #',
                    'S#/B#/L#', 'Quantity', 'Inspector', 'Condition']
 
@@ -2062,7 +2117,37 @@ def exportXlsInventory(request, Type):
                 tups += listx
 
         # lst = [50,"Python","JournalDev",100]
-    lst_tuple = [x for x in zip(*[iter(tups)]*8)]
+        lst_tuple = [x for x in zip(*[iter(tups)]*8)]
+
+    if Type == "Quarentine":
+        name = 'Quarentine Inventory'
+        namefile = 'attachment; filename="QuarentineInventory.xls"'
+        rows = []
+        listx = []
+        queryset = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False,
+                                        recieve_part=True).order_by('date_received').reverse()
+
+        rows = queryset.values_list('description', 'part_number', 'part_type', 'tail_number__name', 'batch_no',
+                                    'serial_number', 'quantity', 'inspector__name', 'condition')
+
+        columns = ['Description', 'Part #', 'Part-Type', 'Removed From', 'S#/B#/L#', 'Quantity', 'Inspector', 'Condition'
+                   ]
+        tups = []
+
+        for check in rows:
+
+            if check[2] == 'Rotable' or check[2] == 'Tires':
+                listx = list(check)
+                listx[4] = listx[5]
+                del listx[5]
+                tups += listx
+
+            else:
+                listx = list(check)
+                del listx[5]
+                tups += listx
+
+        lst_tuple = [x for x in zip(*[iter(tups)]*8)]
 
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = namefile

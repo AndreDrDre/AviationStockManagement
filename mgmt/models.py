@@ -32,8 +32,8 @@ CONDITIONS = (
 
 )
 REPAIRS = (
-    ("INHOUSE", "INHOUSE"),
-    ("SHOP", "SHOP"),
+    ("INHOUSE REPAIR", "INHOUSE REPAIR"),
+    ("SEND TO SHOP", "SEND TO SHOP"),
 )
 
 
@@ -113,7 +113,11 @@ class WorkOrders(models.Model):
         date_open = self.date_added
         date_close = self.date_closed
         total = date_close-date_open
-        return str(total.days) + " days"
+
+        if total.days < 1:
+            return str("1") + " day"
+        else:
+            return str(total.days+1) + " days"
 
     def __str__(self):
         return self.workorder_number
@@ -252,6 +256,15 @@ class PartWorkOrders(models.Model):
         price = self.price*self.issue_quantity
         return price
 
+    def save(self, *args, **kwargs):
+        try:
+            this = PartWorkOrders.objects.get(id=self.id)
+            if this.cert_document != self.cert_document:
+                this.cert_document.delete(save=True)
+        except:
+            pass  # when new photo then we do nothing, normal case
+        super(PartWorkOrders, self).save(*args, **kwargs)
+
     def __str__(self):
         if self is not None:
             return '{} : {} : {} : {} :{} :{}: {}'.format(
@@ -355,7 +368,7 @@ class Tools_UnCalibrated(models.Model):
     description = models.CharField(max_length=50, blank=True, null=True)
     serial_number = models.CharField(max_length=50, blank=True, null=True)
     part_number = models.CharField(max_length=50, blank=True, null=True)
-    recieved = models.DateTimeField(auto_now_add=False, auto_now=True)
+    recieved = models.DateField(auto_now_add=False, auto_now=True)
     issued = models.BooleanField(default='False', blank=True, null=True)
     # calibrated special Tool
 

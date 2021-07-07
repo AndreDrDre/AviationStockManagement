@@ -81,6 +81,11 @@ urlpatterns = [
     path('change_order_status/<str:pk>/',
          views.change_order_status, name='change_order_status'),
 
+    path('deleteWO/<str:pk>/', views.deleteWO, name='deleteWO'),
+
+    path('deleteWOpartlink/<str:pk>/',
+         views.deleteWOpartlink, name='deleteWOpartlink'),
+
     #-----------------------------------------------------------#
 
 

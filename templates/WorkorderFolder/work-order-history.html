@@ -1,16 +1,10 @@
 {%extends 'mgmt/index.html'%}
 {% load static %}
 {% block content %}
-{%include 'mgmt/status.html'%}
+<!-- {%include 'mgmt/status.html'%} -->
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
     <style>
-
-
-        .container{   
-            
-            
-        } 
         .circleme{
             border-radius: 15px;
             border: 1px solid;
@@ -70,32 +64,85 @@ else
 <br>
 
     <div class="container-fluid">
-        <div class="row">   
-            
-                <div class="col-md-4">
-                    
-                </div>
-                <div class="col-md-4">
+        <div class="row">               
+                <div class="col-md-3">
                     <div class="card card-body circleme">
-                        <h6 style="text-align:center;">WORK-ORDER NUMBER -> {{workordernumber}}</h6>
-                        <h6 style="text-align:center;">ESTIMATED COST :<strong style="background-color:yellow">$ {{total}}</strong></h6>
-                        <h6 style="text-align:center;">TAIL NUMBER : {{querysetDisplay.tail_number}}</h6>
-                        <h6 style="text-align:center;">OPENED @ : {{querysetDisplay.date_added}}</h6>
-                        <br>
+                        <h4 style="text-align:center;"><strong>Work-Order Informarion</strong></h4>
                         <hr>
-                        <h6 style="text-align:center;">Descrption : {{querysetDisplay.description}}</h6>
-                        <hr>
+                        <div class= "row">
+                            <div class="col-sm-7">
+                                <h6 style="text-align:left; display:inline;">WORK-ORDER NUMBER : </h6> 
+                            </div>
+                            <div class="col-sm-2">
+
+                            </div>
+                            <div class="col-sm-3">
+                                <h6 style="float:right"><strong>{{workordernumber}}</strong></h6>
+                            </div>                            
+                        </div>
+                    
+                        <div class= "row">
+                            <div class="col-sm-7">
+                                <h6 style="text-align:left; display:inline;">ESTIMATED COST : </h6> 
+                            </div>
+                            <div class="col-sm-2">
+
+                            </div>
+                            <div class="col-sm-3">
+                                <h6 style="float:right"><strong style="background-color:yellow">$ {{total}}</strong></h6>
+                            </div>                            
+                        </div>
+                       
+                        <div class= "row">
+                            <div class="col-sm-7">
+                                <h6 style="text-align:left; display:inline;">TAIL NUMBER :  </h6> 
+                            </div>
+                     
+                            <div class="col-sm-5">
+                                <h6 style="float:right"><strong>{{querysetDisplay.tail_number}}</strong></h6>
+                            </div>                            
+                        </div>
+
+                        <div class= "row">
+                            <div class="col-sm-7">
+                                <h6 style="text-align:left; display:inline;">OPENED @ : </h6> 
+                            </div>
+                     
+                            <div class="col-sm-5">
+                                <h6 style="float:right"><strong>{{querysetDisplay.date_added|date:"M d, Y"}}</strong></h6>
+                            </div>                            
+                        </div>
+
+                        <div class= "row">
+                            <div class="col-sm-7">
+                                <h6 style="text-align:left; display:inline;">ClOSED @ :  </h6> 
+                            </div>
+                     
+                            <div class="col-sm-5">
+                                <h6 style="float:right"><strong>{{querysetDisplay.date_closed|date:"M d, Y"}}</strong></h6>
+                            </div>                            
+                        </div>
+
+                        <div class= "row">
+                            <div class="col-sm-7">
+                                <h6 style="text-align:left; display:inline;">DURATION :  </h6> 
+                            </div>
+                     
+                            <div class="col-sm-5">
+                                <h6 style="float:right"><strong>{{querysetDisplay.duration}}</strong></h6>
+                            </div>                            
+                        </div>
+                     
                     </div>
                 </div>
-                <div class="col-md-4">
-                 
-                </div>
+                <div class="col-md-4"></div>
+                <div class="col-md-4"></div>
         </div>
 
         <br>
         <br>
 
-        <div class="row">
+        <!-- <div class="row">
 
             <div class="col-md-5"></div>
             <div class="col-md-2">
@@ -109,7 +156,7 @@ else
 
             </div>
             <div class="col-md-5"></div>
-        </div>
+        </div> -->
 
 
         <div class="row">        

@@ -117,16 +117,19 @@
             your system. Running low? No problem, just order more!
           </p>
         </div>
+        
       </div>
-    </div>
-   
-    <hr />
-    <br />
+    
+    </div>   
   </div>
+  <br>
+
 
   <div class="container-fluid">
+    
     <div class="row">
-      <div class="col-md-10">
+      <div class="col-md-1"></div>
+      <div class="col-md-9">
         <div class="card card-body circleme">
           <form method="get">
             {{partfilter.form}}
@@ -139,11 +142,11 @@
         </div>
       </div>
 
-      <div class="col-md-2">
+      <div class="col-md-1">
         <div class="card card-body circleme">
           <div style="width: 100%; overflow: hidden">
-            <div class="export" style="margin-left: 50px">
-              <a href="#"
+            <div class="export" style="display:flex; justify-content:center;">
+              <a href="{% url 'exportXlsInventory' 'Quarentine'%}"
                 ><img
                   src="https://img.icons8.com/color/58/000000/microsoft-excel-2019--v1.png"
               /></a>
@@ -156,7 +159,8 @@
     <br />
 
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-1"></div>
+      <div class="col-md-10">
         <div class="card card-body circleme">
           <table class="table table-md">
             <tr>
@@ -174,7 +178,7 @@
                   background-color: rgba(128, 128, 128, 0.644);
                 "
               >
-                P/N
+                P#
               </th>
               <th
                 style="
@@ -233,14 +237,6 @@
                   background-color: rgba(128, 128, 128, 0.644);
                 "
               >
-                Expires On
-              </th>
-              <th
-                style="
-                  text-align: center;
-                  background-color: rgba(128, 128, 128, 0.644);
-                "
-              >
                 Cert Documents
               </th>
             </tr>
@@ -250,7 +246,12 @@
 
               <td style="text-align: center">{{instance.part_number}}</td>
               <td style="text-align: center">{{instance.part_type}}</td>
+
+              {% if instance.tail_number %}
               <td style="text-align: center">{{instance.tail_number}}</td>
+              {%else%}
+              <td style="text-align: center">N/A</td>
+              {%endif%}
 
               {% if instance.serial_number == None %}
               <td style="text-align: center">{{instance.batch_no}}</td>
@@ -292,9 +293,7 @@
 
               {%endif%}
 
-              <td style="text-align: center">
-                {{instance.expiry_date|date:"M d, Y"}}
-              </td>
+       
 
               {% if instance.cert_document %}
               <td style="text-align: center">
@@ -332,6 +331,7 @@
           </table>
         </div>
       </div>
+      <div class="col-md-1"></div>
     </div>
 
     <br />
@@ -367,7 +367,7 @@
                   background-color: rgba(128, 128, 128, 0.644);
                 "
               >
-                P/N
+                P#
               </th>
               <th
                 style="
@@ -504,6 +504,7 @@
               <td>
                 <a
                   class="btn btn-sm btn-danger sb-btn"
+                  onClick='return confirmDelete()'
                   href="{%url 'deletepart' part.id%}"
                   >Scrap Part</a
                 >
