@@ -271,6 +271,18 @@ def Qinventory(request):
 
 
 @login_required(login_url='signin')
+def InhouseReapirs(request):
+
+    querysetInhouse = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False, recieve_part=True,
+                                           repaired_by='INHOUSE REPAIR', Repaired=True).order_by('date_received').reverse()
+
+    context = {'querysetInhouse': querysetInhouse
+
+               }
+    return render(request, "PartsFolder/inhouseRepair.html", context)
+
+
+@login_required(login_url='signin')
 def repair(request, pk):
 
     queryset = Parts.objects.get(user=request.user, id=pk)

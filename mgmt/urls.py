@@ -86,6 +86,8 @@ urlpatterns = [
     path('deleteWOpartlink/<str:pk>/',
          views.deleteWOpartlink, name='deleteWOpartlink'),
 
+    path('InhouseReapirs/', views.InhouseReapirs, name='InhouseReapirs'),
+
     #-----------------------------------------------------------#
 
 
