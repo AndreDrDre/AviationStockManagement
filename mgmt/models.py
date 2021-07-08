@@ -124,10 +124,10 @@ class WorkOrders(models.Model):
 
 
 class Parts(models.Model):
-    length = models.CharField(max_length=50, blank=True, null=True)
-    breadth = models.CharField(max_length=50, blank=True, null=True)
-    height = models.CharField(max_length=50, blank=True, null=True)
-    weight = models.CharField(max_length=50, blank=True, null=True)
+    # length = models.CharField(max_length=50, blank=True, null=True)
+    # breadth = models.CharField(max_length=50, blank=True, null=True)
+    # height = models.CharField(max_length=50, blank=True, null=True)
+    # weight = models.CharField(max_length=50, blank=True, null=True)
 
     waybill = models.CharField(max_length=50, blank=True, null=True)
     urlWayBill = models.URLField(max_length=50, blank=True, null=True)
