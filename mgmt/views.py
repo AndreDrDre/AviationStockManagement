@@ -40,11 +40,6 @@ import xlwt
 
 #login Views-------------------------------------#
 
-# def deleterbaby(request):
-#     query = Parts.objects.all()
-#     query.delete()
-#     return redirect('home')
-
 
 def adminpage(request):
     return redirect('adminpage')
