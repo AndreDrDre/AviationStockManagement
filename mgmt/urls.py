@@ -95,7 +95,7 @@ urlpatterns = [
 
     path('transportInfo/<str:pk>/', views.transportInfo, name='transportInfo'),
 
-    path('deleterbaby/', views.deleterbaby, name='deleterbaby'),
+    #     path('deleterbaby/', views.deleterbaby, name='deleterbaby'),
 
 
 

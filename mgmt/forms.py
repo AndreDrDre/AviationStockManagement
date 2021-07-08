@@ -431,16 +431,16 @@ class RepairForm(forms.ModelForm):
         }
 
 
-# class shippingInfoForm(forms.ModelForm):
-    # class Meta:
-    #     model = Parts
-    #     fields = ['length', 'breadth', 'height', 'weight']
-    #     widgets = {
-    #         'length': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
-    #         'breadth': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
-    #         'height': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
-    #         'weight': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
-    #     }
+class shippingInfoForm(forms.ModelForm):
+    class Meta:
+        model = Parts
+        fields = ['length', 'breadth', 'height', 'weight']
+        widgets = {
+            'length': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'breadth': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'height': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'weight': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+        }
 
 
 class repairReturnForm(forms.ModelForm):
