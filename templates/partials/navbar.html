@@ -27,33 +27,33 @@
     <a class="navbar-brand" href="#">
       <div class="logo">
         <!-- <a href="{%url 'home' %}" style="height:60px;"> -->
-        <a href="{%url 'deleterbaby' %}" style="height:60px;"></a>
-        <img src="{% static 'images/winaviation.png' %}" width="260" height="60" class="d-inline-block align-top"
-          alt="">
+        <a href="{%url 'deleterbaby' %}" style="height:60px;">
+          <img src="{% static 'images/winaviation.png' %}" width="260" height="60" class="d-inline-block align-top"
+            alt="">
+        </a>
+
+      </div>
+
+      <h2>{{request.user}}</h2>
+
+
+
     </a>
-
-  </div>
-
-  <h2>{{request.user}}</h2>
-
-
-
-  </a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
-    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 
 
-  </div>
+    </div>
 
-  <span class="log-msg">
-    Welcome, {{request.user}} Maintenance
-  </span>
-  <span>
-    <a class="btn btn-warning btn-d " style="border-radius:15px;" href="{%url 'logoutUser' %}">Logout</a>
-  </span>
+    <span class="log-msg">
+      Welcome, {{request.user}} Maintenance
+    </span>
+    <span>
+      <a class="btn btn-warning btn-d " style="border-radius:15px;" href="{%url 'logoutUser' %}">Logout</a>
+    </span>
   </div>
 
   <div class="side-navbar active-nav d-flex justify-content-between flex-wrap flex-column" id="sidebar">
