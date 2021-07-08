@@ -60,6 +60,9 @@ urlpatterns = [
 
     path('exportstatusdel/<str:pk>/',
          views.exportstatusdel, name='exportstatusdel'),
+
+    path('exportXlsOrderhistory/', views.exportXlsOrderHistory,
+         name='exportXlsOrderHistory'),
     #----------------------------------------------------------#
 
 
@@ -87,6 +90,11 @@ urlpatterns = [
          views.deleteWOpartlink, name='deleteWOpartlink'),
 
     path('InhouseReapirs/', views.InhouseReapirs, name='InhouseReapirs'),
+
+    path('ShopReapirs/', views.ShopReapirs, name='ShopReapirs'),
+
+    path('transportInfo/<str:pk>/', views.transportInfo, name='transportInfo'),
+
 
     #-----------------------------------------------------------#
 

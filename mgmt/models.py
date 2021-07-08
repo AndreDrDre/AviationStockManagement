@@ -124,6 +124,11 @@ class WorkOrders(models.Model):
 
 
 class Parts(models.Model):
+    length = models.CharField(max_length=50, blank=True, null=True)
+    breadth = models.CharField(max_length=50, blank=True, null=True)
+    height = models.CharField(max_length=50, blank=True, null=True)
+    weight = models.CharField(max_length=50, blank=True, null=True)
+
     waybill = models.CharField(max_length=50, blank=True, null=True)
     urlWayBill = models.URLField(max_length=50, blank=True, null=True)
     description = models.CharField(max_length=50, blank=True, null=True)
@@ -281,7 +286,7 @@ class OrderHistory(models.Model):
 
     description = models.CharField(max_length=50, blank=True, null=True)
     part_number = models.CharField(max_length=50, blank=True, null=True)
-    date_ordered = models.DateTimeField(auto_now=True)
+    date_ordered = models.DateField(auto_now=True)
 
     order_quantity = models.IntegerField(
         default='0', blank=True, null=True)

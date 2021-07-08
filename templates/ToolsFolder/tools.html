@@ -7,158 +7,158 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
-<style>
+    <style>
+        .export:hover {
+            transform: scale(1.2);
+        }
 
-    
-    .export:hover{
-        transform: scale(1.2);
-    }
-
-    .circleme{
-        border-radius: 15px;
-        border: 1px solid;
-    }
+        .circleme {
+            border-radius: 15px;
+            border: 1px solid;
+        }
 
 
-    .btn-dre{
-        border-radius:30px;
-        font-size:18px;
-        width:100%;
-        padding: 10px;
-    }
+        .btn-dre {
+            border-radius: 30px;
+            font-size: 18px;
+            width: 100%;
+            padding: 10px;
+        }
 
-    .sb-btn{
-        border-radius: 15px;           
-        float: right;
-        transition: all .2s ease-in-out; 
-        color: white;
-        
-    }
-    .sb-btn:hover{
-        transform: scale(1.1);
-    }
-    .btn-search{
-        border-radius: 15px;
-        background:linear-gradient(135deg, #2a65a8b4 0%, #3147a5ad 100%);
-        float: right;
-        transition: all .2s ease-in-out; 
-    }
+        .sb-btn {
+            border-radius: 15px;
+            float: right;
+            transition: all .2s ease-in-out;
+            color: white;
 
-    .btn-comp:hover{
-        transform: scale(1.1);
-    }
+        }
 
-        
-</style>
+        .sb-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-search {
+            border-radius: 15px;
+            float: right;
+            transition: all .2s ease-in-out;
+        }
+
+        .btn-search:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-comp:hover {
+            transform: scale(1.1);
+        }
+    </style>
 </head>
+
 <body>
-<script>
-      
+    <script>
+        function confirmDelete() {
+            var txt;
+            var agree = confirm("Are you sure you want to delete this item?");
+            if (agree) {
 
-function confirmDelete()
-{
-    var txt;
-var agree=confirm("Are you sure you want to delete this item?");
-if (agree){
- 
- return true ;}
-else
- return false ;
-}
+                return true;
+            } else
+                return false;
+        }
 
-function confirmCali()
-{
-    var txt;
-var agree=confirm("Are you sure you want to send this tool in for calibration?");
-if (agree){
- 
- return true ;}
-else
- return false ;
-}
+        function confirmCali() {
+            var txt;
+            var agree = confirm("Are you sure you want to send this tool in for calibration?");
+            if (agree) {
 
+                return true;
+            } else
+                return false;
+        }
+    </script>
 
+    <br>
+    <br>
 
-</script>
-    
-<br>
-<br>
-
-<div class="container-fluid">        
-    <div class="row">
-        <div class="mx-auto" style="width: 800px;">
-            <div class="center-heading">
-                <h2 class="section-title"> TOOLS INVENTORY </h2>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="mx-auto" style="width: 800px;">
+                <div class="center-heading">
+                    <h2 class="section-title"> TOOLS INVENTORY </h2>
+                </div>
+            </div>
+            <div class="offset-lg-3 col-lg-6">
+                <div class="center-text">
+                    <p style="text-align:center">Search, Edit, Delete and Calibrate tools. Tools are assigned to a
+                        specific order and have the ability to be resigned. Want to view the Tools on spread sheet or
+                        pdf? No problem, view the export options!</p>
+                </div>
             </div>
         </div>
-        <div class="offset-lg-3 col-lg-6">
-            <div class="center-text">
-                <p style="text-align:center">Search, Edit, Delete and Calibrate tools. Tools are assigned to a specific order and have the ability to be resigned. Want to view the Tools on spread sheet or pdf? No problem, view the export options!</p>                  
-            </div>
-        </div>
+
+        <br>
+        <hr>
+        <br>
+
     </div>
 
-  <br>
-  <hr>
-  <br>
-   
-</div>
 
 
 
+    <div class="container-fluid">
 
-<div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3">
+                <!--Specificy we want to take up 5/12 content blocks-->
+                <div class="mx-auto" style="text-align:center">
+                    <h4>RECORD NEW TOOL <img src="https://img.icons8.com/fluent/48/000000/full-tool-storage-box-.png" />
+                    </h4>
+                </div>
+                <hr>
+                <div class="card card-body reciever circleme">
+                    <div class="form-group">
+                        <form action="#" method="POST">
+                            {% csrf_token %}
+                            <table style="border: 0.5; padding: 20px;">
+                                {{form}}
+                            </table>
+                            <br>
+                            <button class="btn btn-dark btn-search" name="choice" type="submit">Choose Tool
+                                Type</button>
+                        </form>
+                    </div>
+                </div>
+                <hr>
+                <div id="showHideBtn" class="card card-body reciever circleme">
+                    <div class="form-group">
+                        <form action="#" enctype="multipart/form-data" method="POST">
+                            {% if Check == 1 %}
 
-    <div class="row">
-        <div class="col-md-3">
-            <!--Specificy we want to take up 5/12 content blocks-->
-            <div class="mx-auto" style="text-align:center">
-                <h4>RECORD NEW TOOL <img src="https://img.icons8.com/fluent/48/000000/full-tool-storage-box-.png"/></h4>
-            </div>
-            <hr>
-            <div class="card card-body reciever circleme">
-                <div class="form-group">
-                    <form action="#"  method="POST">                       
-                        {% csrf_token %}                   
-                        <table style="border: 0.5; padding: 20px;">
-                            {{form}} 
-                          </table>  
-                          <br>                        
-                        <button class="btn btn-primary btn-search" name="choice" type="submit">Choose Tool Type</button>
-                    </form>                 
+                            <hr>
+                            {% else %}
+
+                            {%endif%}
+
+                            {{ displayform.management_data }}
+                            {% csrf_token %}
+
+                            <table style="border: 0.5; padding: 20px;">
+                                {{displayform}}
+                            </table>
+                            <br>
+                            <button class="btn btn-dark btn-search" name="Save" type="submit">Save Tool</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <hr>
-            <div id = "showHideBtn" class="card card-body reciever circleme">
-                <div class="form-group">
-                    <form action="#" enctype="multipart/form-data" method="POST">
-                        {% if Check == 1 %}                   
-                        <p><strong >Note:</strong> If the document you are planning to upload is more than <strong>1</strong> page in length. Please combine the documents! <a class = "pdfLink" href="https://products.aspose.app/pdf/merger/png-to-jpg" target="_blank"><strong style=" color:rgb(13, 130, 240)"><u>(Link)</u></strong></a></p>
-                        <hr>
-                        {% else %}
-                       
-                        {%endif%}    
-                                                
-                        {{ displayform.management_data }}
-                        {% csrf_token %}
 
-                        <table style="border: 0.5; padding: 20px;">
-                            {{displayform}}
-                          </table>                         
-                        <br>                        
-                        <button  class="btn btn-primary btn-search" name="Save" type="submit">Save Tool</button>
-                    </form>                   
+            <div class="col-md-9">
+                <!--Specificy we want to take up 7/12 content blocks-->
+                <div class="mx-auto" style="width: 400px;">
+                    <h4 style="text-align:center">CALIBRATION SHOP <img
+                            src="https://img.icons8.com/fluent/48/000000/administrative-tools.png" /></h4>
                 </div>
-            </div>
-            </div>
-        
-        <div class="col-md-9">
-            <!--Specificy we want to take up 7/12 content blocks-->
-            <div class="mx-auto" style="width: 400px;">
-                <h4 style="text-align:center">CALIBRATION SHOP  <img src="https://img.icons8.com/fluent/48/000000/administrative-tools.png"/></h4>
-            </div>
-            <hr>
-            <!-- <div class= 'card card-body circleme '>
+                <hr>
+                <!-- <div class= 'card card-body circleme '>
                 <form method="get">
                      {{CaliUnCali.form}} 
                 
@@ -166,248 +166,292 @@ else
               </form>
             </div> 
             <br>-->
-            <div class="card card-body circleme">
-                <table class="table table-min table-md">
-                    <tr>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Description</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#</th>                          
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">CN #</th>
-                        
+                <div class="card card-body circleme">
+                    <table class="table table-min table-md">
+                        <tr>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Description</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">CN #</th>
 
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Range</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Expired On:</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
-                    </tr>
-               {% for tool in needsCali %}
-                    <tr>
-                        <td style="text-align:center">{{tool.description}}</td>
-                        <td style="text-align:center">{{tool.part_number}}</td>
-                        <td style="text-align:center">{{tool.serial_number}}</td>                       
-                        <td style="text-align:center">{{tool.cert_no}}</td>
-                        
-                        <td style="text-align:center">{{tool.range_no}}</td>
-                        <td style="text-align:center">{{tool.expiry_date|date:"M d, Y"}}</td>
-    
-                        
-                        <td > <a class="btn btn-sm btn-danger sb-btn" onClick='return confirmSubmit()' href="">Remove from service </a></td>
-                        <td> <a class="btn btn-sm btn-success sb-btn" onClick='return confirmSubmit()' href="{% url 'calicomplete' tool.id %}">Finish Calibration </a></td>
-                       
-                    </tr>
-                    {% endfor%}
-    
-                </table>
+
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Range</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Expired On:</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
+                        </tr>
+                        {% for tool in needsCali %}
+                        <tr>
+                            <td style="text-align:center">{{tool.description}}</td>
+                            <td style="text-align:center">{{tool.part_number}}</td>
+                            <td style="text-align:center">{{tool.serial_number}}</td>
+                            <td style="text-align:center">{{tool.cert_no}}</td>
+
+                            <td style="text-align:center">{{tool.range_no}}</td>
+                            <td style="text-align:center">{{tool.expiry_date|date:"M d, Y"}}</td>
+
+
+                            <td> <a class="btn btn-sm btn-danger sb-btn" onClick='return confirmSubmit()' href="">Remove
+                                    from service </a></td>
+                            <td> <a class="btn btn-sm btn-dark sb-btn" onClick='return confirmSubmit()'
+                                    href="{% url 'calicomplete' tool.id %}">Finish Calibration </a></td>
+
+                        </tr>
+                        {% endfor%}
+
+                    </table>
+                </div>
+
             </div>
-         
-        </div>   
+        </div>
+        <br>
+        <hr>
     </div>
+
     <br>
-    <hr>    
-</div>
+    <br>
 
-<br>
-<br>
-
-<div class="container-fluid">
-        <div class="row">    
+    <div class="container-fluid">
+        <div class="row">
             <div class="col-md-12">
                 <div class="mx-auto" style="width: 400px;">
-                    <h4 style="text-align:center">CALIBRATED TOOLS <img src="https://img.icons8.com/fluent/48/000000/level-tool.png"/></h4>                    
+                    <h4 style="text-align:center">CALIBRATED TOOLS <img
+                            src="https://img.icons8.com/fluent/48/000000/level-tool.png" /></h4>
                 </div>
             </div>
         </div>
         <hr>
 
-        <div class="row"> 
+        <div class="row">
             <div class="col-md-10">
-            <div class= 'card card-body circleme '>
-                <form method="get">
-                   {{CalibratedFilter.form}} 
-                   <button class="btn btn-info sb-btn" type="submit"><img src="https://img.icons8.com/pastel-glyph/30/000000/search--v1.png"/></button>
-              </form>
-            </div>
+                <div class='card card-body circleme '>
+                    <form method="get">
+                        {{CalibratedFilter.form}}
+                        <button class="btn btn-info sb-btn" type="submit"><img
+                                src="https://img.icons8.com/pastel-glyph/30/000000/search--v1.png" /></button>
+                    </form>
+                </div>
             </div>
 
             <div class="col-md-2">
-                <div class= 'card card-body circleme '>
+                <div class='card card-body circleme '>
                     <div style="width: 100%; overflow: hidden;">
-                        <div class = "export" style="display:flex; justify-content:center;"> <a href="{% url 'exportXlsxCali' %}"><img src="https://img.icons8.com/color/50/000000/microsoft-excel-2019--v1.png"/></a> </div>
-                        
-                    </div>  
-                                
+                        <div class="export" style="display:flex; justify-content:center;"> <a
+                                href="{% url 'exportXlsxCali' %}"><img
+                                    src="https://img.icons8.com/color/50/000000/microsoft-excel-2019--v1.png" /></a>
+                        </div>
+
+                    </div>
+
                 </div>
-                
+
             </div>
 
 
-            
-        </div>  
+
+        </div>
         <br>
 
-        <div class="row">  
+        <div class="row">
             <div class="col-md-12">
-            <div class="card card-body circleme">
-                <table class="table table-min table-md">
-                    <tr>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Descrption</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Recieved</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Calibrated</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Expiry Date</th>                        
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">CN #</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Documentation</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Range</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">DTE</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
-                    </tr>
-                    {% for tool in Cali %}
-                    <tr>
-                        <td style="text-align:center">{{tool.description}}</td>
-                        <td style="text-align:center">{{tool.part_number}}</td>
-                        <td style="text-align:center">{{tool.serial_number}}</td>
-                        <td style="text-align:center">{{tool.recieved|date:"M d, Y"}}</td>
-                        <td style="text-align:center">{{tool.calibrated_date|date:"M d, Y"}}</td>
-                        <td style="text-align:center">{{tool.expiry_date|date:"M d, Y"}}</td>
-                        <td style="text-align:center">{{tool.cert_no}}</td>
-                    
-                        {% if tool.calibration_certificate %}
-                        <td style="text-align:center;"><a href="{{tool.calibration_certificate.url}}" target="_blank"><img src="https://img.icons8.com/ios/30/000000/paper.png"/></a> </td>
-                        {%else%}
-                        <td style="text-align:center;"><img src="https://img.icons8.com/offices/30/000000/cancel-2.png"/> </td>
-                        {% endif %}
+                <div class="card card-body circleme">
+                    <table class="table table-min table-md">
+                        <tr>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Descrption</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Recieved
+                            </th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Calibrated
+                            </th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Expiry Date</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">CN #</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Documentation
+                            </th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Range</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">DTE</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
+                        </tr>
+                        {% for tool in Cali %}
+                        <tr>
+                            <td style="text-align:center">{{tool.description}}</td>
+                            <td style="text-align:center">{{tool.part_number}}</td>
+                            <td style="text-align:center">{{tool.serial_number}}</td>
+                            <td style="text-align:center">{{tool.recieved|date:"M d, Y"}}</td>
+                            <td style="text-align:center">{{tool.calibrated_date|date:"M d, Y"}}</td>
+                            <td style="text-align:center">{{tool.expiry_date|date:"M d, Y"}}</td>
+                            <td style="text-align:center">{{tool.cert_no}}</td>
 
-
-
-                        <td style="text-align:center">{{tool.range_no}}</td>
-                        
-                        {% if tool.timecalculated < 30 %}
-                        <td style="text-align:center; color:red; margin: auto; font-weight:bold">{{tool.timecalculated}} days</td>
-                        <td style="text-align:center"><a class="btn btn-sm btn-info sb-btn" href="{% url 'editCali' tool.id%}">Edit</a></td>
-                        <td style="text-align:center"><a class="btn btn-sm btn-danger sb-btn" onClick='return confirmDelete()' href="{% url 'deleteCali' tool.id %}">Delete</a></td>
-                        <td style="text-align:center"><a class="btn btn-sm btn-warning sb-btn" href="{% url 'change_calibration_status' tool.id%}" onClick='return confirmCali()'>Calibrate</a></td>
-                            {% if tool.timecalculated <= 1 %}
-                            <td style="text-align:center"><img src="https://img.icons8.com/fluent/38/000000/lock.png"/></td>
+                            {% if tool.calibration_certificate %}
+                            <td style="text-align:center;"><a href="{{tool.calibration_certificate.url}}"
+                                    target="_blank"><img src="https://img.icons8.com/ios/30/000000/paper.png" /></a>
+                            </td>
                             {%else%}
-                            <td style="text-align:center"><a class="btn btn-sm btn-primary sb-btn" href="{% url 'issueworkorderCali' tool.id%}">Issue to W/O</a></td>
+                            <td style="text-align:center;"><img
+                                    src="https://img.icons8.com/offices/30/000000/cancel-2.png" /> </td>
                             {% endif %}
-                            
-                        {% elif tool.timecalculated < 60 %}
-                        <td style="text-align:center; color:rgb(255, 187, 0); margin: auto; font-weight:bold">{{tool.timecalculated}} days</td>
-                        <td style="text-align:center"><a class="btn btn-sm btn-info sb-btn" href="{% url 'editCali' tool.id%}">Edit</a></td>
-                        <td style="text-align:center"><a class="btn btn-sm btn-danger sb-btn" onClick='return confirmDelete()' href="{% url 'deleteCali' tool.id %}">Delete</a></td>
-                        <td style="text-align:center"><a class="btn btn-sm btn-warning sb-btn" href="{% url 'change_calibration_status' tool.id%}" onClick='return confirmCali()'>Calibrate</a></td>
-                        <td style="text-align:center"><a class="btn btn-sm btn-primary sb-btn" href="{% url 'issueworkorderCali' tool.id%}">Issue to W/O</a></td>
-                        
-                        {% else %}
-                        <td style="text-align:center; color:rgb(71, 173, 30); margin: auto; font-weight:bold" >{{tool.timecalculated}} days</td>
-                        <td style="text-align:center"><a class="btn btn-sm btn-info sb-btn" href="{% url 'editCali' tool.id%}">Edit</a></td>
-                        <td style="text-align:center"><a class="btn btn-sm btn-danger sb-btn" onClick='return confirmDelete()' href="{% url 'deleteCali' tool.id %}">Delete</a></td>
-                        <td style="text-align:center"><a class="btn btn-sm btn-warning sb-btn" href="{% url 'change_calibration_status' tool.id%}" onClick='return confirmCali()'>Calibrate</a></td>
-                        <td style="text-align:center"><a class="btn btn-sm btn-primary sb-btn" href="{% url 'issueworkorderCali' tool.id%}">Issue to W/O</a></td>
-                        {% endif %}
-                        
-                        
-                       
 
-                    </tr>
-                    {% endfor%}
-    
-                </table>
-            
-            
-            
-            </div>   
-        </div>           
-        </div >
-</div>
-    
-<br>
-<br>
-<br>
 
-<div class="container-fluid">
-    <div class="row">             
-       <div class="col-md-12">
-            <div class="mx-auto" style="width: 400px;">
-                <h4 style="text-align:center">UNCALIBRATED TOOLS<img src="https://img.icons8.com/fluent/48/000000/hammer.png"/></h4>
-            </div>                     
-        </div >
-    </div>
-    <hr>
-   
-    <div class="row"> 
-            <div class="col-md-7">
-            <div class= 'card card-body circleme '>
-                <form method="get">
-                   {{UnCaliFilter.form}} 
-                   <button class="btn btn-info sb-btn" type="submit"><img src="https://img.icons8.com/pastel-glyph/30/000000/search--v1.png"/></button>
-              </form>
-            </div>
-            </div>
-            <div class="col-md-1">
-                <div class= 'card card-body circleme '>
-                    <div style="width: 100%; overflow: hidden;">
-                        <div class = "export" style="display:flex; justify-content:center;"> <a href="{% url 'exportXlsxUnCali' %}"><img src="https://img.icons8.com/color/50/000000/microsoft-excel-2019--v1.png"/></a> </div>
-                        
-                    </div>  
-                                
+
+                            <td style="text-align:center">{{tool.range_no}}</td>
+
+                            {% if tool.timecalculated < 30 %}
+                            <td style="text-align:center; color:red; margin: auto; font-weight:bold">
+                                {{tool.timecalculated}} days</td>
+                            <td style="text-align:center"><a class="btn btn-sm btn-info sb-btn"
+                                    href="{% url 'editCali' tool.id%}">Edit</a></td>
+                            <td style="text-align:center"><a class="btn btn-sm btn-danger sb-btn"
+                                    onClick='return confirmDelete()' href="{% url 'deleteCali' tool.id %}">Delete</a>
+                            </td>
+                            <td style="text-align:center"><a class="btn btn-sm btn-warning sb-btn"
+                                    href="{% url 'change_calibration_status' tool.id%}"
+                                    onClick='return confirmCali()'>Calibrate</a></td>
+                            {% if tool.timecalculated <= 1 %}
+                            <td style="text-align:center"><img src="https://img.icons8.com/fluent/38/000000/lock.png" />
+                            </td>
+                            {%else%}
+                            <td style="text-align:center"><a class="btn btn-sm btn-dark sb-btn"
+                                    href="{% url 'issueworkorderCali' tool.id%}">Issue to W/O</a></td>
+                            {% endif %}
+
+                            {% elif tool.timecalculated < 60 %}
+                            <td style="text-align:center; color:rgb(255, 187, 0); margin: auto; font-weight:bold">
+                                {{tool.timecalculated}} days</td>
+                            <td style="text-align:center"><a class="btn btn-sm btn-info sb-btn"
+                                    href="{% url 'editCali' tool.id%}">Edit</a></td>
+                            <td style="text-align:center"><a class="btn btn-sm btn-danger sb-btn"
+                                    onClick='return confirmDelete()' href="{% url 'deleteCali' tool.id %}">Delete</a>
+                            </td>
+                            <td style="text-align:center"><a class="btn btn-sm btn-warning sb-btn"
+                                    href="{% url 'change_calibration_status' tool.id%}"
+                                    onClick='return confirmCali()'>Calibrate</a></td>
+                            <td style="text-align:center"><a class="btn btn-sm btn-dark sb-btn"
+                                    href="{% url 'issueworkorderCali' tool.id%}">Issue to W/O</a></td>
+
+                            {% else %}
+                            <td style="text-align:center; color:rgb(71, 173, 30); margin: auto; font-weight:bold">
+                                {{tool.timecalculated}} days</td>
+                            <td style="text-align:center"><a class="btn btn-sm btn-info sb-btn"
+                                    href="{% url 'editCali' tool.id%}">Edit</a></td>
+                            <td style="text-align:center"><a class="btn btn-sm btn-danger sb-btn"
+                                    onClick='return confirmDelete()' href="{% url 'deleteCali' tool.id %}">Delete</a>
+                            </td>
+                            <td style="text-align:center"><a class="btn btn-sm btn-warning sb-btn"
+                                    href="{% url 'change_calibration_status' tool.id%}"
+                                    onClick='return confirmCali()'>Calibrate</a></td>
+                            <td style="text-align:center"><a class="btn btn-sm btn-dark sb-btn"
+                                    href="{% url 'issueworkorderCali' tool.id%}">Issue to W/O</a></td>
+                            {% endif %}
+
+
+
+
+                        </tr>
+                        {% endfor%}
+
+                    </table>
+
+
+
                 </div>
-                
             </div>
-    </div>  
+        </div>
+    </div>
+
+    <br>
+    <br>
     <br>
 
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card card-body circleme">
-                <table class="table table-min table-md">
-                    <tr>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Descrption</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Recieved</th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
-                        <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
-                    </tr>
-                    {% for tool in UnCali %}
-                    <tr>
-                        <td style="text-align:center">{{tool.description}}</td>
-                        <td style="text-align:center">{{tool.part_number}}</td>
-                        <td style="text-align:center">{{tool.serial_number}}</td>
-                        <td style="text-align:center">{{tool.recieved|date:"M d, Y" }}</td>
-                        
-    
-                        <td><a class="btn btn-sm btn-info sb-btn" href="{% url 'editUnCali' tool.id %}">Edit</a></td>
-                        <td><a class="btn btn-sm btn-danger sb-btn" onClick='return confirmDelete()' href="{% url 'deleteUnCali' tool.id %}">Delete</a></td>
-                        <td><a class="btn btn-sm btn-primary sb-btn" href="{% url 'issueUnCali' tool.id %}">Issue to W/O</a></td>
-                    </tr>
-                    {% endfor %}
-    
-                </table>
-            </div>    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mx-auto" style="width: 400px;">
+                    <h4 style="text-align:center">UNCALIBRATED TOOLS<img
+                            src="https://img.icons8.com/fluent/48/000000/hammer.png" /></h4>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <div class="row">
+            <div class="col-md-7">
+                <div class='card card-body circleme '>
+                    <form method="get">
+                        {{UnCaliFilter.form}}
+                        <button class="btn btn-info sb-btn" type="submit"><img
+                                src="https://img.icons8.com/pastel-glyph/30/000000/search--v1.png" /></button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <div class='card card-body circleme '>
+                    <div style="width: 100%; overflow: hidden;">
+                        <div class="export" style="display:flex; justify-content:center;"> <a
+                                href="{% url 'exportXlsxUnCali' %}"><img
+                                    src="https://img.icons8.com/color/50/000000/microsoft-excel-2019--v1.png" /></a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card card-body circleme">
+                    <table class="table table-min table-md">
+                        <tr>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Descrption</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Recieved
+                            </th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
+                        </tr>
+                        {% for tool in UnCali %}
+                        <tr>
+                            <td style="text-align:center">{{tool.description}}</td>
+                            <td style="text-align:center">{{tool.part_number}}</td>
+                            <td style="text-align:center">{{tool.serial_number}}</td>
+                            <td style="text-align:center">{{tool.recieved|date:"M d, Y" }}</td>
+
+
+                            <td><a class="btn btn-sm btn-info sb-btn" href="{% url 'editUnCali' tool.id %}">Edit</a>
+                            </td>
+                            <td><a class="btn btn-sm btn-danger sb-btn" onClick='return confirmDelete()'
+                                    href="{% url 'deleteUnCali' tool.id %}">Delete</a></td>
+                            <td><a class="btn btn-sm btn-dark sb-btn" href="{% url 'issueUnCali' tool.id %}">Issue to
+                                    W/O</a></td>
+                        </tr>
+                        {% endfor %}
+
+                    </table>
+                </div>
+            </div>
+
+
+
         </div>
 
-    
-          
+
     </div>
 
-       
-</div>
 
+    <br>
+    <br>
+    <script type="text/javascript">
+        document.getElementById("id_cert_no").focus();
+        console.log("hi there")
+    </script>
 
-<br>
-<br>
-<script type="text/javascript">
-    document.getElementById("id_cert_no").focus();
-    console.log("hi there")
-</script>
-  
 
 </body>
 

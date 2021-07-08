@@ -37,8 +37,9 @@
             float: right;
             transition: all .2s ease-in-out;
         }
+
         .btn-dre:hover {
-         transform: scale(1.1);
+            transform: scale(1.1);
         }
 
         .sb-btn {
@@ -72,11 +73,9 @@
             if (agree) {
 
                 return true;
-            }
-            else
+            } else
                 return false;
         }
-
     </script>
     <script type="text/javascript">
         function confirmDelete() {
@@ -84,8 +83,7 @@
             if (agree) {
 
                 return true;
-            }
-            else
+            } else
                 return false;
         }
     </script>
@@ -105,25 +103,25 @@
                 </div>
             </div>
         </div>
-      
+
 
         <div class="row">
 
             <div class="col-md-3">
                 <div class='card card-body circleme'>
-                    <a class="btn btn-primary sb-btn" style=" width: 300px; margin:auto;"
-                       href="{% url 'inventory'%}"><strong>Issue Stock Inventory </strong> <img
-                             src="https://img.icons8.com/color/36/000000/open-box.png" /></a>
+                    <a class="btn btn-dark sb-btn" style=" width: 300px; margin:auto;"
+                        href="{% url 'inventory'%}"><strong>Issue Stock Inventory </strong> <img
+                            src="https://img.icons8.com/color/36/000000/open-box.png" /></a>
                     <br>
-                    <a class="btn btn-primary sb-btn" style=" width: 300px; margin:auto;"
-                       href="{%url 'Rinventory'%}"><strong>Issue Reserved Inventory </strong> <img
-                             src="https://img.icons8.com/color/36/000000/scan-stock.png" /></a>
+                    <a class="btn btn-dark sb-btn" style=" width: 300px; margin:auto;"
+                        href="{%url 'Rinventory'%}"><strong>Issue Reserved Inventory </strong> <img
+                            src="https://img.icons8.com/color/36/000000/scan-stock.png" /></a>
                 </div>
-                
+
             </div>
             <div class="col-md-4">
-            
-                               
+
+
             </div>
             <div class="col-md-4"></div>
         </div>
@@ -145,7 +143,7 @@
                 </div>
                 <hr>
                 <br>
-               
+
                 <div class="card card-body reciever circleme">
                     <div class="form-group">
                         <form id="id_form" action="" method="POST">
@@ -162,7 +160,7 @@
                 <!--Specificy we want to take up 7/12 content blocks-->
                 <div class="mx-auto" style="width: 400px;">
                     <h4 style="text-align:center">OPEN WORK-ORDERS <img
-                             src="https://img.icons8.com/fluent/48/000000/open-envelope-clock.png" /></h4>
+                            src="https://img.icons8.com/fluent/48/000000/open-envelope-clock.png" /></h4>
                 </div>
                 <hr>
                 <br>
@@ -171,14 +169,14 @@
                     <form method="get" style="background-color: white;">
                         {{myfilter.form}}
                         <button class="btn btn-info sb-btn" type="submit"><img
-                                 src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" /></button>
+                                src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" /></button>
                     </form>
                 </div>
                 <br>
                 <div id="form_response" class="mb-4 text-center"></div>
 
                 <div class="turbinedisplay">
-                  <img id ="Turbine" src="https://img.icons8.com/ios-filled/100/000000/jet-engine.png"/>
+                    <img id="Turbine" src="https://img.icons8.com/ios-filled/100/000000/jet-engine.png" />
                 </div>
                 <div class="card card-body circleme">
                     <table class="table table-special table-md">
@@ -207,13 +205,13 @@
                             <td style="text-align:center">{{instance.hours_at_open}}</td>
 
                             <td><a class="btn btn-sm btn-info sb-btn"
-                                   href="{% url 'partslink' instance.id 'NotHistorical'%}">View</a></td>
+                                    href="{% url 'partslink' instance.id 'NotHistorical'%}">View</a></td>
 
-                            <td><a class="btn btn-sm btn-danger btn-comp" onClick='return confirmDelete()' 
+                            <td><a class="btn btn-sm btn-danger btn-comp" onClick='return confirmDelete()'
                                     href="{% url 'deleteWO' instance.id%}">delete</a></td>
 
                             <td> <a class="btn btn-sm btn-success btn-comp" onClick='return confirmSubmit()'
-                                   href="{% url 'change_order_status' instance.id%}">Complete</a></td>
+                                    href="{% url 'change_order_status' instance.id%}">Complete</a></td>
                         </tr>
                         {% endfor%}
 

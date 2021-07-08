@@ -1,5 +1,5 @@
 {% extends 'mgmt/index.html'%}
-{% load static%}
+{% load static %}
 {% block content %}
 {% load widget_tweaks %}
 
@@ -18,7 +18,7 @@
 
         .circleme {
             border-radius: 15px;
-            border: 2px solid;
+            border: 1px solid;
         }
 
         .btnedit {
@@ -31,6 +31,7 @@
             float: right;
         }
     </style>
+
 </head>
 <br>
 <br>
@@ -44,32 +45,40 @@
 
             <div class="col-md-4">
                 <!--Specificy we want to take up 5/12 content blocks-->
-                <div style="text-align:center">
-                    <h4> CALIBRATION SERVICE <img
-                            src="https://img.icons8.com/fluent/48/000000/realtime-protection.png" /></h4>
+                <div class="mx-auto" style="text-align:center">
+                    <h4> <img src="https://img.icons8.com/plasticine/60/000000/drop-shipping.png" /> SHIPPING
+                        INFORMATION
+                        <img src="https://img.icons8.com/plasticine/60/000000/drop-shipping.png" /></h4>
                 </div>
                 <hr>
                 <div class="card card-body reciever circleme">
                     <div class="form-group">
-                        <h5>Tool Description : {{calitool.description}}</h5>
-                        <h6>Part # : {{calitool.part_number}}</h6>
-                        <h6>Serial # : {{calitool.serial_number}}</h6>
+                        <h5>Part description : {{queryset.description}}</h5>
+                        <h6>Part # : {{queryset.part_number}}</h6>
+                        {%if queryset.serial_number%}
+                        <h6>Serial # : {{queryset.serial_number}}</h6>
+                        {%else%}
+                        <h6>Batch # : {{queryset.batch_no}}</h6>
 
+                        {%endif%}
 
                         <hr>
+                        <form action="#" method="POST">
 
-
-                        <form enctype="multipart/form-data" action="#" method="POST">
-
-                            {{ formCaliComp.management_data }}
                             {% csrf_token %}
-                            {{formCaliComp.as_p}}
+
+                            <table border="0.5" style="padding: 20px;">
+                                {{form}}
+                            </table>
                             <hr>
+
                             <button class="btn btn-dark sb-btn poschahnge" style="float:right" type="submit">Confirm
                                 Entry</button>
-                            <a class="btn btn-danger sb-btn" style="float:left" href="{% url 'tools'%}">Cancel</a>
+                            <a class="btn btn-danger sb-btn" style="float:left" href="{% url 'Qinventory' %}">Cancel</a>
+
 
                         </form>
+
 
                     </div>
                 </div>

@@ -5,43 +5,48 @@
 
 <head>
     <style>
-         .sb-btn{
-            border-radius: 15px;           
-            float: right;
-            transition: all .2s ease-in-out; 
-           
-        }
-        .sb-btn:hover{
-            transform: scale(1.1);
-        }
-        .circleme{
+        .sb-btn {
             border-radius: 15px;
-        }
-        .btnedit{
-            padding-right:5px;
-            display: flex;
-           
-        }
-        .poschahnge{
             float: right;
+            transition: all .2s ease-in-out;
+
         }
 
+        .sb-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .circleme {
+            border-radius: 15px;
+        }
+
+        .btnedit {
+            padding-right: 5px;
+            display: flex;
+
+        }
+
+        .poschahnge {
+            float: right;
+        }
     </style>
-       
+
 </head>
 <br>
 <br>
+
 <body>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-4">
-    
+
             </div>
-            
+
             <div class="col-md-4">
                 <!--Specificy we want to take up 5/12 content blocks-->
                 <div class="mx-auto" style="text-align:center;">
-                    <h4> <img src="https://img.icons8.com/cute-clipart/64/000000/double-tick.png"/>MAINTENANCE RELEASE<img src="https://img.icons8.com/cute-clipart/64/000000/double-tick.png"/></h4>
+                    <h4> <img src="https://img.icons8.com/cute-clipart/64/000000/double-tick.png" />MAINTENANCE
+                        RELEASE<img src="https://img.icons8.com/cute-clipart/64/000000/double-tick.png" /></h4>
                 </div>
                 <hr>
                 <div class="card card-body reciever circleme">
@@ -56,33 +61,35 @@
                         {%endif%}
                         <hr>
 
-                        <p><strong >Note:</strong> By confirming the following entry, you are acknowledging that this part is now serviceable and will be returned to stock and potentially issued to an aircraft. </p>
+                        <p><strong>Note:</strong> By confirming the following entry, you are acknowledging that this
+                            part is now serviceable and will be returned to stock and potentially issued to an aircraft.
+                        </p>
 
                         <hr>
-                                      
+
                         <form action="#" enctype="multipart/form-data" method="POST">
                             {{ form.management_data }}
                             {% csrf_token %}
-                        
+
                             <table border="0.5" style="padding: 20px;">
-                                {{form}} 
-                              </table>   
+                                {{form}}
+                            </table>
                             <hr>
-                     
+
                             <button class="btn btn-success sb-btn poschahnge" type="submit">Confirm Entry</button>
-                            <a class="btn btn-danger sb-btn" href="{% url 'Qinventory' %}">Cancel</a>
-                      
-                            
+                            <a class="btn btn-danger sb-btn" href="{% url 'InhouseReapirs' %}">Cancel</a>
+
+
                         </form>
-                        
-                        
+
+
                     </div>
                 </div>
                 <hr>
             </div>
-    
+
             <div class="col-md-4">
-                
+
             </div>
         </div>
     </div>

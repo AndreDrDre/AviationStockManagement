@@ -8,22 +8,29 @@
       float: right;
       transition: all 0.2s ease-in-out;
     }
+
     .sb-btn:hover {
       transform: scale(1.1);
     }
+
     .circleme {
       border-radius: 15px;
+      border: 2px solid;
     }
+
     .btnedit {
       padding-right: 5px;
       display: flex;
     }
+
     .poschahnge {
       float: right;
     }
+
     .pdfLink:hover {
       transform: scale(1.2);
     }
+
     #form_check {
       display: None;
     }
@@ -31,6 +38,7 @@
 </head>
 <br />
 <br />
+
 <body>
   <div class="container-fluid">
     <div class="row">
@@ -41,15 +49,13 @@
         <div class="mx-auto" style="text-align: center">
           <h4>
             RECIEVE ORDER
-            <img
-              src="https://img.icons8.com/fluent/48/000000/mailbox-coins.png"
-            />
+            <img src="https://img.icons8.com/fluent/48/000000/mailbox-coins.png" />
           </h4>
         </div>
         <hr />
         <div id="form_response" class="mb-4 text-center"></div>
         <div class="turbinedisplay">
-          <img id ="Turbine" src="https://img.icons8.com/ios-filled/100/000000/jet-engine.png"/>
+          <img id="Turbine" src="https://img.icons8.com/ios-filled/100/000000/jet-engine.png" />
         </div>
 
         <div id="form_check" class="mb-4 text-center">
@@ -67,12 +73,7 @@
 
         <div class="card card-body reciever circleme">
           <div class="form-group">
-            <form
-              id="id_form"
-              enctype="multipart/form-data"
-              action="#"
-              method="POST"
-            >
+            <form id="id_form" enctype="multipart/form-data" action="#" method="POST">
               {{ receiveForm.management_data }} {% csrf_token %}
               <h5><strong>PART INFORMATION</strong></h5>
               <hr />
@@ -86,18 +87,27 @@
 
               <hr />
 
-              <!-- <p><strong>Note:</strong> If the document you are planning to upload is more than <strong>1</strong> page in length. Please combine the documents! <a class = "pdfLink" href="https://products.aspose.app/pdf/merger/png-to-jpg" target="_blank"><strong style=" color:rgb(13, 130, 240)"><u>(Link)</u></strong></a></p> -->
-
               <table>
                 {{receiveForm.as_p}}
               </table>
+              <hr>
 
-              <button class="btn btn-success sb-btn" type="submit">
-                Confirm Entry
-              </button>
-              <a class="btn btn-danger sb-btn" href="{% url 'orderpart' %}"
-                >Cancel</a
-              >
+
+
+
+
+              <div class="row">
+                <div class="col-sm-4">
+                  <a class="btn btn-danger sb-btn" style="float:left" href="{% url 'orderpart' %}">Cancel</a>
+                </div>
+                <div class="col-sm-4"></div>
+
+                <div class="col-sm-4">
+                  <button class="btn btn-dark sb-btn" style="float:right" type="submit">
+                    Confirm Entry
+                  </button>
+                </div>
+              </div>
             </form>
           </div>
         </div>
@@ -108,5 +118,7 @@
     </div>
   </div>
 </body>
+<br>
+<br>
 
 {% endblock%}

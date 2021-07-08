@@ -283,6 +283,16 @@ def InhouseReapirs(request):
 
 
 @login_required(login_url='signin')
+def ShopReapirs(request):
+
+    querysetShop = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False, recieve_part=True,
+                                        repaired_by='SEND TO SHOP', Repaired=True).order_by('date_received').reverse()
+
+    context = {'querysetShop': querysetShop}
+    return render(request, "PartsFolder/shopRepairs.html", context)
+
+
+@login_required(login_url='signin')
 def repair(request, pk):
 
     queryset = Parts.objects.get(user=request.user, id=pk)
@@ -293,18 +303,54 @@ def repair(request, pk):
         form = RepairForm(request.POST, instance=queryset)
 
         if form.is_valid():
-            queryset.Repaired = True
-            queryset.save(update_fields=['Repaired'])
-            if queryset.repaired_by == 'SHOP':
-                queryset.delete()
-            else:
-                form.save()
+            # queryset.Repaired = True
+            # queryset.save(update_fields=['Repaired'])
+            form.save()
 
-            return redirect('Qinventory')
+            if queryset.repaired_by == "SEND TO SHOP":
+                return redirect('transportInfo', queryset.id)
+            else:
+                queryset.Repaired = True
+                queryset.save(update_fields=['Repaired'])
+                return redirect('Qinventory')
 
     context = {"form": form, "queryset": queryset}
 
     return render(request, "PartsFolder/repair.html", context)
+
+
+def transportInfo(request, pk):
+
+    queryset = Parts.objects.get(user=request.user, id=pk)
+
+    if request.method == 'POST':
+        form = shippingInfoForm(request.POST, instance=queryset)
+
+        if form.is_valid():
+
+            if queryset.repaired_by == "SEND TO SHOP":
+                queryset.date_received = timezone.now()
+                queryset.save(update_fields=['date_received'])
+                queryset.Repaired = True
+                queryset.save(update_fields=['Repaired'])
+                form.save()
+                return redirect('ShopReapirs')
+            else:
+                queryset.repaired_by = "SEND TO SHOP"
+                queryset.date_received = timezone.now()
+                queryset.save(update_fields=['date_received'])
+                queryset.save(update_fields=['repaired_by'])
+                queryset.Repaired = True
+                queryset.save(update_fields=['Repaired'])
+                form.save()
+                return redirect('ShopReapirs')
+
+    else:
+        form = shippingInfoForm()
+
+    context = {"form": form, "queryset": queryset}
+
+    return render(request, "PartsFolder/transportInfo.html", context)
 
 
 @login_required(login_url='signin')
@@ -321,7 +367,7 @@ def repairReturn(request, pk):
         if form.is_valid():
 
             queryset.condition = 'SV'
-            queryset.tail_number.name = 'Stock'
+            queryset.tail_number = TailNumber.objects.all()[0]
             queryset.Repaired = False
             queryset.recieve_part = False
             queryset.Quarentine = False
@@ -620,7 +666,7 @@ def addToQuarentine(request):
 
     if form.is_valid():
 
-        order_quantity = form.cleaned_data['condition']
+        order_quantity = form.cleaned_data['order_quantity']
         condition = form.cleaned_data['condition']
         part_type = form.cleaned_data['part_type']
         description = form.cleaned_data['description']
@@ -1193,7 +1239,10 @@ def waybill(request, pk):
             queryset.urlWayBill = string + form.cleaned_data['waybill']
             form.save()
 
-            return redirect('orderpart')
+            if queryset.repaired_by == "SEND TO SHOP":
+                return redirect('ShopReapirs')
+            else:
+                return redirect('orderpart')
 
     context = {"queryset": queryset, "form": form}
 
@@ -1208,12 +1257,17 @@ def deletepart(request, pk):
     if part.recieve_part == False:
         return redirect('orderpart')
     else:
+
+        if part.repaired_by == "SEND TO SHOP":
+            return redirect('ShopReapirs')
+
         if part.condition == 'REPAIRABLE':
             return redirect('Qinventory')
 
         if part.tail_number.name == 'Stock':
             print(part.tail_number.name)
             return redirect('inventory')
+
         if part.tail_number.name != 'Stock' and part.condition != 'REPAIRABLE':
             print(part.tail_number.name)
             return redirect('Rinventory')
@@ -2191,6 +2245,54 @@ def exportXlsInventory(request, Type):
 
     wb.save(response)
     return response
+
+
+@login_required(login_url='signin')
+def exportXlsOrderHistory(request):
+
+    name = 'Order History'
+    namefile = 'attachment; filename="OrderHistory.xls"'
+    rows = []
+
+    query = OrderHistory.objects.filter(
+        user=request.user).order_by('date_ordered').reverse()
+
+    rows = query.values_list('description', 'part_number', 'part_type', 'ordered_by',
+                             'tail_number', 'order_quantity', 'date_ordered')
+
+    columns = ['Description', 'Part #', 'Part-Type', 'Ordered By', 'Reserved For', 'Quantity', 'Inspector', 'Ordered On'
+               ]
+
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = namefile
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet(name)
+
+    row_num = 2
+
+    font_style = xlwt.XFStyle()
+    font_size = xlwt.XFStyle()
+
+    font_size.font.size = 28
+    font_size.font.bold = True
+    font_style.font.bold = True
+
+    ws.write(0, 0, name, font_size)
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+    font_style = xlwt.XFStyle()
+
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, str(
+                row[col_num]), font_style)
+
+    wb.save(response)
+    return response
+
+
 #---------------------------------#
 
 #Pdf-----------------------------#

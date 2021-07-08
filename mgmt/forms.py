@@ -104,7 +104,7 @@ class ReOrderForm(forms.Form):
     ordered_by = forms.ModelChoiceField(
         label='Ordered By', queryset=Employees.objects.all(), required=True)
     tail_number = forms.ModelChoiceField(
-        label='Tail #', queryset=TailNumber.objects.all(), required=True)
+        label='Tail # ', queryset=TailNumber.objects.all(), required=True)
     orderQTY = forms.IntegerField(label='Order quantity', required=True)
 
     def __init__(self, *args, **kwargs):
@@ -431,6 +431,18 @@ class RepairForm(forms.ModelForm):
         }
 
 
+class shippingInfoForm(forms.ModelForm):
+    class Meta:
+        model = Parts
+        fields = ['length', 'breadth', 'height', 'weight']
+        widgets = {
+            'length': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'breadth': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'height': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'weight': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+        }
+
+
 class repairReturnForm(forms.ModelForm):
     class Meta:
         model = Parts
@@ -604,7 +616,7 @@ class CompleteCalibrationForm(forms.ModelForm):
 
             'calibrated_date': DateInput(),
             'expiry_date': DateInput(),
-            'calibration_certificate': forms.FileInput(attrs={'class': 'form-control', 'required': False, })
+            'calibration_certificate': forms.FileInput(attrs={'class': 'form-control', 'required': True, })
 
         }
 

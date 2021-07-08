@@ -7,88 +7,91 @@
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
     <style>
-        .container-fluid{
-            
+        .container-fluid {
+
             padding-left: 200px;
             padding-right: 200px;
         }
 
-        .a{
-            color:black;
+        .a {
+            color: black;
         }
-       
-        .export:hover{
-        transform: scale(1.05);
-            }
 
-        .circleme{
+        .export:hover {
+            transform: scale(1.05);
+        }
+
+        .circleme {
             border-radius: 15px;
             border: 1px solid;
         }
-        .reciever{
-            background:  #afb4b97c ;  
+
+        .reciever {
+            background: #afb4b97c;
         }
-    
-        .btn-dre{
-            border-radius:30px;
-            font-size:18px;
-            width:100%;
+
+        .btn-dre {
+            border-radius: 30px;
+            font-size: 18px;
+            width: 100%;
             padding: 10px;
             border-radius: 15px;
-          
+
             float: right;
-            transition: all .2s ease-in-out; 
+            transition: all .2s ease-in-out;
         }
-        .btn-dre:hover{
+
+        .btn-dre:hover {
             transform: scale(1.1);
         }
 
-        .sb-btn{
+        .sb-btn {
             border-radius: 15px;
-          
+
             float: right;
-            transition: all .2s ease-in-out; 
+            transition: all .2s ease-in-out;
         }
-        .sb-btn:hover{
+
+        .sb-btn:hover {
             transform: scale(1.1);
         }
 
-        .export-layout{
-            display:flex;
+        .export-layout {
+            display: flex;
             margin: 0 auto;
-            padding-bottom:20px;
+            padding-bottom: 20px;
         }
 
-        .sb-export{
+        .sb-export {
             border-radius: 15px;
             background: linear-gradient(135deg, #4fb945 0%, #10d13a60 100%);
             float: right;
-            transition: all .2s ease-in-out; 
+            transition: all .2s ease-in-out;
             font-size: 20px;
             width: 200px;
         }
-        .sb-export:hover{
+
+        .sb-export:hover {
             transform: scale(1.1);
         }
 
 
-        .btn-comp{
+        .btn-comp {
             border-radius: 15px;
-            background:linear-gradient(135deg, #ce961c 0%, #ca1616 100%);
+            background: linear-gradient(135deg, #ce961c 0%, #ca1616 100%);
             float: right;
-            transition: all .2s ease-in-out; 
+            transition: all .2s ease-in-out;
         }
 
-        .btn-comp:hover{
+        .btn-comp:hover {
             transform: scale(1.1);
         }
+
         .display {
-            display:inline-block;
-            
-         
-            }
-    
-           
+            display: inline-block;
+
+
+        }
     </style>
 </head>
 
@@ -96,7 +99,7 @@
     <br>
     <br>
 
-    <div class="container-fluid">        
+    <div class="container-fluid">
         <div class="row">
             <div class="mx-auto" style="width: 800px;">
                 <div class="center-heading">
@@ -105,110 +108,115 @@
             </div>
             <div class="offset-lg-3 col-lg-6">
                 <div class="center-text">
-                    <p style="text-align:center">Search through a list of created-orders!</p>                  
+                    <p style="text-align:center">Search through a list of created-orders!</p>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-1"></div>
-            <div class="col-md-2">
-                <div class= 'card card-body circleme btn-pos '>
-                            <a style="margin-left: 20px; margin-right: 20px ;" class="btn  btn-primary sb-btn" href="{% url 'orderpart' %}">Order New Part</a>
-                           
-                       
+            <div class="col-md-3">
+                <div class='card card-body circleme btn-pos '>
+                    <a style="margin-left: 20px; margin-right: 20px ;" class="btn  btn-dark sb-btn"
+                        href="{% url 'orderpart' %}">Order New Part <img
+                            src="https://img.icons8.com/fluent/36/000000/create-order.png" /></a>
+
+
                 </div>
                 <div class="col-md-3"></div>
 
 
             </div>
             <div class="col-md-4"></div>
-        </div>     
-    </div> 
+        </div>
+    </div>
     <br>
-    
+
     <div class="container-fluid">
-       
-        <div class="row"> 
-            <div class="col-md-1"></div> 
+
+        <div class="row">
+            <div class="col-md-1"></div>
             <div class="col-md-9">
-            <div class= 'card card-body circleme '>
-                <form method="get">
-                   {{myFilter.form}} 
-                <button class="btn btn-primary sb-btn" type="submit">Search </button> 
-              </form>
+                <div class='card card-body circleme '>
+                    <form method="get">
+                        {{myFilter.form}}
+                        <button class="btn btn-info sb-btn" type="submit"><img
+                                src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" /> </button>
+                    </form>
+                </div>
             </div>
-            </div>
-            
+
 
             <div class="col-md-1">
-                <div class= 'card card-body circleme '>
+                <div class='card card-body circleme '>
                     <div style="width: 100%; overflow: hidden;">
-                        <div class = "export" style=""> <a href="#"><img src="https://img.icons8.com/color/58/000000/microsoft-excel-2019--v1.png"/></a> </div>                        
-                    </div>                                  
-                </div>                
+                        <div class="export"> <a href="{%url 'exportXlsOrderHistory'%}"><img
+                                    src="https://img.icons8.com/color/58/000000/microsoft-excel-2019--v1.png" /></a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>  
+        </div>
 
         <br>
 
-        <div class="row"> 
-            <div class="col-md-1"></div> 
+        <div class="row">
+            <div class="col-md-1"></div>
             <div class="col-md-10">
                 <div class="card card-body circleme">
                     <table class="table table-max table-md">
                         <tr>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Description</th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P/N</th>   
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Part-Type</th>     
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Ordered by</th>         
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Reserved for</th>           
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Part-Type</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Ordered by</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Reserved for
+                            </th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Qty</th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Vendor</th>                    
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Ordered On:</th>
-                            
 
-                            
-                            
-                           
+
+
+
+
                         </tr>
                         {% for instance in query %}
                         <tr>
-                        
+
                             <td style="text-align:center; ">{{instance.description}}</td>
                             <td style="text-align:center; ">{{instance.part_number}}</td>
                             <td style="text-align:center; ">{{instance.part_type}}</td>
                             <td style="text-align:center; ">{{instance.ordered_by}}</td>
                             <td style="text-align:center; ">{{instance.tail_number}}</td>
                             <td style="text-align:center; ">{{instance.order_quantity}}</td>
-                            <td style="text-align:center; ">{{instance.vendor}}</td>
+
                             <td style="text-align:center; ">{{instance.date_ordered|date:"M d, Y"}}</td>
 
-                          
-                          
-                            
 
 
-                            
-                            
-                  
+
+
+
+
+
+
                         </tr>
                         {% endfor%}
-        
+
                     </table>
                 </div>
-            </div> 
-            <div class="col-md-1"></div>           
-    </div >
-   
-    <br>
-    <br> 
-  
+            </div>
+            <div class="col-md-1"></div>
+        </div>
 
-      
+        <br>
+        <br>
+
+
+
 </body>
 
 
-  
-	
+
+
 
 {% endblock%}
