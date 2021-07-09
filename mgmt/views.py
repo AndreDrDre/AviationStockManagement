@@ -276,7 +276,10 @@ def InhouseReapirs(request):
     querysetInhouse = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False, recieve_part=True,
                                            repaired_by='INHOUSE REPAIR', Repaired=True).order_by('date_received').reverse()
 
-    context = {'querysetInhouse': querysetInhouse
+    Partfilter = QuaratineFilter(request.GET, queryset=querysetInhouse)
+    querysetInhouse = Partfilter.qs
+
+    context = {'querysetInhouse': querysetInhouse, "Partfilter": Partfilter
 
                }
     return render(request, "PartsFolder/inhouseRepair.html", context)
@@ -288,7 +291,10 @@ def ShopReapirs(request):
     querysetShop = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False, recieve_part=True,
                                         repaired_by='SEND TO SHOP', Repaired=True).order_by('date_received').reverse()
 
-    context = {'querysetShop': querysetShop}
+    Partfilter = QuaratineFilter(request.GET, queryset=querysetShop)
+    querysetShop = Partfilter.qs
+
+    context = {'querysetShop': querysetShop, "Partfilter": Partfilter}
     return render(request, "PartsFolder/shopRepairs.html", context)
 
 
@@ -2191,7 +2197,7 @@ def exportXlsInventory(request, Type):
         rows = []
         listx = []
         queryset = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False,
-                                        recieve_part=True).order_by('date_received').reverse()
+                                        recieve_part=True, Repaired=False).order_by('date_received').reverse()
 
         rows = queryset.values_list('description', 'part_number', 'part_type', 'tail_number__name', 'batch_no',
                                     'serial_number', 'quantity', 'inspector__name', 'condition')
@@ -2214,6 +2220,58 @@ def exportXlsInventory(request, Type):
                 tups += listx
 
         lst_tuple = [x for x in zip(*[iter(tups)]*8)]
+
+    if Type == 'Inhouse':
+        name = 'Inhouse Repairs'
+        namefile = 'attachment; filename="InhouseRepairs.xls"'
+        rows = []
+        listx = []
+        queryset = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False,
+                                        recieve_part=True, Repaired=True, repaired_by="INHOUSE REPAIR").order_by('date_received').reverse()
+
+        rows = queryset.values_list('description', 'part_number', 'part_type',
+                                    'tail_number__name', 'batch_no', 'serial_number', 'quantity', 'condition')
+
+        columns = ['Description', 'Part #', 'Part-Type',
+                   'Removed From', 'S#/B#/L#', 'Quantity', 'Condition']
+        tups = []
+
+        for check in rows:
+
+            if check[2] == 'Rotable' or check[2] == 'Tires':
+                listx = list(check)
+                listx[5] = listx[6]
+                del listx[6]
+                tups += listx
+
+            else:
+                listx = list(check)
+                del listx[6]
+                tups += listx
+
+        lst_tuple = [x for x in zip(*[iter(tups)]*8)]
+
+    if Type == 'Shop':
+        name = 'Send To Shop Repairs'
+        namefile = 'attachment; filename="ShopRepairs.xls"'
+        rows = []
+        listx = []
+        queryset = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False,
+                                        recieve_part=True, Repaired=True, repaired_by="SEND TO SHOP").order_by('date_received').reverse()
+
+        rows = queryset.values_list('description', 'part_number', 'part_type', 'inspector__name', 'condition', 'length', 'breadth', 'height', 'weight', 'date_received',
+                                    )
+
+        columns = ['Description', 'Part #', 'Part-Type', 'Inspector', 'Condition', 'Length', 'Breadth', 'Height', 'Weight', 'Date Added'
+                   ]
+        tups = []
+
+        for check in rows:
+
+            listx = list(check)
+            tups += listx
+
+        lst_tuple = [x for x in zip(*[iter(tups)]*10)]
 
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = namefile

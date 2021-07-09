@@ -115,17 +115,35 @@
 
         </div>
     </div>
+    <br>
 
     <div class="container-fluid">
         <div class="row">
-
-            <div class="col-md-12">
-                <div class="mx-auto" style="width: 400px">
-                    <br />
-
-
+            <div class="col-md-10">
+                <div class="card card-body circleme">
+                    <form method="get">
+                        {{Partfilter.form}}
+                        <button class="btn btn-info sb-btn" type="submit">
+                            <img src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" />
+                        </button>
+                    </form>
                 </div>
-                <br>
+            </div>
+
+            <div class="col-md-2">
+                <div class="card card-body circleme">
+                    <div style="width: 100%; overflow: hidden">
+                        <div class="export" style="display:flex; justify-content:center;">
+                            <a href="{% url 'exportXlsInventory' 'Inhouse'%}"><img
+                                    src="https://img.icons8.com/color/58/000000/microsoft-excel-2019--v1.png" /></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-md-12">
                 <div class="card card-body circleme">
                     <table class="table table-max table-md">
                         <tr>
@@ -198,7 +216,13 @@
                             <td style="text-align: center;vertical-align:middle;">{{part.description}}</td>
                             <td style="text-align: center;vertical-align:middle;">{{part.part_number}}</td>
                             <td style="text-align: center;vertical-align:middle;">{{part.part_type}}</td>
+
+                            {%if part.tail_number %}
                             <td style="text-align: center;vertical-align:middle;">{{part.tail_number}}</td>
+                            {%else%}
+                            <td style="text-align: center;vertical-align:middle;">N/A</td>
+
+                            {%endif%}
 
                             {%if part.serial_number%}
                             <td style="text-align: center;vertical-align:middle;">{{part.serial_number}}</td>
@@ -250,14 +274,15 @@
 
                             <td>
                                 <a class="btn btn-sm btn-danger sb-btn" onClick='return confirmDelete()'
-                                    href="{%url 'deletepart' part.id%}">Scrap</a>
+                                    href="{%url 'deletepart' part.id%}">Scrap Part</a>
                             </td>
                             <td>
-                                <a class="btn btn-sm btn-primary sb-btn" href="{%url 'repairReturn' part.id%}">Return
+                                <a class="btn btn-sm btn-dark sb-btn" href="{%url 'repairReturn' part.id%}">Return
                                     Part</a>
                             </td>
                             <td>
-                                <a class="btn btn-sm btn-info sb-btn" href="{%url 'transportInfo' part.id %}">SHOP</a>
+                                <a class="btn btn-sm btn-info sb-btn" href="{%url 'transportInfo' part.id %}">Send To
+                                    Shop</a>
                             </td>
                         </tr>
                         {% endfor%}

@@ -73,7 +73,7 @@ class PartsFilter(django_filters.FilterSet):
 class QuaratineFilter(django_filters.FilterSet):
     class Meta:
         model = Parts
-        fields = ['part_type', 'part_number', 'description', ]
+        fields = ['description', 'part_type', 'part_number', ]
 
         widgets = {
 
