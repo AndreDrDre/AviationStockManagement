@@ -1,162 +1,178 @@
-
 {% load static %}
 <!doctype html>
 <html lang="en">
-  
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    
-    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
-    <link href="{% static 'js/nprogress.css' %}" rel="stylesheet">
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <!-- Fengyuan Chen's Datepicker -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
-    
-    <title>Inventory Manager</title>
-    <style>
+<link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+<link href="{% static 'js/nprogress.css' %}" rel="stylesheet">
 
-      #main-footer{
-        position:fixed;
-        left:0px;
-        bottom:0px;
-        z-index:5;
-        width:100%;
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+</script>
+
+<!-- Fengyuan Chen's Datepicker -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css"
+    integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js"
+    integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+
+<title>Inventory Manager</title>
+<style>
+    #main-footer {
+        position: fixed;
+        left: 0px;
+        bottom: 0px;
+        z-index: 5;
+        width: 100%;
         height: 80px;
         padding-left: 20px;
-          
-     }
 
-    </style>
-  </head>
-  <body>
- 
+    }
+</style>
+</head>
 
-  
-    {%include 'partials/navbar.html'%}    
+<body>
+
+
+
+    {%include 'partials/navbar.html'%}
     {% block content %}
-   
+
     {% endblock%}
 
     <br>
     <br>
     <br>
     {%include 'partials/footer.html'%}
-  
+
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    
-    
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
 
-    
+
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet"/>
+    <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css"
+        rel="stylesheet" />
 
 
     <script type="text/javascript" src="{% static 'js/home.js' %}"></script>
-    <script type="text/javascript"  src="{% static 'js/paging.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/paging.js' %}"></script>
     <script src="{% static 'js/nprogress.js' %}"></script>
-   
-   <script type="text/javascript">
-      $(function () {
-          $('.table-max').paging({limit:16});
-          $('.table-med').paging({limit:11});
-          $('.table-min').paging({limit:6});
-          $('.table-special').paging({limit:7});
-         
-      });
 
-  
-    
-  </script>
-  <script>
-      
+    <script type="text/javascript">
+        $(function () {
+            $('.table-max').paging({
+                limit: 16
+            });
+            $('.table-med').paging({
+                limit: 11
+            });
+            $('.table-min').paging({
+                limit: 6
+            });
+            $('.table-special').paging({
+                limit: 7
+            });
 
-    $("#id_form").submit((event) => {
-       if(!$("#id_form").attr('validated')) {  
-            //$("#id_form") = $(this)
-            //$form = $(this)
-            //var formData = new FormData(this);          
-            //var formData = new FormData();
-            
-            $.ajax({
-                url :"{{ request.path }}",
-                method: "POST",
-                data: $('#id_form').serialize(),
-                //data: formData,
-                success (response) {
-                    if ('error' in response) {
-                        $('#id_form').attr('validated', true);
-                        $('#id_form').submit();
-                    } else {
-                        if ($("#id_price").val() == "" ||$("#id_cert_document").val() == ""  ){
-                            
-                            $("#Turbine").hide();
-                            $(".circleme").hide();
-                            $("#id_form").hide();
-                            $("#form_check").show();
+        });
+    </script>
+    <script>
+        $("#id_form").submit((event) => {
+            if (!$("#id_form").attr('validated')) {
+                let formData = new FormData($("#id_form")[0]);
+                $.ajax({
+                    url: "{{ request.path }}",
+                    method: "POST",
+                    //data: $('#id_form').serialize(),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    enctype: "multipart/form-data",
+                    success(response) {
+                        if ('error' in response) {
+                            $('#id_form').attr('validated', true);
+                            $('#id_form').submit();
+                        } else {
+                            if ($("#id_price").val() == "" || $("#id_cert_document").val() == "") {
 
-                            $("#submit-check").click(function() {
-                                $("#form_check").hide();
+                                $("#Turbine").hide();
+                                $(".circleme").hide();
+                                $("#id_form").hide();
+                                $("#form_check").show();
+
+                                $("#submit-check").click(function () {
+                                    $("#form_check").hide();
+                                    $("#Turbine").show();
+                                    $("#form_response").show();
+                                    $("#form_response").fadeOut(1000).fadeIn(1000).fadeOut(1000)
+                                        .fadeIn(1000);
+                                    $("#form_response").html(response.success);
+                                    setTimeout(() => {
+                                        window.location.href = response.redirect_to;
+                                    }, 5000);
+                                    data.append('cert_document', $('#id_cert_document'))[0]
+                                        .files;
+                                });
+
+                                $("#submit-check-false").click(function () {
+                                    console.log("back clicked")
+                                    $("#form_check").hide();
+                                    $(".circleme").show();
+                                    $("#id_form").show();
+
+
+                                });
+                            } else {
+                                //formData.append('cert_document',$('#id_cert_document'))[0].files;
+                                $(".circleme").hide();
                                 $("#Turbine").show();
                                 $("#form_response").show();
-                                $("#form_response").fadeOut(1000).fadeIn(1000).fadeOut(1000).fadeIn(1000);
+                                $("#form_response").fadeOut(1000).fadeIn(2000).fadeOut(1000).fadeIn(
+                                    2000);
                                 $("#form_response").html(response.success);
                                 setTimeout(() => {
                                     window.location.href = response.redirect_to;
                                 }, 5000);
-                                data.append('cert_document',$('#id_cert_document'))[0].files;
-                            });
+                                data.append('cert_document', $('#id_cert_document'))[0].files;
 
-                            $("#submit-check-false").click(function() {
-                                console.log("back clicked")
-                                $("#form_check").hide();
-                                $(".circleme").show();
-                                $("#id_form").show();
-                                
-                                
-                            });                  
+                            }
+                        }
                     }
-                        else{
-                            //formData.append('cert_document',$('#id_cert_document'))[0].files;
-                            $(".circleme").hide();
-                            $("#Turbine").show();
-                            $("#form_response").show();
-                            $("#form_response").fadeOut(1000).fadeIn(2000).fadeOut(1000).fadeIn(2000);
-                            $("#form_response").html(response.success);
-                            setTimeout(() => {
-                                window.location.href = response.redirect_to;
-                            }, 5000);
-                            data.append('cert_document',$('#id_cert_document'))[0].files;
+                });
 
-                        }                         
-                    }
-                }
-            });
 
-    
-           
-            return false;
-       }
-        return true
-    });
-  </script>
 
- 
+                return false;
+            }
+            return true
+        });
+    </script>
 
-  </body>
+
+
+</body>
+
 </html>

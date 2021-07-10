@@ -5,6 +5,7 @@ from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.db.models import Q
+import os
 
 
 PARTTYPE_CHOICES = (
@@ -172,9 +173,9 @@ class AddInventory(forms.Form):
     purchase_order_number = forms.CharField(
         label="Purchase Order No.", required=False)
 
-    cert_document = forms.ImageField(
-        label='Certification Document', required=False)
-    # cert_document = forms.FileField(required=False)
+    # cert_document = forms.ImageField(
+    #     label='Certification Document', required=False)
+    cert_document = forms.FileField(required=False)
 
     inspector = forms.ModelChoiceField(label='Inspector',
                                        queryset=Employees.objects.all(), required=True)
@@ -189,29 +190,25 @@ class AddInventory(forms.Form):
         max_length=100, label="Work Card #", required=True)
     price = forms.IntegerField(label="Price", required=False)
 
-  # DateInput
-  # expiry_date = DateInput()
     expiry_date = forms.DateField(
         widget=DateInput(), required=False
     )
 
-   # DateInput()
-
-   # def clean_cert_document(self):
-   #     uploaded_file = self.cleaned_data['cert_document']
-   #     try:
-   #         # create an ImageField instance
-   #         im = forms.ImageField()
-   #         # now check if the file is a valid image
-   #         im.to_python(uploaded_file)
-   #     except forms.ValidationError:
-   #         # file is not a valid image;
-   #         # so check if it's a pdf
-   #         name, ext = os.path.splitext(uploaded_file.name)
-   #         if ext not in ['.pdf', '.PDF']:
-   #             raise forms.ValidationError(
-   #                 "Only images and PDF files allowed")
-   #     return uploaded_file
+    def clean_cert_document(self):
+        uploaded_file = self.cleaned_data['cert_document']
+        try:
+            # create an ImageField instance
+            im = forms.ImageField()
+            # now check if the file is a valid image
+            im.to_python(uploaded_file)
+        except forms.ValidationError:
+            # file is not a valid image;
+            # so check if it's a pdf
+            name, ext = os.path.splitext(uploaded_file.name)
+            if ext not in ['.pdf', '.PDF']:
+                raise forms.ValidationError(
+                    "Only images and PDF files allowed")
+        return uploaded_file
 
     def clean_order_quantity(self):
 

@@ -765,7 +765,7 @@ def createneworder(request, pk):
 def issuePart(request, pk):
     check = ""
     queryset = Parts.objects.get(user=request.user, id=pk)
-    check = queryset.tail_number
+    check = queryset.tail_number.name
     sender = queryset.id
 
     form = issueWorkForm(instance=queryset, user=request.user)
@@ -786,7 +786,7 @@ def issuePart(request, pk):
                 queryset.save(update_fields=['quantity'])
                 form.save()
 
-            if queryset.tail_number == 'Stock':
+            if queryset.tail_number.name == 'Stock':
                 quersetReOrder = ReorderItems.objects.all()
                 for x in quersetReOrder:
                     if x.part_number == queryset.part_number:
@@ -2237,19 +2237,20 @@ def exportXlsInventory(request, Type):
         tups = []
 
         for check in rows:
-
             if check[2] == 'Rotable' or check[2] == 'Tires':
                 listx = list(check)
-                listx[5] = listx[6]
-                del listx[6]
+                listx[4] = listx[5]
+                del listx[4]
                 tups += listx
 
             else:
                 listx = list(check)
-                del listx[6]
+                del listx[5]
                 tups += listx
 
-        lst_tuple = [x for x in zip(*[iter(tups)]*8)]
+        print(tups)
+        lst_tuple = [x for x in zip(*[iter(tups)]*7)]
+        print(lst_tuple)
 
     if Type == 'Shop':
         name = 'Send To Shop Repairs'
