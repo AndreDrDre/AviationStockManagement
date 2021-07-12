@@ -17,6 +17,9 @@ urlpatterns = [
     # General Routing
 
     #Store Logic -------------------------------------------------#
+
+
+    path('PartsHistory/', views.PartsHistory, name='PartsHistory'),
     path('store/', views.store, name='store'),
     path('inventory', views.inventory, name='inventory'),
     path('Rinventory', views.Rinventory, name='Rinventory'),
@@ -70,6 +73,8 @@ urlpatterns = [
 
 
     # Work-orders and related parts-----------------------------#
+
+    path('WorkOrderHistory/', views.WorkOrderHistory, name='WorkOrderHistory'),
     path('workorders/', views.workorders, name='workorders'),
     path('partslink/<str:pk>/<str:Type>/', views.partslink, name='partslink'),
     path('sendhometoolCali/<str:pk>/',

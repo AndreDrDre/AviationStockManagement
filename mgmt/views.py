@@ -852,44 +852,40 @@ def edit_part(request, pk):
 
 
 @login_required(login_url='signin')
-def historical_inventory(request):
-    #statuc bar#
-    querysetW = WorkOrders.objects.filter(user=request.user)
-    workordercount = querysetW.filter(status='OPEN').count()
-    workordercountclosed = querysetW.filter(status='COMPLETED').count()
-
-    querypendingorders = Parts.objects.filter(user=request.user)
-    orderpending = querypendingorders.filter(recieve_part=False).count()
-
-    reorderparts = ReorderItems.objects.filter(
-        user=request.user, reorder_level__gte=F('quantity')).count()
-
-    #status end#
-
+def PartsHistory(request):
     # All parts with which have been exhausted through work-order assigning
     queryset = Parts.objects.filter(user=request.user, Historical=True)
-
-    # completed work-orders
-    querysetclosed = querysetW.filter(status='COMPLETED')
-
     Partfilter = PartsFilter(request.GET, queryset=queryset)
     queryset = Partfilter.qs
 
+    context = {
+        "queryset": queryset,
+        "partfilter": Partfilter,
+    }
+
+    return render(request, "PartsFolder/completeParts.html", context)
+
+
+def WorkOrderHistory(request):
+
+    # completed work-orders
+
+    querysetclosed = WorkOrders.objects.filter(
+        user=request.user, status='COMPLETED')
     myFilter_workorder = WorkOrderFilter(request.GET, queryset=querysetclosed)
     querysetclosed = myFilter_workorder.qs
 
     context = {
-        "workordercount": workordercount,
-        "workordercountclosed": workordercountclosed,
-        "orderpending": orderpending,
-        "queryset": queryset,
-        "partfilter": Partfilter,
-        "reorderparts": reorderparts,
         "querysetclosed": querysetclosed,
         "workOrderFilter": myFilter_workorder,
-
     }
-    return render(request, "PartsFolder/historical_Inventory.html", context)
+
+    return render(request, "WorkorderFolder/completedWO.html", context)
+
+
+@login_required(login_url='signin')
+def historical_inventory(request):
+    return render(request, "PartsFolder/historical_inventory.html")
 
 
 @login_required(login_url='signin')
@@ -1817,9 +1813,7 @@ def tools(request):
     displayform = ""
 
     if request.method == 'POST':
-
         if 'tool_type' in request.POST.keys():
-
             if request.POST['tool_type'] == '0':
                 displayform = CalibratedToolForm(condition,
                                                  request.POST or None)
@@ -2024,14 +2018,13 @@ def calicomplete(request, pk):
         request.POST, request.FILES, instance=calitool)
 
     if request.method == 'POST':
-        # senidng new data into a pre exisitng field.
-        # formCaliComp = CompleteCalibrationForm(
-        #     request.POST, request.FILES, instance=calitool)
         if formCaliComp.is_valid():
             formCaliComp.save()
             calitool.calibrated = True
             calitool.save(update_fields=['calibrated'])
             return redirect('tools')  # redirect to home page
+    else:
+        formCaliComp = CompleteCalibrationForm()
 
     context = {'formCaliComp': formCaliComp, "calitool": calitool}
     return render(request, 'ToolsFolder/calibrationcomplete.html', context)
@@ -2274,6 +2267,59 @@ def exportXlsInventory(request, Type):
 
         lst_tuple = [x for x in zip(*[iter(tups)]*10)]
 
+    if Type == 'completedWO':
+        name = 'Completed Work Orders'
+        namefile = 'attachment; filename="completedWO.xls"'
+        rows = []
+        listx = []
+        queryset = WorkOrders.objects.filter(
+            user=request.user, status='COMPLETED').order_by('date_closed').reverse()
+
+        rows = queryset.values_list('workorder_number', 'tail_number__name', 'tail_number__type_airframe', 'ldgs_at_open', 'date_added', 'date_closed',
+                                    )
+
+        columns = ['Work Order #', 'Tail #', 'Airframe Type',
+                   'LDGS @ CLOSE', 'Date Opend', 'Date Closed', ]
+        tups = []
+
+        for check in rows:
+
+            listx = list(check)
+            tups += listx
+
+        lst_tuple = [x for x in zip(*[iter(tups)]*6)]
+
+    if Type == 'completedParts':
+        name = 'Parts History'
+        namefile = 'attachment; filename="PartsHistory.xls"'
+        rows = []
+        listx = []
+        queryset = Parts.objects.filter(
+            user=request.user, Historical=True).order_by('date_received').reverse()
+
+        rows = queryset.values_list('description', 'part_number', 'part_type', 'batch_no',
+                                    'serial_number', 'inspector__name',)
+
+        columns = ['Description', 'Part #', 'Part-Type', 'S#/B#/L#', 'Inspector',
+                   ]
+        tups = []
+
+        for check in rows:
+
+            if check[2] == 'Rotable' or check[2] == 'Tires':
+                listx = list(check)
+                listx[3] = listx[4]
+                del listx[4]
+                tups += listx
+
+            else:
+                listx = list(check)
+                del listx[4]
+                tups += listx
+
+        # lst = [50,"Python","JournalDev",100]
+        lst_tuple = [x for x in zip(*[iter(tups)]*5)]
+
     response = HttpResponse(content_type='application/ms-excel')
     response['Content-Disposition'] = namefile
 
@@ -2355,7 +2401,6 @@ def exportXlsOrderHistory(request):
 #---------------------------------#
 
 #Pdf-----------------------------#
-
 
 @login_required(login_url='signin')
 def exportPDForder(request):

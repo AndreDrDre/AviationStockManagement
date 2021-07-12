@@ -100,8 +100,8 @@ class WorkOrders(models.Model):
         max_length=20, choices=WORKORDER_CHOICES, default='OPEN')
     description = models.TextField(blank=True, null=True)
     type_airframe = models.CharField(max_length=50, blank=True, null=True)
-    date_added = models.DateTimeField(auto_now=True)
-    date_closed = models.DateTimeField(
+    date_added = models.DateField(auto_now=True)
+    date_closed = models.DateField(
         auto_now_add=False, blank=True, null=True)
     ldgs_at_open = models.IntegerField(default='0', blank=True, null=True)
     hours_at_open = models.IntegerField(default='0', blank=True, null=True)
@@ -333,11 +333,14 @@ class Tools_Calibrated(models.Model):
 
     @property
     def timecalculated(self):
-        exp = self.expiry_date
-        now = timezone.now()
-        total = (exp-now).days
 
-        return int(total)+1
+        if self.expiry_date:
+            exp = self.expiry_date
+            now = timezone.now()
+            total = (exp-now).days
+            return int(total)+1
+        else:
+            return "N/A"
 
     def save(self, *args, **kwargs):
         if self.barcode == None:

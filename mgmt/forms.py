@@ -83,11 +83,10 @@ class CreateWorkorder(forms.ModelForm):
                   'ldgs_at_open', 'hours_at_open', 'workorder_number', ]
 
         widgets = {
-            'tail_number': forms.Select(attrs={'class': 'form-control'}),
-            # 'type_airframe': forms.TextInput(attrs={'class': 'form-control'}),
-            'ldgs_at_open': forms.TextInput(attrs={'class': 'form-control'}),
-            'hours_at_open': forms.TextInput(attrs={'class': 'form-control'}),
-            'workorder_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'tail_number': forms.Select(attrs={'class': 'form-control', 'required': True, }),
+            'ldgs_at_open': forms.TextInput(attrs={'class': 'form-control', 'required': True, }),
+            'hours_at_open': forms.TextInput(attrs={'class': 'form-control', 'required': True, }),
+            'workorder_number': forms.TextInput(attrs={'class': 'form-control', 'required': True, }),
 
         }
 
@@ -116,17 +115,17 @@ class ReOrderForm(forms.Form):
 
 class CreateOrder(forms.Form):
 
-    part_type = forms.ChoiceField(choices=PARTTYPE_CHOICES)
-    description = forms.CharField(max_length=100)
-    part_number = forms.CharField(max_length=50)
+    part_type = forms.ChoiceField(choices=PARTTYPE_CHOICES, required=True)
+    description = forms.CharField(max_length=100, required=True)
+    part_number = forms.CharField(max_length=50, required=True)
     ipc_reference = forms.CharField(max_length=200)
 
-    order_quantity = forms.IntegerField(label='Order quantity')
+    order_quantity = forms.IntegerField(label='Order quantity', required=True)
 
     tail_number = forms.ModelChoiceField(label='Tail #',
-                                         queryset=TailNumber.objects.all())
+                                         queryset=TailNumber.objects.all(), required=True)
     ordered_by = forms.ModelChoiceField(label='Ordered by',
-                                        queryset=Employees.objects.all())
+                                        queryset=Employees.objects.all(), required=True)
 
 
 #-------------------------------------------------------------------#
@@ -158,17 +157,17 @@ class AddInventory(forms.Form):
 
     # Order-Part
     tail_number = forms.ModelChoiceField(label='Tail #',
-                                         queryset=TailNumber.objects.filter(~Q(name='Stock')))
-    part_type = forms.ChoiceField(choices=PARTTYPE_CHOICES)
-    description = forms.CharField(max_length=100)
-    part_number = forms.CharField(max_length=50, label='Part #')
-    indentifier = forms.CharField(max_length=50, label="S#/B#")
+                                         queryset=TailNumber.objects.filter(~Q(name='Stock')), required=True)
+    part_type = forms.ChoiceField(choices=PARTTYPE_CHOICES, required=True)
+    description = forms.CharField(max_length=100, required=True)
+    part_number = forms.CharField(max_length=50, label='Part #', required=True)
+    indentifier = forms.CharField(max_length=50, label="S#/B#", required=True)
 
     # ipc_reference = forms.CharField(max_length=200)
     vendor = forms.CharField(max_length=200)
 
     # Receive-Part
-    order_quantity = forms.IntegerField(label="Quantity")
+    order_quantity = forms.IntegerField(label="Quantity", required=True)
     invoice_number = forms.CharField(label="Invoice No.", required=False)
     purchase_order_number = forms.CharField(
         label="Purchase Order No.", required=False)
@@ -260,19 +259,36 @@ class AddInventory(forms.Form):
 class addQuaretineInventory(forms.Form):
     # Order-Part
 
-    part_type = forms.ChoiceField(choices=PARTTYPE_CHOICES)
-    description = forms.CharField(max_length=100)
-    part_number = forms.CharField(max_length=50, label='Part #')
-    indentifier = forms.CharField(max_length=50, label="S#/B#")
+    part_type = forms.ChoiceField(choices=PARTTYPE_CHOICES, required=True)
+    description = forms.CharField(max_length=100, required=True)
+    part_number = forms.CharField(max_length=50, label='Part #', required=True)
+    indentifier = forms.CharField(max_length=50, label="S#/B#", required=True)
     # Receive-Part
-    order_quantity = forms.IntegerField(label="Quantity")
-    cert_document = forms.ImageField(
-        label='Certification Document', required=False)
+    order_quantity = forms.IntegerField(label="Quantity", required=True)
+    # cert_document = forms.ImageField(
+    #     label='Certification Document', required=False)
+    cert_document = forms.FileField(required=False)
 
     inspector = forms.ModelChoiceField(label='Inspector',
-                                       queryset=Employees.objects.all())
+                                       queryset=Employees.objects.all(), required=True)
     condition = forms.ChoiceField(
-        choices=CONDITIONS_CHOICES)
+        choices=CONDITIONS_CHOICES, required=True)
+
+    def clean_cert_document(self):
+        uploaded_file = self.cleaned_data['cert_document']
+        try:
+            # create an ImageField instance
+            im = forms.ImageField()
+            # now check if the file is a valid image
+            im.to_python(uploaded_file)
+        except forms.ValidationError:
+            # file is not a valid image;
+            # so check if it's a pdf
+            name, ext = os.path.splitext(uploaded_file.name)
+            if ext not in ['.pdf', '.PDF']:
+                raise forms.ValidationError(
+                    "Only images and PDF files allowed")
+        return uploaded_file
 
     def clean_order_quantity(self):
 
@@ -309,14 +325,31 @@ class RecieveOrder(forms.ModelForm):
 
         widgets = {
 
-            'inspector': forms.Select(attrs={'class': 'form-control'}),
-            'invoice_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'vendor': forms.TextInput(attrs={'class': 'form-control'}),
-            'serial_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'inspector': forms.Select(attrs={'class': 'form-control', "required": True}),
+            'invoice_number': forms.TextInput(attrs={'class': 'form-control', "required": True}),
+            'vendor': forms.TextInput(attrs={'class': 'form-control', "required": True}),
+            'serial_number': forms.TextInput(attrs={'class': 'form-control', "required": True}),
             'purchase_order_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'cert_document': forms.FileInput(attrs={'class': 'form-control', 'required': False, }),
-            'condition': forms.Select(attrs={'class': 'form-control'}),
+            'condition': forms.Select(attrs={'class': 'form-control', "required": True}),
         }
+
+    cert_document = forms.FileField(required=False)
+
+    def clean_cert_document(self):
+        uploaded_file = self.cleaned_data['cert_document']
+        try:
+            # create an ImageField instance
+            im = forms.ImageField()
+            # now check if the file is a valid image
+            im.to_python(uploaded_file)
+        except forms.ValidationError:
+            # file is not a valid image;
+            # so check if it's a pdf
+            name, ext = os.path.splitext(uploaded_file.name)
+            if ext not in ['.pdf', '.PDF']:
+                raise forms.ValidationError(
+                    "Only images and PDF files allowed")
+        return uploaded_file
 
     def __init__(self, pt, *args, **kwargs):
         super(RecieveOrder, self).__init__(*args, **kwargs)
@@ -332,15 +365,30 @@ class RecieveAgs(forms.ModelForm):
         fields = ['receive_quantity', 'inspector',
                   'invoice_number', 'batch_no',  'purchase_order_number', 'cert_document', 'condition']
         widgets = {
-            'receive_quantity': forms.TextInput(attrs={'class': 'form-control'}),
-            'inspector': forms.Select(attrs={'class': 'form-control'}),
-            'invoice_number': forms.TextInput(attrs={'class': 'form-control'}),
-
-            'batch_no': forms.TextInput(attrs={'class': 'form-control'}),
+            'receive_quantity': forms.TextInput(attrs={'class': 'form-control', "required": True}),
+            'inspector': forms.Select(attrs={'class': 'form-control', "required": True}),
+            'invoice_number': forms.TextInput(attrs={'class': 'form-control', "required": True}),
+            'batch_no': forms.TextInput(attrs={'class': 'form-control', "required": True}),
             'purchase_order_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'cert_document': forms.FileInput(attrs={'class': 'form-control', 'required': False, }),
-            'condition': forms.Select(attrs={'class': 'form-control'}),
+            'condition': forms.Select(attrs={'class': 'form-control', "required": True}),
         }
+    cert_document = forms.FileField(required=False)
+
+    def clean_cert_document(self):
+        uploaded_file = self.cleaned_data['cert_document']
+        try:
+            # create an ImageField instance
+            im = forms.ImageField()
+            # now check if the file is a valid image
+            im.to_python(uploaded_file)
+        except forms.ValidationError:
+            # file is not a valid image;
+            # so check if it's a pdf
+            name, ext = os.path.splitext(uploaded_file.name)
+            if ext not in ['.pdf', '.PDF']:
+                raise forms.ValidationError(
+                    "Only images and PDF files allowed")
+        return uploaded_file
 
     def __init__(self, pt, *args, **kwargs):
         super(RecieveAgs, self).__init__(*args, **kwargs)
@@ -369,16 +417,33 @@ class RecieveconsumShelf(forms.ModelForm):
         fields = ['receive_quantity', 'inspector', 'invoice_number', 'batch_no',
                   'purchase_order_number', 'cert_document', 'expiry_date', 'condition']
         widgets = {
-            'receive_quantity': forms.TextInput(attrs={'class': 'form-control'}),
-            'inspector': forms.Select(attrs={'class': 'form-control'}),
-            'invoice_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'batch_no': forms.TextInput(attrs={'class': 'form-control'}),
-            'purchase_order_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'cert_document': forms.FileInput(attrs={'class': 'form-control', 'required': False, }),
+            'receive_quantity': forms.TextInput(attrs={'class': 'form-control', "required": True}),
+            'inspector': forms.Select(attrs={'class': 'form-control', "required": True}),
+            'invoice_number': forms.TextInput(attrs={'class': 'form-control', "required": True}),
+            'batch_no': forms.TextInput(attrs={'class': 'form-control', "required": True}),
+            'purchase_order_number': forms.TextInput(attrs={'class': 'form-control', }),
             'expiry_date': DateInput(),
-            'condition': forms.Select(attrs={'class': 'form-control'}),
+            'condition': forms.Select(attrs={'class': 'form-control', "required": True}),
 
         }
+
+    cert_document = forms.FileField(required=False)
+
+    def clean_cert_document(self):
+        uploaded_file = self.cleaned_data['cert_document']
+        try:
+            # create an ImageField instance
+            im = forms.ImageField()
+            # now check if the file is a valid image
+            im.to_python(uploaded_file)
+        except forms.ValidationError:
+            # file is not a valid image;
+            # so check if it's a pdf
+            name, ext = os.path.splitext(uploaded_file.name)
+            if ext not in ['.pdf', '.PDF']:
+                raise forms.ValidationError(
+                    "Only images and PDF files allowed")
+        return uploaded_file
 
     def __init__(self, pt, *args, **kwargs):
         super(RecieveconsumShelf, self).__init__(*args, **kwargs)
@@ -410,8 +475,8 @@ class CreateNewOrder(forms.ModelForm):
                   'vendor', 'purchase_order_number']
         widgets = {
 
-            'order_quantity': forms.TextInput(attrs={'class': 'form-control'}),
-            'ordered_by': forms.Select(attrs={'class': 'form-control'}),
+            'order_quantity': forms.TextInput(attrs={'class': 'form-control', "required": True}),
+            'ordered_by': forms.Select(attrs={'class': 'form-control', "required": True}),
             'vendor': forms.TextInput(attrs={'class': 'form-control'}),
             'purchase_order_number': forms.TextInput(attrs={'class': 'form-control'}),
         }
@@ -423,7 +488,7 @@ class RepairForm(forms.ModelForm):
         fields = ['repaired_by', ]
         widgets = {
 
-            'repaired_by': forms.Select(attrs={'class': 'form-control'}),
+            'repaired_by': forms.Select(attrs={'class': 'form-control', "required": True}),
 
         }
 
@@ -433,10 +498,10 @@ class shippingInfoForm(forms.ModelForm):
         model = Parts
         fields = ['length', 'breadth', 'height', 'weight']
         widgets = {
-            'length': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
-            'breadth': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
-            'height': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
-            'weight': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'length': forms.TextInput(attrs={'class': 'form-control', 'required': True, 'placeholder': 'length in inches'}),
+            'breadth': forms.TextInput(attrs={'class': 'form-control', 'required': True, 'placeholder': 'breadth in inches'}),
+            'height': forms.TextInput(attrs={'class': 'form-control', 'required': True, 'placeholder': 'height in inches'}),
+            'weight': forms.TextInput(attrs={'class': 'form-control', 'required': True, 'placeholder': 'weight in pounds'}),
         }
 
 
@@ -446,8 +511,26 @@ class repairReturnForm(forms.ModelForm):
         fields = ['inspector', 'cert_document', 'price']
         widgets = {
             'inspector': forms.Select(attrs={'class': 'form-control', 'required': True, }),
-            'cert_document': forms.FileInput(attrs={'class': 'form-control', 'required': True, }),
+
         }
+
+    cert_document = forms.FileField(required=False)
+
+    def clean_cert_document(self):
+        uploaded_file = self.cleaned_data['cert_document']
+        try:
+            # create an ImageField instance
+            im = forms.ImageField()
+            # now check if the file is a valid image
+            im.to_python(uploaded_file)
+        except forms.ValidationError:
+            # file is not a valid image;
+            # so check if it's a pdf
+            name, ext = os.path.splitext(uploaded_file.name)
+            if ext not in ['.pdf', '.PDF']:
+                raise forms.ValidationError(
+                    "Only images and PDF files allowed")
+        return uploaded_file
 
     def __init__(self, conditionCheck, *args, **kwargs):
         super(repairReturnForm, self).__init__(*args, **kwargs)
@@ -530,37 +613,39 @@ class CalibratedToolForm(forms.ModelForm):
         fields = ['description', 'serial_number', 'part_number',
                   'calibrated_date', 'expiry_date', 'range_no', 'calibration_certificate']
         widgets = {
-            'description': forms.TextInput(attrs={'class': 'form-control'}),
-            'serial_number': forms.TextInput(attrs={'class': 'form-control'}),
-            'part_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'serial_number': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+            'part_number': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
             'calibrated_date': DateInput(),
             'expiry_date': DateInput(),
-            'range_no': forms.TextInput(attrs={'class': 'form-control'}),
-            'calibration_certificate': forms.FileInput(attrs={'class': 'form-control', 'required': True, }),
+            'range_no': forms.TextInput(attrs={'class': 'form-control', 'required': True}),
+
 
         }
 
+    calibration_certificate = forms.FileField(required=False)
+
+    def clean_calibration_certificate(self):
+        uploaded_file = self.cleaned_data['calibration_certificate']
+        try:
+            # create an ImageField instance
+            im = forms.ImageField()
+            # now check if the file is a valid image
+            im.to_python(uploaded_file)
+        except forms.ValidationError:
+            # file is not a valid image;
+            # so check if it's a pdf
+            name, ext = os.path.splitext(uploaded_file.name)
+            if ext not in ['.pdf', '.PDF']:
+                raise forms.ValidationError(
+                    "Only images and PDF files allowed")
+        return uploaded_file
+
     def __init__(self, condition, *args, **kwargs):
-
         super(CalibratedToolForm, self).__init__(*args, **kwargs)
-
         self.fields['calibration_certificate'].label = "Calibration Certificate"
-
         if condition:
-
             del self.fields['calibration_certificate']
-
-    # def clean_calibration_certificate(self):
-
-    #     data = self.cleaned_data['calibration_certificate']
-    #     if data == None:
-    #         raise ValidationError(
-    #             "Please Submit a Calibration Document")
-
-    #     else:
-    #         return data
-
-    #     return data
 
 
 class UnCalibratedToolForm(forms.ModelForm):
@@ -613,21 +698,54 @@ class CompleteCalibrationForm(forms.ModelForm):
 
             'calibrated_date': DateInput(),
             'expiry_date': DateInput(),
-            'calibration_certificate': forms.FileInput(attrs={'class': 'form-control', 'required': True, })
+
 
         }
+    calibration_certificate = forms.FileField(required=False)
 
-    def clean_order_quantity(self):
+    def clean_calibration_certificate(self):
 
-        data = self.cleaned_data['order_quantity']
-        pT = self.cleaned_data['part_type']
+        data = self.cleaned_data['calibration_certificate']
+        if data == None:
+            raise ValidationError(
+                "You need to supply a calibration certificate for this Tool!")
 
-        if pT == "Rotable" or pT == "Tires":
-            if (data > 1):
-                raise ValidationError(
-                    "This is a serialsed part, Qty must be 1!")
-            else:
-                return data
+        else:
+
+            uploaded_file = self.cleaned_data['calibration_certificate']
+            try:
+                # create an ImageField instance
+                im = forms.ImageField()
+                # now check if the file is a valid image
+                im.to_python(uploaded_file)
+            except forms.ValidationError:
+                # file is not a valid image;
+                # so check if it's a pdf
+                name, ext = os.path.splitext(uploaded_file.name)
+                if ext not in ['.pdf', '.PDF']:
+                    raise forms.ValidationError(
+                        "Only images and PDF files allowed")
+            return uploaded_file
+
+    def __init__(self, *args, **kwargs):
+        super(CompleteCalibrationForm, self).__init__(*args, **kwargs)
+
+    def clean_expiry_date(self):
+        data = self.cleaned_data['expiry_date']
+        if data == None:
+            raise ValidationError(
+                "You need to supply an expiry date for this Tool!")
+        else:
+            return data
+        return data
+
+    def clean_calibrated_date(self):
+        data = self.cleaned_data['calibrated_date']
+        if data == None:
+            raise ValidationError(
+                "You need to supply a calibration date for this Tool!")
+        else:
+            return data
         return data
 
 #End Tool Forms------------------------------------------------------#

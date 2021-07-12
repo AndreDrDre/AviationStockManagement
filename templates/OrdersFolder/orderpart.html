@@ -4,7 +4,7 @@
 <!-- {%include 'mgmt/status.html'%} -->
 
 <head>
-
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}" />
     <style>
         btn-pos {
             display: flex;
@@ -97,11 +97,6 @@
             transform: scale(1.1);
 
         }
-
-        .inflate:hover {
-            transform: scale(1.2);
-
-        }
     </style>
 </head>
 
@@ -137,8 +132,7 @@
         <div class="row">
             <div class="col-md-3">
                 <div class='card card-body circleme btn-pos '>
-                    <a style="margin-left: 20px; margin-right: 20px ;" class="btn  btn-dark sb-btn"
-                        href="{% url 'orderhistory' %}">View Order History <img
+                    <a class="btn  btn-dark sb-btn" href="{% url 'orderhistory' %}">View Order History <img
                             src="https://img.icons8.com/plasticine/36/000000/order-history.png" /></a>
                 </div>
                 <br>
@@ -202,8 +196,11 @@
                     </div>
                     <div class="col-md-2">
                         <div class='card card-body circleme '>
-                            <a class="inflate" style="text-align:center" href="{% url 'exportorder' %}"> <img
-                                    src="https://img.icons8.com/fluent/52/000000/supply-chain.png" /></a>
+                            <div class="export">
+                                <a href="{% url 'exportorder' %}"> <img
+                                        src="https://img.icons8.com/fluent/52/000000/supply-chain.png" /></a>
+                                <span class="tooltiptext">Export Orders</span>
+                            </div>
                         </div>
                     </div>
                 </div>

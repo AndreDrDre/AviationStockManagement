@@ -138,12 +138,13 @@
 
             <div class="col-md-1">
                 <div class="card card-body circleme">
-                    <div style="width: 100%; overflow: hidden">
-                        <div class="export" style="display:flex; justify-content:center;">
-                            <a href="{% url 'exportXlsInventory' 'Shop'%}"><img
-                                    src="https://img.icons8.com/color/58/000000/microsoft-excel-2019--v1.png" /></a>
-                        </div>
+
+                    <div class="export">
+                        <a href="{% url 'exportXlsInventory' 'Shop'%}"><img
+                                src="https://img.icons8.com/color/58/000000/microsoft-excel-2019--v1.png" /></a>
+                        <span class="tooltiptext">Print Excel</span>
                     </div>
+
                 </div>
             </div>
         </div>

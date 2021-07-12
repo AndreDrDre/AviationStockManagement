@@ -16,10 +16,6 @@
       color: black;
     }
 
-    .export:hover {
-      transform: scale(1.05);
-    }
-
     .circleme {
       border-radius: 15px;
       border: 1px solid;
@@ -35,7 +31,6 @@
       width: 100%;
       padding: 10px;
       border-radius: 15px;
-
       float: right;
       transition: all 0.2s ease-in-out;
     }
@@ -69,6 +64,8 @@
       font-size: 20px;
       width: 200px;
     }
+
+
 
     .sb-export:hover {
       transform: scale(1.1);
@@ -147,30 +144,27 @@
 
       <div class="col-md-1">
         <div class="card card-body circleme">
-          <div style="width: 100%; overflow: hidden">
-            <div class="export" style="display:flex; justify-content:center;">
-              <a href="{% url 'exportXlsInventory' 'Quarentine'%}"><img
-                  src="https://img.icons8.com/color/58/000000/microsoft-excel-2019--v1.png" /></a>
-            </div>
+          <div class="export">
+            <a href="{% url 'exportXlsInventory' 'Quarentine'%}"><img
+                src="https://img.icons8.com/color/58/000000/microsoft-excel-2019--v1.png" /></a>
+            <span class="tooltiptext">Print Excel</span>
           </div>
         </div>
       </div>
       <div class="col-md-1">
         <div class="card card-body circleme">
-          <div style="width: 100%; overflow: hidden">
-            <div class="export" style="display:flex; justify-content:center;">
-              <a href="{%url 'InhouseReapirs' %}"><img src="https://img.icons8.com/office/58/000000/hammer.png" /></a>
-            </div>
+          <div class="export">
+            <a href="{%url 'InhouseReapirs' %}"><img
+                src="https://img.icons8.com/emoji/58/000000/toolbox-emoji.png" /></a>
+            <span class="tooltiptext">In-house Repairs</span>
           </div>
         </div>
       </div>
       <div class="col-md-1">
         <div class="card card-body circleme">
-          <div style="width: 100%; overflow: hidden">
-            <div class="export" style="display:flex; justify-content:center;">
-              <a href="{%url 'ShopReapirs' %}"><img
-                  src="https://img.icons8.com/plasticine/58/000000/truck--v1.png" /></a>
-            </div>
+          <div class="export">
+            <a href="{%url 'ShopReapirs' %}"><img src="https://img.icons8.com/ios/58/000000/open-garage-door.png" /></a>
+            <span class="tooltiptext">Shop Repairs</span>
           </div>
         </div>
       </div>

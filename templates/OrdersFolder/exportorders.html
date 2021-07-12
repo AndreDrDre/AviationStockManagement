@@ -11,9 +11,6 @@
             padding-right: 200px;
         }
 
-        .export:hover {
-            transform: scale(1.05);
-        }
 
         .circleme {
             border-radius: 15px;
@@ -123,7 +120,8 @@
                 <div class='card card-body circleme '>
                     <form method="get">
                         {{myfilter.form}}
-                        <button class="btn btn-primary sb-btn" type="submit">Search </button>
+                        <button class="btn btn-info sb-btn" type="submit"><img
+                                src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" /></button>
                     </form>
                 </div>
             </div>
@@ -131,9 +129,10 @@
             <div class="col-md-1">
                 <div class='card card-body circleme '>
 
-                    <div style="width: 100%; overflow: hidden;">
-                        <div class="export" style="text-align:center"> <a href="{% url 'exportPDForder'%}"><img
-                                    src="https://img.icons8.com/ios/48/000000/export-pdf-2.png" /></a> </div>
+                    <div class="export">
+                        <a href="{% url 'exportPDForder'%}"><img
+                                src="https://img.icons8.com/ios/48/000000/export-pdf-2.png" /></a>
+                        <span class="tooltiptext">Print PDF</span>
                     </div>
                 </div>
 

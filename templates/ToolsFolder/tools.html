@@ -8,10 +8,6 @@
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
     <style>
-        .export:hover {
-            transform: scale(1.2);
-        }
-
         .circleme {
             border-radius: 15px;
             border: 1px solid;
@@ -131,19 +127,9 @@
                 <div id="showHideBtn" class="card card-body reciever circleme">
                     <div class="form-group">
                         <form action="#" enctype="multipart/form-data" method="POST">
-                            {% if Check == 1 %}
-
-                            <hr>
-                            {% else %}
-
-                            {%endif%}
-
                             {{ displayform.management_data }}
                             {% csrf_token %}
-
-                            <table style="border: 0.5; padding: 20px;">
-                                {{displayform}}
-                            </table>
+                            {{displayform}}
                             <br>
                             <button class="btn btn-dark btn-search" name="Save" type="submit">Save Tool</button>
                         </form>
@@ -228,23 +214,18 @@
                     <form method="get">
                         {{CalibratedFilter.form}}
                         <button class="btn btn-info sb-btn" type="submit"><img
-                                src="https://img.icons8.com/pastel-glyph/30/000000/search--v1.png" /></button>
+                                src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" /></button>
                     </form>
                 </div>
             </div>
 
             <div class="col-md-2">
                 <div class='card card-body circleme '>
-                    <div style="width: 100%; overflow: hidden;">
-                        <div class="export" style="display:flex; justify-content:center;"> <a
-                                href="{% url 'exportXlsxCali' %}"><img
-                                    src="https://img.icons8.com/color/50/000000/microsoft-excel-2019--v1.png" /></a>
-                        </div>
-
+                    <div class="export"> <a href="{% url 'exportXlsxCali' %}"><img
+                                src="https://img.icons8.com/color/50/000000/microsoft-excel-2019--v1.png" /></a>
+                        <span class="tooltiptext">Print Excel</span>
                     </div>
-
                 </div>
-
             </div>
 
 
@@ -382,23 +363,21 @@
                     <form method="get">
                         {{UnCaliFilter.form}}
                         <button class="btn btn-info sb-btn" type="submit"><img
-                                src="https://img.icons8.com/pastel-glyph/30/000000/search--v1.png" /></button>
+                                src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" /></button>
                     </form>
                 </div>
             </div>
             <div class="col-md-1">
                 <div class='card card-body circleme '>
-                    <div style="width: 100%; overflow: hidden;">
-                        <div class="export" style="display:flex; justify-content:center;"> <a
-                                href="{% url 'exportXlsxUnCali' %}"><img
-                                    src="https://img.icons8.com/color/50/000000/microsoft-excel-2019--v1.png" /></a>
-                        </div>
-
+                    <div class="export">
+                        <a href="{% url 'exportXlsxUnCali' %}"><img
+                                src="https://img.icons8.com/color/50/000000/microsoft-excel-2019--v1.png" /></a>
+                        <span class="tooltiptext">Print Excel</span>
                     </div>
-
                 </div>
-
             </div>
+
+
         </div>
         <br>
 
