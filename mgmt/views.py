@@ -886,7 +886,7 @@ def WorkOrderHistory(request):
 @login_required(login_url='signin')
 def historical_inventory(request):
 
-    return render(request, "PartsFolder/historical_inventory.html")
+    return render(request, "PartsFolder/historical_Inventory.html")
 
 
 @login_required(login_url='signin')
