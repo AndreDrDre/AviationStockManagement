@@ -84,22 +84,22 @@ WSGI_APPLICATION = 'stockmgmt.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'd3jc6j19sh4me4',
-#         'HOST': 'ec2-3-218-71-191.compute-1.amazonaws.com',
-#         'PORT': 5432,
-#         'USER': 'yuahvjrdtbhftb',
-#         'PASSWORD': 'c607dfa9b8660d48f9c3a2a0a76b1a96937533a4230a76d113f3152bf1228f9c',
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd3jc6j19sh4me4',
+        'HOST': 'ec2-3-218-71-191.compute-1.amazonaws.com',
+        'PORT': 5432,
+        'USER': 'yuahvjrdtbhftb',
+        'PASSWORD': 'c607dfa9b8660d48f9c3a2a0a76b1a96937533a4230a76d113f3152bf1228f9c',
+    }
+}
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
