@@ -4,6 +4,7 @@
 {% load widget_tweaks %}
 
 <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}" />
     <style>
         .sb-btn {
             border-radius: 15px;
@@ -18,6 +19,7 @@
 
         .circleme {
             border-radius: 15px;
+            border: 2px solid;
         }
 
         .btnedit {
@@ -49,6 +51,10 @@
                         RELEASE<img src="https://img.icons8.com/cute-clipart/64/000000/double-tick.png" /></h4>
                 </div>
                 <hr>
+                <div id="form_response" class="mb-4 text-center"></div>
+                <div class="turbinedisplay">
+                    <img id="Turbine" src="https://img.icons8.com/ios-filled/100/000000/jet-engine.png" />
+                </div>
                 <div class="card card-body reciever circleme">
                     <div class="form-group">
                         <h5>Part description : {{queryset.description}}</h5>
@@ -67,7 +73,7 @@
 
                         <hr>
 
-                        <form action="#" enctype="multipart/form-data" method="POST">
+                        <form id="id_form" action="#" enctype="multipart/form-data" method="POST">
                             {{ form.management_data }}
                             {% csrf_token %}
 
@@ -76,8 +82,10 @@
                             </table>
                             <hr>
 
-                            <button class="btn btn-success sb-btn poschahnge" type="submit">Confirm Entry</button>
-                            <a class="btn btn-danger sb-btn" href="{% url 'InhouseReapirs' %}">Cancel</a>
+                            <button class="btn btn-dark sb-btn poschahnge" style="float:right" type="submit">Confirm
+                                Entry</button>
+                            <a class="btn btn-danger sb-btn" style="float:left"
+                                href="{% url 'InhouseReapirs' %}">Cancel</a>
 
 
                         </form>

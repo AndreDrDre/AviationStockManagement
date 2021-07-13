@@ -4,6 +4,7 @@
 {% load widget_tweaks %}
 
 <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
     <style>
         .sb-btn {
             border-radius: 15px;
@@ -51,6 +52,12 @@
                         <img src="https://img.icons8.com/plasticine/60/000000/drop-shipping.png" /></h4>
                 </div>
                 <hr>
+                <div id="form_response" class="mb-4 text-center"></div>
+
+                <div class="Cardisplay">
+                    <img id="Car" src="https://img.icons8.com/pastel-glyph/100/000000/truck--v1.png" />
+
+                </div>
                 <div class="card card-body reciever circleme">
                     <div class="form-group">
                         <h5>Part description : {{queryset.description}}</h5>
@@ -67,7 +74,7 @@
                         <h6>Weight should be entered in pounds and ounces*</h6>
 
                         <hr>
-                        <form action="#" method="POST">
+                        <form id="infoform" action="#" method="POST">
 
                             {% csrf_token %}
 
@@ -94,6 +101,42 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $("#infoform").submit((event) => {
+            if (!$("#infoform").attr('validated')) {
+                let formData = new FormData($("#infoform")[0]);
+                $.ajax({
+                    url: "{{ request.path }}",
+                    method: "POST",
+                    data: $('#infoform').serialize(),
+                    success(response) {
+                        if ('error' in response) {
+                            $('#infoform').attr('validated', true);
+                            $('#infoform').submit();
+                        } else {
+
+                            $(".circleme").hide();
+                            $("#Car").show();
+                            $("#Car").css("animation-play-state", "running");
+                            $("#form_response").show();
+                            $("#form_response").fadeOut(1000).fadeIn(2000).fadeOut(1000).fadeIn(
+                                2000);
+                            $("#form_response").html(response.success);
+                            setTimeout(() => {
+                                window.location.href = response.redirect_to;
+                            }, 5000);
+
+                        }
+                    }
+                });
+                return false;
+            }
+            return true;
+        });
+    </script>
+
+
 
 </body>
 

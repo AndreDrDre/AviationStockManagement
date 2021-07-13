@@ -52,6 +52,11 @@
                     <h4> TOOL INSTRUCTIONS <img src="https://img.icons8.com/ios/50/000000/user-manual.png" /></h4>
                 </div>
                 <hr>
+                <div id="form_response" class="mb-4 text-center"></div>
+
+                <div class="turbinedisplay">
+                    <img id="Turbine" src="https://img.icons8.com/ios-filled/100/000000/jet-engine.png" />
+                </div>
                 <div class="card card-body reciever circleme">
 
 
@@ -77,7 +82,7 @@
                     <br>
 
                     <div style="margin:auto">
-                        <a class="btn btn-danger sb-btn" style="width: 100%; float:left;" href="{% url 'tools' %}">Back
+                        <a id="btn-back-instruct" class="btn btn-danger sb-btn" style="width: 100%; float:left;">Back
                             to Tools</a>
                     </div>
 
@@ -88,6 +93,27 @@
             </div>
 
         </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                success(response) {
+                    $("#btn-back-instruct").click(function () {
+                        $(".circleme").hide();
+                        $("#Turbine").show();
+                        $("#form_response").show();
+                        $("#form_response").fadeOut(1000).fadeIn(1000).fadeOut(1000)
+                            .fadeIn(1000);
+                        $("#form_response").html(response.success);
+                        setTimeout(() => {
+                            window.location.href = response.redirect_to;
+                        }, 5000);
+                    });
+                }
+            });
+        })
+    </script>
 </body>
 
 {% endblock%}

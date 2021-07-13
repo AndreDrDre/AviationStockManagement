@@ -4,6 +4,7 @@
 {% load widget_tweaks %}
 
 <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
     <style>
         .sb-btn {
             border-radius: 15px;
@@ -38,9 +39,7 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-4">
-
-            </div>
+            <div class="col-md-4"></div>
 
             <div class="col-md-4">
                 <!--Specificy we want to take up 5/12 content blocks-->
@@ -49,6 +48,11 @@
                             src="https://img.icons8.com/fluent/48/000000/realtime-protection.png" /></h4>
                 </div>
                 <hr>
+                <div id="form_response" class="mb-4 text-center"></div>
+                <div class="turbinedisplay">
+                    <img id="Turbine" src="https://img.icons8.com/ios-filled/100/000000/jet-engine.png" />
+                </div>
+
                 <div class="card card-body reciever circleme">
                     <div class="form-group">
                         <h5>Tool Description : {{calitool.description}}</h5>
@@ -59,7 +63,7 @@
                         <hr>
 
 
-                        <form enctype="multipart/form-data" action="#" method="POST">
+                        <form id="calibration-form" enctype="multipart/form-data" action="#" method="POST">
 
                             {{ formCaliComp.management_data }}
                             {% csrf_token %}
@@ -76,11 +80,47 @@
                 <hr>
             </div>
 
-            <div class="col-md-4">
-
-            </div>
+            <div class="col-md-4"></div>
         </div>
     </div>
+
+    <script>
+        $("#calibration-form").submit((event) => {
+            if (!$("#calibration-form").attr('validated')) {
+                let formData = new FormData($("#calibration-form")[0]);
+                $.ajax({
+                    url: "{{ request.path }}",
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    enctype: "multipart/form-data",
+                    success(response) {
+                        if ('error' in response) {
+                            $('#calibration-form').attr('validated', true);
+                            $('#calibration-form').submit();
+                        } else {
+                            $(".circleme").hide();
+                            $("#Turbine").show();
+                            $("#form_response").show();
+                            $("#form_response").fadeOut(1000).fadeIn(2000).fadeOut(1000).fadeIn(
+                                2000);
+                            $("#form_response").html(response.success);
+                            setTimeout(() => {
+                                window.location.href = response.redirect_to;
+                            }, 5000);
+                            data.append('calibration_certificate', $('#id_calibration_certificate'))[0]
+                                .files;
+
+                        }
+                    }
+                });
+                return false;
+            }
+            return true
+        });
+    </script>
 
 </body>
 

@@ -517,20 +517,27 @@ class repairReturnForm(forms.ModelForm):
     cert_document = forms.FileField(required=False)
 
     def clean_cert_document(self):
-        uploaded_file = self.cleaned_data['cert_document']
-        try:
-            # create an ImageField instance
-            im = forms.ImageField()
-            # now check if the file is a valid image
-            im.to_python(uploaded_file)
-        except forms.ValidationError:
-            # file is not a valid image;
-            # so check if it's a pdf
-            name, ext = os.path.splitext(uploaded_file.name)
-            if ext not in ['.pdf', '.PDF']:
-                raise forms.ValidationError(
-                    "Only images and PDF files allowed")
-        return uploaded_file
+        data = self.cleaned_data['cert_document']
+        if data == None:
+            raise ValidationError(
+                "You need to supply a Serviceable Tag to release this part!")
+
+        else:
+            uploaded_file = self.cleaned_data['cert_document']
+
+            try:
+                # create an ImageField instance
+                im = forms.ImageField()
+                # now check if the file is a valid image
+                im.to_python(uploaded_file)
+            except forms.ValidationError:
+                # file is not a valid image;
+                # so check if it's a pdf
+                name, ext = os.path.splitext(uploaded_file.name)
+                if ext not in ['.pdf', '.PDF']:
+                    raise forms.ValidationError(
+                        "Only images and PDF files allowed")
+            return uploaded_file
 
     def __init__(self, conditionCheck, *args, **kwargs):
         super(repairReturnForm, self).__init__(*args, **kwargs)
@@ -582,6 +589,9 @@ class issueWorkForm(forms.ModelForm):
         if (data > self.instance.quantity):
             raise ValidationError(
                 "You cannot issue more than the avaliable quantity!")
+        elif data == 0:
+            raise ValidationError(
+                "You cannot issue 0 Parts!")
         else:
             return data
         return data
@@ -670,7 +680,7 @@ class CreateWorkOrderFormCali(forms.ModelForm):
         model = Tools_Calibrated
         fields = ['workorder_no']
         widgets = {
-            'workorder_no': forms.Select(attrs={'class': 'form-control'}),
+            'workorder_no': forms.Select(attrs={'class': 'form-control', 'required': True, }),
 
         }
 
@@ -685,7 +695,7 @@ class CreateWorkOrderFormUnCali(forms.ModelForm):
 
         fields = ['workorder_no']
         widgets = {
-            'workorder_no': forms.Select(attrs={'class': 'form-control'}),
+            'workorder_no': forms.Select(attrs={'class': 'form-control', 'required': True, }),
 
         }
 

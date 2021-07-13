@@ -336,3 +336,24 @@ a {
       bottom: 100px;
 
   }
+
+  #Car{
+    display: None;
+    
+    animation: mymove 8s infinite ;
+    animation-play-state:paused;
+  }
+
+  .Cardisplay{
+   
+    width: 480px;
+  }
+  @keyframes mymove {
+    from {
+      transform: translateX(0px);
+    }
+    to {
+      transform: translateX(380px);
+    }
+  
+  }

@@ -314,17 +314,23 @@ def repair(request, pk):
             form.save()
 
             if queryset.repaired_by == "SEND TO SHOP":
-                return redirect('transportInfo', queryset.id)
+                if request.is_ajax():
+                    return JsonResponse({'success': 'Adding Part to Shop Repair...', 'redirect_to': reverse('transportInfo', kwargs={'pk': queryset.id})})
+
             else:
                 queryset.Repaired = True
                 queryset.save(update_fields=['Repaired'])
-                return redirect('Qinventory')
+                if request.is_ajax():
+                    return JsonResponse({'success': 'Adding Part to Inhouse Repairs...', 'redirect_to': reverse('InhouseReapirs')})
 
+    else:
+        form = RepairForm()
     context = {"form": form, "queryset": queryset}
 
     return render(request, "PartsFolder/repair.html", context)
 
 
+@login_required(login_url='signin')
 def transportInfo(request, pk):
 
     queryset = Parts.objects.get(user=request.user, id=pk)
@@ -340,7 +346,10 @@ def transportInfo(request, pk):
                 queryset.Repaired = True
                 queryset.save(update_fields=['Repaired'])
                 form.save()
-                return redirect('ShopReapirs')
+
+                if request.is_ajax():
+                    return JsonResponse({'success': 'Adding Shipping Information...', 'redirect_to': reverse('ShopReapirs')})
+
             else:
                 queryset.repaired_by = "SEND TO SHOP"
                 queryset.date_received = timezone.now()
@@ -349,7 +358,9 @@ def transportInfo(request, pk):
                 queryset.Repaired = True
                 queryset.save(update_fields=['Repaired'])
                 form.save()
-                return redirect('ShopReapirs')
+
+                if request.is_ajax():
+                    return JsonResponse({'success': 'Adding Shipping Information...', 'redirect_to': reverse('ShopReapirs')})
 
     else:
         form = shippingInfoForm()
@@ -386,12 +397,12 @@ def repairReturn(request, pk):
             queryset.save(update_fields=['date_received'])
 
             form.save()
-            return redirect('instructions', pk=queryset.id)
+            if request.is_ajax():
+                return JsonResponse({'success': 'Adding Repaired Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': queryset.id})})
+                # return redirect('instructions', pk=queryset.id)
 
     else:
         form = repairReturnForm(conditionCheck, instance=queryset)
-
-        # form.fields["bin_number"].queryset = Parts.objects.filter()
 
     context = {"form": form, "queryset": queryset, }
 
@@ -767,6 +778,7 @@ def issuePart(request, pk):
     queryset = Parts.objects.get(user=request.user, id=pk)
     check = queryset.tail_number.name
     sender = queryset.id
+    print(check)
 
     form = issueWorkForm(instance=queryset, user=request.user)
 
@@ -794,12 +806,23 @@ def issuePart(request, pk):
 
                         x.save(update_fields=['quantity'])
 
-            if check == 'Stock':
-                return redirect('inventory')
-            else:
-                return redirect('Rinventory')
+            wo = form.cleaned_data['workorder']
 
+            if queryset.tail_number.name == 'Stock':
+                if request.is_ajax():
+                    return JsonResponse({'success': 'Adding Stock Part to Work-Order ' + str(wo) + '...', 'redirect_to': reverse('inventory')})
+                    # return redirect('inventory')
+            else:
+                if request.is_ajax():
+                    return JsonResponse({'success': 'Adding Reserved Part to Work-Order ' + str(wo) + '...', 'redirect_to': reverse('Rinventory')})
+                    # return redirect('Rinventory')
+
+    else:
+        form = issueWorkForm(instance=queryset, user=request.user)
     context = {'form': form, 'queryset': queryset, }
+    if request.is_ajax():
+        # form.save()
+        return JsonResponse({'error': True})
     return render(request, 'PartsFolder/issuePart.html', context)
 
 
@@ -866,6 +889,7 @@ def PartsHistory(request):
     return render(request, "PartsFolder/completeParts.html", context)
 
 
+@login_required(login_url='signin')
 def WorkOrderHistory(request):
 
     # completed work-orders
@@ -1899,6 +1923,9 @@ def tools(request):
 def toolinstructions(request, pk):
     tools = Tools_Calibrated.objects.get(user=request.user, id=pk)
 
+    if request.is_ajax():
+        return JsonResponse({'success': 'Adding Calibrated Tool to Database...', 'redirect_to': reverse('tools')})
+
     context = {"tools": tools}
     return render(request, "ToolsFolder/toolinstructions.html", context)
 
@@ -1970,19 +1997,22 @@ def issueworkorderCali(request, pk):
     formissueCali = CreateWorkOrderFormCali(instance=calitool)
 
     if request.method == 'POST':
-        if "CancelIssue" in request.POST:
-            return redirect('tools')
-
         formissueCali = CreateWorkOrderFormCali(
             request.POST, instance=calitool)
         if formissueCali.is_valid():
-            if "SaveIssue" in request.POST:
-                calitool.issued = True
-                calitool.save(update_fields=['issued'])
-                formissueCali.save()
-                return redirect('tools')
-
+            calitool.issued = True
+            calitool.save(update_fields=['issued'])
+            formissueCali.save()
+            wo = formissueCali.cleaned_data['workorder_no']
+            if request.is_ajax():
+                print("True")
+                return JsonResponse({'success': 'Adding Calibrated Tool to Work Order ' + str(wo) + "...", 'redirect_to': reverse('tools')})
+    else:
+        formissueCali = CreateWorkOrderFormCali(instance=calitool)
     context = {'formissueCali': formissueCali, "calitool": calitool}
+    if request.is_ajax():
+        # form.save()
+        return JsonResponse({'error': True})
     return render(request, 'ToolsFolder/issueworkorderCali.html', context)
 
 
@@ -1990,24 +2020,26 @@ def issueworkorderCali(request, pk):
 def issueUnCali(request, pk):
 
     Uncalitool = Tools_UnCalibrated.objects.get(user=request.user, id=pk)
-    formissueUnCali = CreateWorkOrderFormUnCali(instance=Uncalitool)
+    # formissueUnCali = CreateWorkOrderFormUnCali(instance=Uncalitool)
 
     if request.method == 'POST':
-
-        if "CancelIssue" in request.POST:
-            return redirect('tools')
-        # senidng new data into a pre exisitng field.
         formissueUnCali = CreateWorkOrderFormUnCali(
             request.POST, instance=Uncalitool)
         if formissueUnCali.is_valid():
-            if "SaveIssue" in request.POST:
-                Uncalitool.issued = True
-                Uncalitool.save(update_fields=['issued'])
-                Uncalitool.save()  # save the form into the database
-                return redirect('tools')  # redirect to home page
+            Uncalitool.issued = True
+            Uncalitool.save(update_fields=['issued'])
+            Uncalitool.save()  # save the form into the database
+            wo = formissueUnCali.cleaned_data['workorder_no']
+            if request.is_ajax():
+                return JsonResponse({'success': 'Adding UnCalibrated Tool to Work Order ' + str(wo) + "...", 'redirect_to': reverse('tools')})
 
+    else:
+        formissueUnCali = CreateWorkOrderFormUnCali(instance=Uncalitool)
     context = {'formissueUnCali': formissueUnCali,
                'Uncalitool': Uncalitool}
+    if request.is_ajax():
+        # form.save()
+        return JsonResponse({'error': True})
     return render(request, 'ToolsFolder/issueUncali.html', context)
 
 
@@ -2023,7 +2055,9 @@ def calicomplete(request, pk):
             formCaliComp.save()
             calitool.calibrated = True
             calitool.save(update_fields=['calibrated'])
-            return redirect('tools')  # redirect to home page
+
+            if request.is_ajax():
+                return JsonResponse({'success': 'Re-calibrating Tool...', 'redirect_to': reverse('tools')})
     else:
         formCaliComp = CompleteCalibrationForm()
 

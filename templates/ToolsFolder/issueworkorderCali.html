@@ -4,6 +4,7 @@
 {% load widget_tweaks %}
 
 <head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}" />
     <style>
         .sb-btn {
             border-radius: 15px;
@@ -49,6 +50,12 @@
                             src="https://img.icons8.com/fluent/48/000000/copy-2.png" /></h4>
                 </div>
                 <hr>
+                <div id="form_response" class="mb-4 text-center"></div>
+                <div class="turbinedisplay">
+                    <img id="Turbine" src="https://img.icons8.com/dotty/100/000000/share-2.png" />
+                </div>
+
+
                 <div class="card card-body reciever circleme">
                     <div class="form-group">
 
@@ -58,12 +65,11 @@
                         <hr>
 
                         <br>
-                        <form action="#" method="POST">
+                        <form id="toolform" action="#" method="POST">
                             {% csrf_token %}
                             {{formissueCali.as_p}}
                             <hr>
-                            <button class="btn btn-dark sb-btn poschahnge" style="float:right" name="SaveIssue"
-                                type="submit">Confirm
+                            <button class="btn btn-dark sb-btn poschahnge" style="float:right" type="submit">Confirm
                                 Entry</button>
                             <a class="btn btn-danger sb-btn" style="float:left" href="{% url 'tools' %}">Cancel</a>
 
@@ -73,14 +79,49 @@
                     </div>
                 </div>
                 <hr>
-            </div>
 
-            <div class="col-md-4">
 
+                <div class="col-md-4">
+
+                </div>
             </div>
         </div>
     </div>
+    <br>
+    <br>
+    <script>
+        $("#toolform").submit((event) => {
+            if (!$("#toolform").attr('validated')) {
+                let formData = new FormData($("#toolform")[0]);
+                $.ajax({
+                    url: "{{ request.path }}",
+                    method: "POST",
+                    data: $('#toolform').serialize(),
+                    success(response) {
+                        if ('error' in response) {
+                            $('#toolform').attr('validated', true);
+                            $('#toolform').submit();
+                        } else {
 
+                            $(".circleme").hide();
+                            $("#Turbine").show();
+                            $("#Turbine").css("animation-play-state", "running");
+                            $("#form_response").show();
+                            $("#form_response").fadeOut(1000).fadeIn(2000).fadeOut(1000).fadeIn(
+                                2000);
+                            $("#form_response").html(response.success);
+                            setTimeout(() => {
+                                window.location.href = response.redirect_to;
+                            }, 5000);
+
+                        }
+                    }
+                });
+                return false;
+            }
+            return true;
+        });
+    </script>
 </body>
 
 
