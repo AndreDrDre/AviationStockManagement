@@ -509,12 +509,8 @@ class repairReturnForm(forms.ModelForm):
     class Meta:
         model = Parts
         fields = ['inspector', 'cert_document', 'price']
-        widgets = {
-            'inspector': forms.Select(attrs={'class': 'form-control', 'required': True, }),
 
-        }
-
-    cert_document = forms.FileField(required=False)
+    cert_document = forms.FileField(required=True)
 
     def clean_cert_document(self):
         data = self.cleaned_data['cert_document']
@@ -681,8 +677,18 @@ class CreateWorkOrderFormCali(forms.ModelForm):
         fields = ['workorder_no']
         widgets = {
             'workorder_no': forms.Select(attrs={'class': 'form-control', 'required': True, }),
-
         }
+
+    def clean_workorder_no(self):
+
+        data = self.cleaned_data['workorder_no']
+
+        if (data == self.instance.workorder_no):
+            raise ValidationError(
+                "You cannot move this tool to same work-order it is currently in!")
+        else:
+            return data
+        return data
 
 
 class CreateWorkOrderFormUnCali(forms.ModelForm):
@@ -698,6 +704,17 @@ class CreateWorkOrderFormUnCali(forms.ModelForm):
             'workorder_no': forms.Select(attrs={'class': 'form-control', 'required': True, }),
 
         }
+
+    def clean_workorder_no(self):
+
+        data = self.cleaned_data['workorder_no']
+
+        if (data == self.instance.workorder_no):
+            raise ValidationError(
+                "You cannot move this tool to same work-order it is currently in!")
+        else:
+            return data
+        return data
 
 
 class CompleteCalibrationForm(forms.ModelForm):

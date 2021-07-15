@@ -6,8 +6,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}" />
     <style>
         .container-fluid {
-            padding-left: 200px;
-            padding-right: 200px;
+            padding-left: 170px;
+            padding-right: 170px;
         }
 
         .a {
@@ -108,7 +108,7 @@
         <div class="row">
             <div class="mx-auto" style="width: 800px">
                 <div class="center-heading">
-                    <h2 class="section-title">SHOP REPAIRS</h2>
+                    <h2 class="section-title">SUPPLIER REPAIRS</h2>
                 </div>
             </div>
             <div class="offset-lg-3 col-lg-6">
@@ -196,28 +196,28 @@
                         </tr>
                         {% for part in querysetShop %}
                         <tr>
-                            <td style="text-align: center;vertical-align:middle;">{{part.description}}</td>
-                            <td style="text-align: center;vertical-align:middle;">{{part.part_number}}</td>
-                            <td style="text-align: center;vertical-align:middle;">{{part.part_type}}</td>
+                            <td class="tablestyle">{{part.description}}</td>
+                            <td class="tablestyle">{{part.part_number}}</td>
+                            <td class="tablestyle">{{part.part_type}}</td>
 
-                            <td style="text-align: center;vertical-align:middle;">{{part.inspector}}</td>
+                            <td class="tablestyle">{{part.inspector}}</td>
 
                             {% if part.condition == 'REPAIRABLE' %}
-                            <td style="
+                            <td class="tablestyle" style="
                 text-align: center;
                 background-color: rgba(0, 255, 13, 0.356);vertical-align:middle;
               ">
                                 {{part.condition}}
                             </td>
                             {%elif part.condition == 'DAMAGED' %}
-                            <td style="
+                            <td class="tablestyle" style="
                 text-align: center;
                 background-color: rgba(235, 56, 11, 0.767);vertical-align:middle;
               ">
                                 {{part.condition}}
                             </td>
                             {%else%}
-                            <td style="
+                            <td class="tablestyle" style="
                 text-align: center;
                 background-color: rgba(235, 157, 11, 0.767);vertical-align:middle;
               ">
@@ -225,36 +225,34 @@
                             </td>
 
                             {%endif%}
-                            <td style="text-align: center;vertical-align:middle;">
+                            <td class="tablestyle">
                                 {{part.length}}
                             </td>
-                            <td style="text-align: center;vertical-align:middle;">
+                            <td class="tablestyle">
                                 {{part.breadth}}
                             </td>
-                            <td style="text-align: center;vertical-align:middle;">
+                            <td class="tablestyle">
                                 {{part.height}}
                             </td>
-                            <td style="text-align: center;vertical-align:middle;">
+                            <td class="tablestyle">
                                 {{part.weight}}
                             </td>
                             {% if part.waybill %}
-                            <td style="text-align:center; position:relative; vertical-align:middle; "><a
-                                    class="btn btn-sm sb-btn" style="width:70px; " target="_blank"
+                            <td class="tablestyle"><a class="btn btn-sm form-btn" target="_blank"
                                     href="{{part.urlWayBill}}"><img style="border: solid 2px; "
                                         src="https://img.icons8.com/fluent/48/000000/track-order.png" /></a></td>
 
                             {%else%}
-                            <td style="text-align:center;position:relative; vertical-align:middle;"><a
-                                    style="width:70px" class="btn btn-sm btn-warning sb-btn"
+                            <td class="tablestyle"><a class="btn btn-sm btn-warning form-btn "
                                     href="{% url 'waybill' part.id %}"><strong>ADD</strong></a></td>
 
                             {% endif %}
 
-                            <td style="text-align: center;vertical-align:middle;">
+                            <td class="tablestyle">
                                 {{part.date_received|date:"M d, Y"}}
                             </td>
-                            <td style="text-align: center;vertical-align:middle;">
-                                <a class="btn btn-sm btn-danger sb-btn" onClick='return confirmDelete()'
+                            <td class="tablestyle">
+                                <a class="btn btn-sm btn-danger form-btn" onClick='return confirmDelete()'
                                     href="{%url 'deletepart' part.id%}">Scrap</a>
                             </td>
 

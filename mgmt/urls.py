@@ -76,7 +76,10 @@ urlpatterns = [
 
     path('WorkOrderHistory/', views.WorkOrderHistory, name='WorkOrderHistory'),
     path('workorders/', views.workorders, name='workorders'),
+
     path('partslink/<str:pk>/<str:Type>/', views.partslink, name='partslink'),
+
+
     path('sendhometoolCali/<str:pk>/',
          views.sendhometoolCali, name='sendhometoolCali'),
     path('sendhometoolUnCali/<str:pk>/',

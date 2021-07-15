@@ -39,9 +39,7 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-4">
-
-            </div>
+            <div class="col-md-4"></div>
 
             <div class="col-md-4">
                 <!--Specificy we want to take up 5/12 content blocks-->
@@ -54,16 +52,18 @@
                 <div class="turbinedisplay">
                     <img id="Turbine" src="https://img.icons8.com/dotty/100/000000/share-2.png" />
                 </div>
-
-
                 <div class="card card-body reciever circleme">
                     <div class="form-group">
 
                         <h5>Issue : {{calitool.description}}</h5>
                         <h6>Part # : {{calitool.part_number}}</h6>
                         <h6>Serial # : {{calitool.serial_number}}</h6>
-                        <hr>
+                        {%if calitool.workorder_no%}
+                        <h6>Associated with W/O : {{calitool.workorder_no}}</h6>
+                        {%else%}
 
+                        {%endif%}
+                        <hr>
                         <br>
                         <form id="toolform" action="#" method="POST">
                             {% csrf_token %}
@@ -71,16 +71,17 @@
                             <hr>
                             <button class="btn btn-dark sb-btn poschahnge" style="float:right" type="submit">Confirm
                                 Entry</button>
+                            {%if calitool.issued%}
+                            <a class="btn btn-danger sb-btn" style="float:left"
+                                href="{% url 'partslink' calitool.workorder_no.id 'NotHistorical' %}">Cancel</a>
+                            {%else%}
                             <a class="btn btn-danger sb-btn" style="float:left" href="{% url 'tools' %}">Cancel</a>
+                            {%endif%}
 
                         </form>
-
-
                     </div>
                 </div>
                 <hr>
-
-
                 <div class="col-md-4">
 
                 </div>

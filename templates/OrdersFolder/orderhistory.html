@@ -43,7 +43,6 @@
 
         .sb-btn {
             border-radius: 15px;
-
             float: right;
             transition: all .2s ease-in-out;
         }
@@ -112,7 +111,7 @@
             <div class="col-md-1"></div>
             <div class="col-md-3">
                 <div class='card card-body circleme btn-pos '>
-                    <a style="margin-left: 20px; margin-right: 20px ;" class="btn  btn-dark sb-btn"
+                    <a style="margin-left: 10px; margin-right: 10px ;" class="btn  btn-dark sb-btn"
                         href="{% url 'orderpart' %}">Order New Part <img
                             src="https://img.icons8.com/fluent/36/000000/create-order.png" /></a>
 
@@ -128,21 +127,34 @@
     <br>
 
     <div class="container-fluid">
-
         <div class="row">
             <div class="col-md-1"></div>
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <div class='card card-body circleme '>
-                    <form method="get">
-                        {{myFilter.form}}
-                        <button class="btn btn-info sb-btn" type="submit"><img
-                                src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" /> </button>
+                    <form class="myfilter" method="get">
+                        <div style="display: flex;">
+                            <div class="filterC">
+                                <p class="filtertext">Description : {{myFilter.form.description}}</p>
+                            </div>
+                            <div class="filterC">
+                                <p class="filtertext">Part #:{{myFilter.form.part_number}}</p>
+                            </div>
+
+                            <div class="filterC">
+                                <p class="filtertextSelect">Ordered By:{{myFilter.form.ordered_by}}</p>
+                            </div>
+                            <button class="btn btn-info btn-search" type="submit">
+                                <img src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" />
+                            </button>
+
+                        </div>
+
                     </form>
                 </div>
             </div>
 
 
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <div class='card card-body circleme '>
                     <div class="export">
                         <a href="{%url 'exportXlsOrderHistory'%}"><img
@@ -152,9 +164,7 @@
                 </div>
             </div>
         </div>
-
         <br>
-
         <div class="row">
             <div class="col-md-1"></div>
             <div class="col-md-10">
@@ -203,9 +213,9 @@
             </div>
             <div class="col-md-1"></div>
         </div>
-
-        <br>
-        <br>
+    </div>
+    <br>
+    <br>
 
 
 

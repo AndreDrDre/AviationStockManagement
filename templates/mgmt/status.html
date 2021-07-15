@@ -41,13 +41,24 @@
         #total:hover {
             transform: scale(1.1)
         }
+
+        @media (max-width: 1600px) {
+            #total {
+
+                width: 200px;
+            }
+
+            #display {
+
+                width: 200px;
+            }
+        }
     </style>
 </head>
 <br>
 
 <div class="container-fluid-status ">
     <div class="row justify-content-md-center">
-
         <div class="col">
             <div class="col-md">
                 <a href="{% url 'workorders' %}">

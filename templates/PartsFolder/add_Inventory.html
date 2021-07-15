@@ -80,11 +80,11 @@
         <div class="card card-body reciever circleme">
           <div class="form-group">
             <form id="id_form" enctype="multipart/form-data" action="#" method="POST">
-              {% if check == 0 or check == 1 %}
 
-              {% else %} {%endif%}
-              <table border="0.5" style="padding: 20px">
-                {{ form.management_data }} {% csrf_token %} {{form}}
+              <table class="tableforms">
+                {{ form.management_data }}
+                {% csrf_token %}
+                {{form}}
               </table>
               <hr />
 
@@ -98,9 +98,9 @@
                   <a class="btn btn-danger sb-btn" style="float: left;" href="{% url 'InterimOrder' %}">Cancel</a>
                   {%endif%}
                 </div>
-                <div class="col-sm-4"></div>
+                <div class="col-sm-2"></div>
 
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                   <button style="float: right;" class="btn btn-dark sb-btn poschahnge" type="submit">
                     Confirm Entry
                   </button>

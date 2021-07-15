@@ -21,25 +21,10 @@
             background: #afb4b97c;
         }
 
-        .btn-dre {
-            border-radius: 30px;
-            font-size: 18px;
-            width: 100%;
-            padding: 10px;
-            border-radius: 15px;
-
-            float: right;
-            transition: all .2s ease-in-out;
-        }
-
-        .btn-dre:hover {
-            transform: scale(1.1);
-        }
-
         .sb-btn {
             border-radius: 15px;
-
             float: right;
+            align-items: center;
             transition: all .2s ease-in-out;
         }
 
@@ -116,17 +101,30 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-1"></div>
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <div class='card card-body circleme '>
-                    <form method="get">
-                        {{myfilter.form}}
-                        <button class="btn btn-info sb-btn" type="submit"><img
-                                src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" /></button>
+                    <form class="myfilter" method="get">
+                        <div style="display: flex;">
+                            <div class="filterC">
+                                <p class="filtertext">Description : {{myfilter.form.description}}</p>
+                            </div>
+                            <div class="filterC">
+                                <p class="filtertext">Part #:{{myfilter.form.part_number}}</p>
+                            </div>
+                            <div class="filterC">
+                                <p class="filtertextSelect">Ordered By:{{myfilter.form.ordered_by}}</p>
+                            </div>
+                            <button class="btn btn-info btn-search" type="submit">
+                                <img src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" />
+                            </button>
+
+                        </div>
+
                     </form>
                 </div>
             </div>
 
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <div class='card card-body circleme '>
 
                     <div class="export">
@@ -220,7 +218,7 @@
 
         <div style="margin-left:10px; " class="col-md-1">
             <div class='card card-body circleme display'>
-                <a style=" width: 100px;" class="btn btn-danger sb-btn" href="{%url 'orderpart'%}">Back</a>
+                <a class="btn btn-danger back-btn" href="{%url 'orderpart'%}">Back</a>
             </div>
         </div>
         <div class="col-md-5">
@@ -230,10 +228,6 @@
     </div>
 
 </body>
-
-
-
-
 
 
 {% endblock%}

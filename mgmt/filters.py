@@ -30,12 +30,12 @@ class CreateOrderFilter(django_filters.FilterSet):
 class CalibratedFilter(django_filters.FilterSet):
     class Meta:
         model = Tools_Calibrated
-        fields = ['description', 'part_number', 'serial_number', 'cert_no']
+        fields = ['description', 'part_number', 'cert_no']
 
     def __init__(self, *args, **kwargs):
         super(CalibratedFilter, self).__init__(*args, **kwargs)
         self.filters['part_number'].label = 'Part #'
-        self.filters['serial_number'].label = 'Serial #'
+
         self.filters['cert_no'].label = 'CN #'
 
 
@@ -145,7 +145,7 @@ class WorkOrderLinkPartFilter(django_filters.FilterSet):
     class Meta:
         model = PartWorkOrders
         fields = ['part__description', 'part__part_number',
-                  'jobCardNumber', 'issued_by']
+                  'jobCardNumber', ]
 
     def __init__(self, *args, **kwargs):
         super(WorkOrderLinkPartFilter, self).__init__(*args, **kwargs)

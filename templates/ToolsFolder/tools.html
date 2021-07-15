@@ -8,6 +8,11 @@
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
     <style>
+        .container-fluid {
+            padding-left: 190px;
+            padding-right: 180px;
+        }
+
         .circleme {
             border-radius: 15px;
             border: 1px solid;
@@ -92,8 +97,7 @@
         </div>
 
         <br>
-        <hr>
-        <br>
+
 
     </div>
 
@@ -103,19 +107,21 @@
             <div class="col-md-3">
                 <!--Specificy we want to take up 5/12 content blocks-->
                 <div class="mx-auto" style="text-align:center">
-                    <h4>RECORD NEW TOOL <img src="https://img.icons8.com/fluent/48/000000/full-tool-storage-box-.png" />
+                    <h4>RECORD TOOL <img src="https://img.icons8.com/fluent/48/000000/full-tool-storage-box-.png" />
                     </h4>
                 </div>
                 <hr>
                 <div class="card card-body reciever circleme">
                     <div class="form-group">
                         <form action="#" method="POST">
-                            {% csrf_token %}
-                            <table style="border: 0.5; padding: 20px;">
+
+                            <table class="tableforms">
+                                {% csrf_token %}
                                 {{form}}
                             </table>
                             <br>
-                            <button class="btn btn-dark btn-search" name="choice" type="submit">Choose Tool
+                            <button class="btn btn-dark form-btn" style="float: right" name="choice"
+                                type="submit">Select Tool
                                 Type</button>
                         </form>
                     </div>
@@ -124,11 +130,17 @@
                 <div id="showHideBtn" class="card card-body reciever circleme">
                     <div class="form-group">
                         <form action="#" enctype="multipart/form-data" method="POST">
-                            {{ displayform.management_data }}
-                            {% csrf_token %}
-                            {{displayform}}
+
+                            <table class="tableforms" style="padding-right:2px;">
+                                {{ displayform.management_data }}
+                                {% csrf_token %}
+                                {{displayform.as_p}}
+
+                            </table>
+
                             <br>
-                            <button class="btn btn-dark btn-search" name="Save" type="submit">Save Tool</button>
+                            <button style="float:right" class="btn btn-dark form-btn" name="Save" type="submit">Save
+                                Tool</button>
                         </form>
                     </div>
                 </div>
@@ -165,19 +177,21 @@
                         </tr>
                         {% for tool in needsCali %}
                         <tr>
-                            <td style="text-align:center">{{tool.description}}</td>
-                            <td style="text-align:center">{{tool.part_number}}</td>
-                            <td style="text-align:center">{{tool.serial_number}}</td>
-                            <td style="text-align:center">{{tool.cert_no}}</td>
+                            <td class="tablestyle">{{tool.description}}</td>
+                            <td class="tablestyle">{{tool.part_number}}</td>
+                            <td class="tablestyle">{{tool.serial_number}}</td>
+                            <td class="tablestyle">{{tool.cert_no}}</td>
 
-                            <td style="text-align:center">{{tool.range_no}}</td>
-                            <td style="text-align:center">{{tool.expiry_date|date:"M d, Y"}}</td>
+                            <td class="tablestyle">{{tool.range_no}}</td>
+                            <td class="tablestyle">{{tool.expiry_date|date:"M d, Y"}}</td>
 
 
-                            <td> <a class="btn btn-sm btn-danger sb-btn" onClick='return confirmSubmit()' href="">Remove
+                            <td class="tablestyle"> <a class="btn btn-sm btn-danger sb-btn"
+                                    onClick='return confirmSubmit()' href="">Remove
                                     from service </a></td>
-                            <td> <a class="btn btn-sm btn-dark sb-btn" onClick='return confirmSubmit()'
-                                    href="{% url 'calicomplete' tool.id %}">Finish Calibration </a></td>
+                            <td class="tablestyle"> <a class="btn btn-sm btn-dark sb-btn"
+                                    onClick='return confirmSubmit()' href="{% url 'calicomplete' tool.id %}">Finish
+                                    Calibration </a></td>
 
                         </tr>
                         {% endfor%}
@@ -238,8 +252,7 @@
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Descrption</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#</th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Recieved
-                            </th>
+
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Calibrated
                             </th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Expiry Date</th>
@@ -255,72 +268,74 @@
                         </tr>
                         {% for tool in Cali %}
                         <tr>
-                            <td style="text-align:center">{{tool.description}}</td>
-                            <td style="text-align:center">{{tool.part_number}}</td>
-                            <td style="text-align:center">{{tool.serial_number}}</td>
-                            <td style="text-align:center">{{tool.recieved|date:"M d, Y"}}</td>
-                            <td style="text-align:center">{{tool.calibrated_date|date:"M d, Y"}}</td>
-                            <td style="text-align:center">{{tool.expiry_date|date:"M d, Y"}}</td>
-                            <td style="text-align:center">{{tool.cert_no}}</td>
+                            <td class="tablestyle">{{tool.description}}</td>
+                            <td class="tablestyle">{{tool.part_number}}</td>
+                            <td class="tablestyle">{{tool.serial_number}}</td>
+
+                            <td class="tablestyle">{{tool.calibrated_date|date:"M d, Y"}}</td>
+                            <td class="tablestyle">{{tool.expiry_date|date:"M d, Y"}}</td>
+                            <td class="tablestyle">{{tool.cert_no}}</td>
 
                             {% if tool.calibration_certificate %}
-                            <td style="text-align:center;"><a href="{{tool.calibration_certificate.url}}"
-                                    target="_blank"><img src="https://img.icons8.com/ios/30/000000/paper.png" /></a>
+                            <td class="tablestyle"><a href="{{tool.calibration_certificate.url}}" target="_blank"><img
+                                        src="https://img.icons8.com/ios/30/000000/paper.png" /></a>
                             </td>
                             {%else%}
-                            <td style="text-align:center;"><img
-                                    src="https://img.icons8.com/offices/30/000000/cancel-2.png" /> </td>
+                            <td class="tablestyle"><img src="https://img.icons8.com/offices/30/000000/cancel-2.png" />
+                            </td>
                             {% endif %}
 
 
 
-                            <td style="text-align:center">{{tool.range_no}}</td>
+                            <td class="tablestyle">{{tool.range_no}}</td>
 
                             {% if tool.timecalculated < 30 %}
-                            <td style="text-align:center; color:red; margin: auto; font-weight:bold">
+                            <td class="tablestyle" style="text-align:center; color:red; margin: auto; font-weight:bold">
                                 {{tool.timecalculated}} days</td>
-                            <td style="text-align:center"><a class="btn btn-sm btn-info sb-btn"
+                            <td class="tablestyle" style="text-align:center"><a class="btn btn-sm btn-info sb-btn"
                                     href="{% url 'editCali' tool.id%}">Edit</a></td>
-                            <td style="text-align:center"><a class="btn btn-sm btn-danger sb-btn"
+                            <td class="tablestyle"><a class="btn btn-sm btn-danger sb-btn"
                                     onClick='return confirmDelete()' href="{% url 'deleteCali' tool.id %}">Delete</a>
                             </td>
-                            <td style="text-align:center"><a class="btn btn-sm btn-warning sb-btn"
+                            <td class="tablestyle"><a class="btn btn-sm btn-warning sb-btn"
                                     href="{% url 'change_calibration_status' tool.id%}"
                                     onClick='return confirmCali()'>Calibrate</a></td>
                             {% if tool.timecalculated <= 1 %}
-                            <td style="text-align:center"><img src="https://img.icons8.com/fluent/38/000000/lock.png" />
+                            <td class="tablestyle"><img src="https://img.icons8.com/fluent/38/000000/lock.png" />
                             </td>
                             {%else%}
-                            <td style="text-align:center"><a class="btn btn-sm btn-dark sb-btn"
-                                    href="{% url 'issueworkorderCali' tool.id%}">Issue to W/O</a></td>
+                            <td class="tablestyle"><a class="btn btn-sm btn-dark sb-btn"
+                                    href="{% url 'issueworkorderCali' tool.id%}">Issue</a></td>
                             {% endif %}
 
                             {% elif tool.timecalculated < 60 %}
-                            <td style="text-align:center; color:rgb(255, 187, 0); margin: auto; font-weight:bold">
+                            <td class="tablestyle"
+                                style="text-align:center; color:rgb(255, 187, 0); margin: auto; font-weight:bold">
                                 {{tool.timecalculated}} days</td>
-                            <td style="text-align:center"><a class="btn btn-sm btn-info sb-btn"
+                            <td class="tablestyle" style="text-align:center"><a class="btn btn-sm btn-info sb-btn"
                                     href="{% url 'editCali' tool.id%}">Edit</a></td>
-                            <td style="text-align:center"><a class="btn btn-sm btn-danger sb-btn"
+                            <td class="tablestyle" style="text-align:center"><a class="btn btn-sm btn-danger sb-btn"
                                     onClick='return confirmDelete()' href="{% url 'deleteCali' tool.id %}">Delete</a>
                             </td>
-                            <td style="text-align:center"><a class="btn btn-sm btn-warning sb-btn"
+                            <td class="tablestyle"><a class="btn btn-sm btn-warning sb-btn"
                                     href="{% url 'change_calibration_status' tool.id%}"
                                     onClick='return confirmCali()'>Calibrate</a></td>
-                            <td style="text-align:center"><a class="btn btn-sm btn-dark sb-btn"
+                            <td class="tablestyle"><a class="btn btn-sm btn-dark sb-btn"
                                     href="{% url 'issueworkorderCali' tool.id%}">Issue to W/O</a></td>
 
                             {% else %}
-                            <td style="text-align:center; color:rgb(71, 173, 30); margin: auto; font-weight:bold">
+                            <td class="tablestyle"
+                                style="text-align:center; color:rgb(71, 173, 30); margin: auto; font-weight:bold">
                                 {{tool.timecalculated}} days</td>
-                            <td style="text-align:center"><a class="btn btn-sm btn-info sb-btn"
+                            <td class="tablestyle" style="text-align:center"><a class="btn btn-sm btn-info sb-btn"
                                     href="{% url 'editCali' tool.id%}">Edit</a></td>
-                            <td style="text-align:center"><a class="btn btn-sm btn-danger sb-btn"
+                            <td class="tablestyle" style="text-align:center"><a class="btn btn-sm btn-danger sb-btn"
                                     onClick='return confirmDelete()' href="{% url 'deleteCali' tool.id %}">Delete</a>
                             </td>
-                            <td style="text-align:center"><a class="btn btn-sm btn-warning sb-btn"
+                            <td class="tablestyle"><a class="btn btn-sm btn-warning sb-btn"
                                     href="{% url 'change_calibration_status' tool.id%}"
                                     onClick='return confirmCali()'>Calibrate</a></td>
-                            <td style="text-align:center"><a class="btn btn-sm btn-dark sb-btn"
+                            <td class="tablestyle"><a class="btn btn-sm btn-dark sb-btn"
                                     href="{% url 'issueworkorderCali' tool.id%}">Issue to W/O</a></td>
                             {% endif %}
 
@@ -355,7 +370,7 @@
         <hr>
 
         <div class="row">
-            <div class="col-md-7">
+            <div class="col-md-10">
                 <div class='card card-body circleme '>
                     <form method="get">
                         {{UnCaliFilter.form}}
@@ -364,7 +379,7 @@
                     </form>
                 </div>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <div class='card card-body circleme '>
                     <div class="export">
                         <a href="{% url 'exportXlsxUnCali' %}"><img
@@ -379,7 +394,7 @@
         <br>
 
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="card card-body circleme">
                     <table class="table table-min table-md">
                         <tr>
@@ -394,18 +409,20 @@
                         </tr>
                         {% for tool in UnCali %}
                         <tr>
-                            <td style="text-align:center">{{tool.description}}</td>
-                            <td style="text-align:center">{{tool.part_number}}</td>
-                            <td style="text-align:center">{{tool.serial_number}}</td>
-                            <td style="text-align:center">{{tool.recieved|date:"M d, Y" }}</td>
+                            <td class="tablestyle">{{tool.description}}</td>
+                            <td class="tablestyle">{{tool.part_number}}</td>
+                            <td class="tablestyle">{{tool.serial_number}}</td>
+                            <td class="tablestyle">{{tool.recieved|date:"M d, Y" }}</td>
 
 
-                            <td><a class="btn btn-sm btn-info sb-btn" href="{% url 'editUnCali' tool.id %}">Edit</a>
+                            <td class="tablestyle"><a class="btn btn-sm btn-info sb-btn"
+                                    href="{% url 'editUnCali' tool.id %}">Edit</a>
                             </td>
-                            <td><a class="btn btn-sm btn-danger sb-btn" onClick='return confirmDelete()'
-                                    href="{% url 'deleteUnCali' tool.id %}">Delete</a></td>
-                            <td><a class="btn btn-sm btn-dark sb-btn" href="{% url 'issueUnCali' tool.id %}">Issue to
-                                    W/O</a></td>
+                            <td class="tablestyle"><a class="btn btn-sm btn-danger sb-btn"
+                                    onClick='return confirmDelete()' href="{% url 'deleteUnCali' tool.id %}">Delete</a>
+                            </td>
+                            <td class="tablestyle"><a class="btn btn-sm btn-dark sb-btn"
+                                    href="{% url 'issueUnCali' tool.id %}">Issue</a></td>
                         </tr>
                         {% endfor %}
 

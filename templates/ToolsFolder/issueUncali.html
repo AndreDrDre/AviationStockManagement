@@ -63,6 +63,11 @@
                         <h5>Issue : {{Uncalitool.description}}</h5>
                         <h6>Part # : {{Uncalitool.part_number}}</h6>
                         <h6>Serial # : {{Uncalitool.serial_number}}</h6>
+                        {%if Uncalitool.workorder_no%}
+                        <h6>Associated with W/O : {{Uncalitool.workorder_no}}</h6>
+                        {%else%}
+
+                        {%endif%}
                         <hr>
 
                         <br>
@@ -70,21 +75,19 @@
                             {% csrf_token %}
                             {{formissueUnCali.as_p}}
                             <hr>
-
-
-
                             <button class="btn btn-dark sb-btn poschahnge" style="float:right" type="submit">Confirm
                                 Entry</button>
+
+                            {%if Uncalitool.issued%}
+                            <a class="btn btn-danger sb-btn" style="float:left"
+                                href="{% url 'partslink' Uncalitool.workorder_no.id 'NotHistorical' %}">Cancel</a>
+                            {%else%}
                             <a class="btn btn-danger sb-btn" style="float:left" href="{% url 'tools' %}">Cancel</a>
-
+                            {%endif%}
                         </form>
-
-
                     </div>
                 </div>
                 <hr>
-
-
                 <div class="col-md-4">
 
                 </div>

@@ -8,8 +8,8 @@
   <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}" />
   <style>
     .container-fluid {
-      padding-left: 200px;
-      padding-right: 200px;
+      padding-left: 165px;
+      padding-right: 165px;
     }
 
     .a {
@@ -36,17 +36,6 @@
     }
 
     .btn-dre:hover {
-      transform: scale(1.1);
-    }
-
-    .sb-btn {
-      border-radius: 15px;
-
-      float: right;
-      transition: all 0.2s ease-in-out;
-    }
-
-    .sb-btn:hover {
       transform: scale(1.1);
     }
 
@@ -133,11 +122,25 @@
       <div class="col-md-1"></div>
       <div class="col-md-7">
         <div class="card card-body circleme">
-          <form method="get">
-            {{partfilter.form}}
-            <button class="btn btn-info sb-btn" type="submit">
-              <img src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" />
-            </button>
+          <form class="myfilter" method="get">
+            <div style="display: flex;">
+              <div class="filterC">
+                <p class="filtertext">Description:{{partfilter.form.description}}</p>
+              </div>
+              <div class="filterC">
+                <p class="filtertextSelect">Part Type:{{partfilter.form.part_type}}</p>
+              </div>
+              <div class="filterC">
+                <p class="filtertext">Part #:{{partfilter.form.part_number}}</p>
+              </div>
+
+
+              <button class="btn btn-info btn-search" type="submit">
+                <img src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" />
+              </button>
+
+            </div>
+
           </form>
         </div>
       </div>
@@ -297,12 +300,12 @@
               {% endif %}
 
               <td style="text-align: center;vertical-align:middle;">
-                <a id="about-btn" class="btn btn-sm btn-danger sb-btn" onClick="return confirmDelete()"
-                  href="{%url 'deletepart' instance.id%}">Scrap Part</a>
+                <a id="about-btn" class="btn btn-sm btn-danger form-btn" onClick="return confirmDelete()"
+                  href="{%url 'deletepart' instance.id%}">Scrap</a>
               </td>
 
               <td style="text-align: center;vertical-align:middle;">
-                <a class="btn btn-sm btn-dark sb-btn" href="{%url 'repair' instance.id %}">Repair Part</a>
+                <a class="btn btn-sm btn-dark form-btn" href="{%url 'repair' instance.id %}">Repair</a>
               </td>
             </tr>
             {% endfor%}
@@ -325,7 +328,7 @@
 
     <div class="col-md-2">
       <div class="card card-body circleme display">
-        <a style="width: 100px" class="btn btn-danger sb-btn" href="{%url 'store'%}">Back</a>
+        <a class="btn btn-danger back-btn" href="{%url 'store'%}">Back</a>
       </div>
     </div>
     <div class="col-md-5"></div>

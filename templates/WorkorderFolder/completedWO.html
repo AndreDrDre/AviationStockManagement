@@ -154,19 +154,19 @@
                         </tr>
                         {% for instance in querysetclosed %}
                         <tr>
-                            <td style="text-align:center">{{instance.workorder_number}}</td>
-                            <td style="text-align:center">{{instance.tail_number}}</td>
-                            <td style="text-align:center">{{instance.type_airframe}}</td>
-                            <td style="text-align:center">{{instance.ldgs_at_open}}</td>
-                            <td style="text-align:center">{{instance.date_added|date:"M d, Y"}}</td>
-                            <td style="text-align:center">{{instance.date_closed|date:"M d, Y"}}</td>
-                            <td style="text-align:center"><strong>{{instance.duration}}</strong></td>
+                            <td class="tablestyle">{{instance.workorder_number}}</td>
+                            <td class="tablestyle">{{instance.tail_number}}</td>
+                            <td class="tablestyle">{{instance.type_airframe}}</td>
+                            <td class="tablestyle">{{instance.ldgs_at_open}}</td>
+                            <td class="tablestyle">{{instance.date_added|date:"M d, Y"}}</td>
+                            <td class="tablestyle">{{instance.date_closed|date:"M d, Y"}}</td>
+                            <td class="tablestyle"><strong>{{instance.duration}}</strong></td>
 
 
 
-                            <td><a class="btn btn-sm btn-info sb-btn"
+                            <td class="tablestyle"><a class="btn btn-sm btn-info sb-btn"
                                     href="{%url 'partslink' instance.id 'Historical'%}">View</a></td>
-                            <td><a class="btn btn-sm btn-dark sb-btn"
+                            <td class="tablestyle"><a class="btn btn-sm btn-dark sb-btn"
                                     href="{%url 'exportPDFWorkorder' instance.id %}">Print PDF</a></td>
 
                         </tr>

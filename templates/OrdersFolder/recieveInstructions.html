@@ -8,7 +8,6 @@
     <style>
         .sb-btn {
             border-radius: 15px;
-            float: right;
             transition: all .2s ease-in-out;
 
         }
@@ -83,8 +82,7 @@
                     <h5><strong>Step 2:</strong></h5>
                     <hr>
                     <p><strong>1. Press the button below to print the barcode.</strong></p>
-                    <a class="btn btn-light sb-btn" style="width: 45%; height:45%; font-size:20px;"
-                        href="{{part.barcode.url}}" target="_blank"><img
+                    <a class="btn btn-light sb-btn instruct" href="{{part.barcode.url}}" target="_blank"><img
                             src="https://img.icons8.com/material-outlined/48/000000/barcode.png" />
                         <img src="https://img.icons8.com/material-outlined/48/000000/barcode.png" />
                         <img src="https://img.icons8.com/material-outlined/48/000000/barcode.png" /></a>
@@ -95,30 +93,18 @@
 
                     <div class="row">
 
-                        <div class="col-sm-4">
+                        <div class="col-sm-6">
                             <a class="btn btn-info sb-btn" href="{% url 'InterimOrder' %}">Receive
                                 Another Part</a>
 
                         </div>
-                        <div class="col-sm-2"></div>
-
-
+                        <!-- <div class="col-sm-1"></div> -->
                         <div class="col-sm-6">
-                            <a class="btn btn-dark sb-btn" style="width: 60%; " href="{% url 'store' %}">Navigate to
+                            <a class="btn btn-dark sb-btn" style="float: right" href="{% url 'store' %}">Navigate to
                                 Invenotry
                             </a>
-
-
                         </div>
-
-
-
                     </div>
-
-
-
-
-
                 </div>
             </div>
 

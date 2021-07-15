@@ -7,8 +7,8 @@
     <style>
         .container-fluid {
 
-            padding-left: 200px;
-            padding-right: 200px;
+            padding-left: 190px;
+            padding-right: 190px;
         }
 
         btn-pos {
@@ -112,27 +112,89 @@
             </div>
         </div>
         <br>
-        <br>
+
 
         <div class="row">
-            <div class="col-md-4"></div>
-            <div class="col-md-4">
-                <div class="card card-body circleme1">
-                    <h5 style="text-align:center">Part description : {{partspecific.description}} </h5>
-                    <h6 style="text-align:center">Part Type : {{partspecific.part_type}}</h5>
-                        <h6 style="text-align:center">P# : {{partspecific.part_number}} </h5>
-                            {%if partspecific.serial_number%}
-                            <h6 style="text-align:center">S# : {{partspecific.serial_number}} </h5>
-                                {%else%}
-                                <h6 style="text-align:center">Batch# : {{partspecific.batch_no}}</h5>
-                                    {%endif%}
-                                    <h6 style="text-align:center">Total Qty Issued : <strong>{{counter}}</strong></h6>
-                </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card card-body circleme">
+                        <h4 style="text-align:center;"><strong>Part Informarion</strong></h4>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <h6 style="text-align:left; display:inline;">PART DESCRIPTION : </h6>
+                            </div>
 
+                            <div class="col-sm-5">
+                                <h6 style="float:right"><strong>{{partspecific.description}}</strong></h6>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <h6 style="text-align:left; display:inline;">PART-TYPE : </h6>
+                            </div>
+                            <div class="col-sm-1">
+
+                            </div>
+                            <div class="col-sm-4">
+                                <h6 style="float:right"><strong>{{partspecific.part_type}}</strong></h6>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <h6 style="text-align:left; display:inline;">PART # : </h6>
+                            </div>
+
+                            <div class="col-sm-5">
+                                <h6 style="float:right"><strong>{{partspecific.part_number}}</strong></h6>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            {%if partspecific.serial_number%}
+                            <div class="col-sm-7">
+                                <h6 style="text-align:left; display:inline;">SERIAL #: </h6>
+                            </div>
+
+                            <div class="col-sm-5">
+                                <h6 style="float:right"><strong>{{partspecific.serial_number}}</strong></h6>
+                            </div>
+                            {%else%}
+                            <div class="col-sm-7">
+                                <h6 style="text-align:left; display:inline;">BATCH #: </h6>
+                            </div>
+
+                            <div class="col-sm-5">
+                                <h6 style="float:right"><strong>{{partspecific.partspecific.batch_no}}</strong></h6>
+                            </div>
+                            {%endif%}
+
+
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <h6 style="text-align:left; display:inline;">TOTAL QTY ISSUED : </h6>
+                            </div>
+
+                            <div class="col-sm-5">
+                                <h6 style="float:right"><strong>{{counter}}</strong></h6>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+                <div class="col-md-2"></div>
             </div>
-            <div class="col-md-4"></div>
+
+
+
         </div>
-        <br>
+        <div class="col-md-4"></div>
+    </div>
+    <br>
     </div>
 
     </div>

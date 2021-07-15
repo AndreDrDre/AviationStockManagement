@@ -402,9 +402,12 @@ def repairReturn(request, pk):
                 # return redirect('instructions', pk=queryset.id)
 
     else:
-        form = repairReturnForm(conditionCheck, instance=queryset)
+        form = repairReturnForm(conditionCheck)
 
     context = {"form": form, "queryset": queryset, }
+    if request.is_ajax():
+        # form.save()
+        return JsonResponse({'error': True})
 
     return render(request, "PartsFolder/receiveRepair.html", context)
 
@@ -1150,44 +1153,44 @@ def changeWorkOrderCali(request, pk):
     formissueCali = CreateWorkOrderFormCali(instance=calitool)
 
     if request.method == 'POST':
-        if "CancelIssue" in request.POST:
-            return redirect('workorders')
-
         formissueCali = CreateWorkOrderFormCali(
             request.POST, instance=calitool)
         if formissueCali.is_valid():
-            if "SaveIssue" in request.POST:
-                calitool.issued = True
-                calitool.save(update_fields=['issued'])
-                formissueCali.save()
-                return redirect('workorders')
+            calitool.issued = True
+            calitool.save(update_fields=['issued'])
+            formissueCali.save()
+            wo = calitool.workorder_no
+            return JsonResponse({'success': 'Moving Calibrated Tool to ' + str(wo) + "...", 'redirect_to': reverse('partslink', kwargs={'pk': calitool.workorder_no.id, 'Type': 'NotHistorical'}, )})
 
+    else:
+        formissueCali = CreateWorkOrderFormCali(instance=calitool)
     context = {'formissueCali': formissueCali, "calitool": calitool}
+    if request.is_ajax():
+        return JsonResponse({'error': True})
     return render(request, 'ToolsFolder/issueworkorderCali.html', context)
 
 
 @login_required(login_url='signin')
 def changeWorkOrderUnCali(request, pk):
     Uncalitool = Tools_UnCalibrated.objects.get(user=request.user, id=pk)
-    formissueUnCali = CreateWorkOrderFormUnCali(instance=Uncalitool)
 
     if request.method == 'POST':
-
-        if "CancelIssue" in request.POST:
-            return redirect('workorders')
-        # senidng new data into a pre exisitng field.
         formissueUnCali = CreateWorkOrderFormUnCali(
             request.POST, instance=Uncalitool)
         if formissueUnCali.is_valid():
-            if "SaveIssue" in request.POST:
-                Uncalitool.issued = True
-                Uncalitool.save(update_fields=['issued'])
-                Uncalitool.save()  # save the form into the database
-                return redirect('workorders')  # redirect to home page
+            Uncalitool.issued = True
+            Uncalitool.save(update_fields=['issued'])
+            Uncalitool.save()  # save the form into the database
+            wo = Uncalitool.workorder_no
+            return JsonResponse({'success': 'Moving UnCalibrated Tool to ' + str(wo) + "...", 'redirect_to': reverse('partslink', kwargs={'pk': Uncalitool.workorder_no.id, 'Type': 'NotHistorical'}, )})
 
+    else:
+        formissueUnCali = CreateWorkOrderFormUnCali(instance=Uncalitool)
     context = {'formissueUnCali': formissueUnCali,
                'Uncalitool': Uncalitool}
-    return render(request, 'mgmt/issueUncali.html', context)
+    if request.is_ajax():
+        return JsonResponse({'error': True})
+    return render(request, 'ToolsFolder/issueUncali.html', context)
 
 
 @login_required(login_url='signin')
@@ -1436,24 +1439,48 @@ def orderpart(request):
     #----------------------------#
 
     form = CreateOrder(request.POST or None)
+    if request.method == 'POST':
+        form = CreateOrder(request.POST or None)
+        if form.is_valid():
+            description = form.cleaned_data['description']
+            part_number = form.cleaned_data['part_number']
+            order_quantity = form.cleaned_data['order_quantity']
+            ipc_reference = form.cleaned_data['ipc_reference']
 
-    if form.is_valid():
+            tail_number = form.cleaned_data['tail_number']
+            ordered_by = form.cleaned_data['ordered_by']
+            part_type = form.cleaned_data['part_type']
 
-        description = form.cleaned_data['description']
-        part_number = form.cleaned_data['part_number']
-        order_quantity = form.cleaned_data['order_quantity']
-        ipc_reference = form.cleaned_data['ipc_reference']
+            if part_type == 'Rotable' or part_type == 'Tires':
 
-        tail_number = form.cleaned_data['tail_number']
-        ordered_by = form.cleaned_data['ordered_by']
-        part_type = form.cleaned_data['part_type']
+                for count in range(order_quantity):
+                    p = Parts(description=description,
+                              part_number=part_number,
+                              order_quantity=1,
+                              ipc_reference=ipc_reference,
+                              date_ordered=timezone.now(),
+                              tail_number=tail_number,
+                              ordered_by=ordered_by,
+                              part_type=part_type,
+                              Historical=False,
+                              user=request.user)
+                    p.save()
 
-        if part_type == 'Rotable' or part_type == 'Tires':
+                h = OrderHistory(description=description,
+                                 part_number=part_number,
+                                 order_quantity=order_quantity,
+                                 ipc_reference=ipc_reference,
+                                 date_ordered=timezone.now(),
+                                 tail_number=tail_number,
+                                 ordered_by=ordered_by,
+                                 part_type=part_type,
+                                 user=request.user)
+                h.save()
 
-            for count in range(order_quantity):
+            else:
                 p = Parts(description=description,
                           part_number=part_number,
-                          order_quantity=1,
+                          order_quantity=order_quantity,
                           ipc_reference=ipc_reference,
                           date_ordered=timezone.now(),
                           tail_number=tail_number,
@@ -1463,45 +1490,21 @@ def orderpart(request):
                           user=request.user)
                 p.save()
 
-            h = OrderHistory(description=description,
-                             part_number=part_number,
-                             order_quantity=order_quantity,
-                             ipc_reference=ipc_reference,
-                             date_ordered=timezone.now(),
-                             tail_number=tail_number,
-                             ordered_by=ordered_by,
-                             part_type=part_type,
-                             user=request.user)
-            h.save()
+                h = OrderHistory(description=description,
+                                 part_number=part_number,
+                                 order_quantity=order_quantity,
+                                 ipc_reference=ipc_reference,
+                                 date_ordered=timezone.now(),
+                                 tail_number=tail_number,
+                                 ordered_by=ordered_by,
+                                 part_type=part_type,
+                                 user=request.user)
+                h.save()
 
-        else:
-            p = Parts(description=description,
-                      part_number=part_number,
-                      order_quantity=order_quantity,
-                      ipc_reference=ipc_reference,
-                      date_ordered=timezone.now(),
-                      tail_number=tail_number,
-                      ordered_by=ordered_by,
-                      part_type=part_type,
-                      Historical=False,
-                      user=request.user)
-            p.save()
+            return redirect('orderpart')
 
-            h = OrderHistory(description=description,
-                             part_number=part_number,
-                             order_quantity=order_quantity,
-                             ipc_reference=ipc_reference,
-                             date_ordered=timezone.now(),
-                             tail_number=tail_number,
-                             ordered_by=ordered_by,
-                             part_type=part_type,
-                             user=request.user)
-            h.save()
-
-            # Add to Re-order Items
-
-        return redirect('orderpart')
-
+    else:
+        form = CreateOrder()
     context = {
         "form": form,
         "queryset": queryset,

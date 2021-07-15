@@ -44,7 +44,7 @@
         <div class="mx-auto" style="text-align: center">
           <h4>
             <img src="https://img.icons8.com/plasticine/45/000000/move-stock.png" />
-            ADD PART TO QUARENTINE<img src="https://img.icons8.com/plasticine/45/000000/move-stock.png" />
+            ADD QUARENTINE PART<img src="https://img.icons8.com/plasticine/45/000000/move-stock.png" />
           </h4>
         </div>
         <hr />
@@ -67,18 +67,9 @@
         <div class="card card-body reciever circleme">
           <div class="form-group">
             <form id="id_form" enctype="multipart/form-data" action="#" method="POST">
-              {% if check == 0 or check == 1 %}
-
-              <p>
-                <strong>Note:</strong> If the document you are planning to
-                upload is more than <strong>1</strong> page in length. Please
-                combine the documents!
-                <a class="pdfLink" href="https://products.aspose.app/pdf/merger/png-to-jpg" target="_blank"><strong
-                    style="color: rgb(13, 130, 240)"><u>(Link)</u></strong></a>
-              </p>
-              <hr />
-              {% else %} {%endif%} {{ form.management_data }} {% csrf_token %}
-              <table border="0.5" style="padding: 20px">
+              <table class="tableforms">
+                {{ form.management_data }}
+                {% csrf_token %}
                 {{form}}
               </table>
               <hr />
@@ -87,9 +78,9 @@
                 <div class="col-sm-4">
                   <a class="btn btn-danger sb-btn" style="float: left;" href="{% url 'interimtransfer' %}">Cancel</a>
                 </div>
-                <div class="col-sm-4"></div>
+                <div class="col-sm-2"></div>
 
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                   <button style="float: right;" class="btn btn-dark sb-btn poschahnge" type="submit">
                     Confirm Entry
                   </button>
