@@ -571,12 +571,12 @@ class issueWorkForm(forms.ModelForm):
 
         if self.instance.price == None:
             PartWorkOrders.objects.create(
-                part=self.instance, price=0.0, **self.cleaned_data)
+                part=self.instance, cert_document=self.instance.cert_document, price=0.0, **self.cleaned_data)
 
         else:
 
             PartWorkOrders.objects.create(
-                part=self.instance, price=self.instance.price, **self.cleaned_data)
+                part=self.instance, cert_document=self.instance.cert_document, price=self.instance.price, **self.cleaned_data)
 
     def clean_issue_quantity(self):
 

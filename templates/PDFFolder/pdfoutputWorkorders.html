@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 {% load static%}
+{% load pdf_filters %}
+
 <html>
 
 <head>
@@ -141,8 +143,13 @@
     <hr>
     <br>
     {% for part_workorder in partsIssue %}
-    {{part_workorder.cert_document}}
+    {%if part_workorder.cert_document %}
 
+    <p>Image:</p>
+    <img src="{{part_workorder.cert_document.url | get64 }}" />
+
+    {%else%}
+    {%endif%}
     {% endfor %}
 
 

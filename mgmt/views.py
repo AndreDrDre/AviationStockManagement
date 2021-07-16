@@ -813,11 +813,11 @@ def issuePart(request, pk):
 
             if queryset.tail_number.name == 'Stock':
                 if request.is_ajax():
-                    return JsonResponse({'success': 'Adding Stock Part to Work-Order ' + str(wo) + '...', 'redirect_to': reverse('inventory')})
+                    return JsonResponse({'success': 'Transfering Stock Part to Work-Order ' + str(wo) + '...', 'redirect_to': reverse('inventory')})
                     # return redirect('inventory')
             else:
                 if request.is_ajax():
-                    return JsonResponse({'success': 'Adding Reserved Part to Work-Order ' + str(wo) + '...', 'redirect_to': reverse('Rinventory')})
+                    return JsonResponse({'success': 'Transfering Reserved Part to Work-Order ' + str(wo) + '...', 'redirect_to': reverse('Rinventory')})
                     # return redirect('Rinventory')
 
     else:
@@ -2498,31 +2498,10 @@ def exportPDFWorkorder(request, pk):
     html_string = render_to_string('PDFFolder/pdfoutputWorkorders.html',
                                    {'partsIssue': partsIssue, 'partsReceived': partsReceived,
                                     'querysetDisplay': querysetDisplay, "total": total, "date": date})
+
     html = HTML(string=html_string)
+
     result = html.write_pdf()
-
-    # f1 = result
-
-    #         f2 =
-
-    #         # Into a PDF file objects
-    #         pdfFileObj1 = PyPDF2.PdfFileReader(f1)
-    #         pdfFileObj2 = PyPDF2.PdfFileReader(f2)
-
-    #         # Create a PDF file merge objects, add merge files
-    #         pdfMerger = PyPDF2.PdfFileMerger()
-    #         pdfMerger.append(pdfFileObj1)
-    #         pdfMerger.append(pdfFileObj2)
-
-    #         # Merge file object is written to merged_file.pdf
-    #         with open('merged_file.pdf', 'wb') as pdfOutputFile:
-    #             pdfMerger.write(pdfOutputFile)
-
-    #         # Open merger merged_file.pdf, by HttpResponse output
-    #         with open('merged_file.pdf', 'rb') as merged_file:
-    #             response = HttpResponse(merged_file.read(), content_type='application/pdf')
-    #             response['Content-Disposition'] = 'attachment; filename="merged_file.pdf"'
-    #             return response
 
     with tempfile.NamedTemporaryFile(delete=True) as output:
         output.write(result)
