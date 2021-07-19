@@ -33,7 +33,7 @@ CONDITIONS = (
 )
 REPAIRS = (
     ("INHOUSE REPAIR", "INHOUSE REPAIR"),
-    ("SEND TO SHOP", "SEND TO SHOP"),
+    ("SEND TO SUPPLIER", "SEND TO SUPPLIER"),
 )
 
 
@@ -51,6 +51,10 @@ class TailNumber(models.Model):
 class Employees(models.Model):
 
     name = models.CharField(max_length=50, blank=True, null=True)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Employee'
 
     def __str__(self):
         if self is not None:
@@ -107,6 +111,9 @@ class WorkOrders(models.Model):
     hours_at_open = models.IntegerField(default='0', blank=True, null=True)
     workorder_number = models.CharField(max_length=50, blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Work Order'
 
     @property
     def duration(self):
@@ -197,6 +204,9 @@ class Parts(models.Model):
         WorkOrders, through='PartWorkOrders', related_name='parts', null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = 'Part'
+
     def save(self, *args, **kwargs):
         if self.barcode == None:
             number = 0
@@ -256,6 +266,9 @@ class PartWorkOrders(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        verbose_name = 'Part Work Order (M2M)'
+
     @property
     def total(self):
         price = self.price*self.issue_quantity
@@ -293,7 +306,9 @@ class OrderHistory(models.Model):
 
     ipc_reference = models.CharField(max_length=50, blank=True, null=True)
     vendor = models.CharField(max_length=50, blank=True, null=True)
-    ordered_by = models.CharField(max_length=50, blank=True, null=True)
+    # ordered_by = models.CharField(max_length=50, blank=True, null=True)
+    ordered_by = models.ForeignKey(
+        Employees, null=True, blank=True, related_name='ordered_by_history', on_delete=models.SET_NULL, verbose_name="Ordered by:")
     tail_number = models.CharField(max_length=50, blank=True, null=True)
     part_type = models.CharField(
         max_length=20,
@@ -302,6 +317,9 @@ class OrderHistory(models.Model):
         verbose_name="Part-Type"
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Order History'
 
     def __str__(self):
         return self.description
@@ -330,6 +348,9 @@ class Tools_Calibrated(models.Model):
     workorder_no = models.ForeignKey(
         WorkOrders, null=True, blank=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Calibrated Tool'
 
     @property
     def timecalculated(self):
@@ -384,6 +405,9 @@ class Tools_UnCalibrated(models.Model):
         WorkOrders, null=True, blank=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = 'UnCalibrated Tool'
+
     def __str__(self):
         return self.description
 
@@ -431,6 +455,9 @@ class ReorderItems(models.Model):
         default='0', blank=True, null=True)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Re-Order Item'
 
     def __str__(self):
         if self is not None:

@@ -9,15 +9,11 @@
   <!-- BOX ICONS CSS-->
   <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css" rel="stylesheet" />
   <!-- custom css -->
-  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
-  <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
+  <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"
+    rel="stylesheet">
 
-  <style>
-    #sidebar {
-      position: fixed;
-      width: 188px;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css'%}">
 
 </head>
 
@@ -53,64 +49,77 @@
     </span>
   </div>
 
-  <div class="side-navbar active-nav d-flex justify-content-between flex-wrap flex-column" id="sidebar">
-    <ul class="nav flex-column text-white w-100">
-      <a href="#" class="nav-link h3 text-white my-2">
-        NAVIGATION
-      </a>
-      <a href="{%url 'home' %}" class="nav-link">
+  <nav>
 
-        <i class="bx bx-home"></i>
-        <span class="mx-2">Home</span>
-      </a>
 
-      <a href="{%url 'InterimOrder' %}" class="nav-link">
-        <i class="bx bx-message-square-edit"></i>
-        <span class="mx-2">Order / Receive </span>
+    <div class="navdiv">
+
+      <a href="{%url 'home'%}">
+        <i class="fa fa-home fa-lg"></i>
+        <span class="nav-text">Home</span>
       </a>
 
-      <a href="{%url 'store' %}" class="nav-link">
-        <i class="bx bx-user-check"></i>
-        <span class="mx-2">Inventory</span>
+      <a href="{%url 'store' %} ">
+        <i class="fa fa-archive fa-lg"></i>
+        <span class="nav-text">Inventory</span>
+      </a>
+      <div class="mid-block-2">
+        <a href="{%url 'InhouseReapirs' %} ">
+          <i class="fa fa-exchange fa-lg"></i>
+          <span class="nav-text">Inhouse</span>
+        </a>
+        <a href="{%url 'ShopReapirs' %} ">
+          <i class="fa fa-truck fa-lg"></i>
+          <span class="nav-text">Supplier</span>
+        </a>
+      </div>
+
+      <a href=" ">
+        <i class="fa fa-code-fork fa-lg"></i>
+        <span class="nav-text">Work-Orders</span>
       </a>
 
-      <a href="{%url 'workorders' %}" class="nav-link">
-        <i class="bx bx-network-chart"></i>
-        <span class="mx-2">Work-Orders</span>
-      </a>
-      <a href="{%url 'tools' %}" class="nav-link">
-        <i class="bx bx-archive"></i>
-        <span class="mx-2">Tool-Box</span>
-      </a>
-      <a href="{%url 'historical_inventory' %}" class="nav-link">
-        <i class="bx bx-receipt"></i>
-        <span class="mx-2">Historical-Data</span>
-      </a>
+      <div class="mid-block-2">
+        <a href=" ">
+          <i class="fa fa-arrows fa-lg"></i>
+          <span class="nav-text">W/O History</span>
+        </a>
+      </div>
 
-      <a href="{% url 'orderhistory' %}" class="nav-link">
-        <i class="bx bx-data"></i>
-        <span class="mx-2">Order-History</span>
+
+
+
+
+      <a href="{%url 'tools'%} ">
+        <i class="fa fa-cogs fa-lg"></i>
+        <span class="nav-text">Tool Box</span>
       </a>
 
-      <a href="{% url 'reorderParts' %}" class="nav-link">
-        <i class="bx bx-calendar-week"></i>
-        <span class="mx-2">Re-Order Parts</span>
+      <a href="{%url 'historical_inventory' %} ">
+        <i class="fa fa-book fa-lg"></i>
+        <span class="nav-text">Historical Data</span>
       </a>
 
+      <a href="{%url 'orderhistory'%} ">
+        <i class="fa fa-th-list fa-lg"></i>
+        <span class="nav-text">Historical Order</span>
+      </a>
+
+      <a href="{%url 'reorderParts' %} ">
+        <i class="fa fa-signal fa-lg"></i>
+        <span class="nav-text">Re-Order</span>
+      </a>
+      <div class="mid-block">
+        <a href="{%url 'adminpage'%} ">
+          <i class="fa fa-user fa-lg"></i>
+          <span class="nav-text">Admin</span>
+        </a>
+      </div>
+
+    </div>
+  </nav>
 
 
-
-
-    </ul>
-
-  </div>
-
-  <div class="p-1 my-container active-cont">
-    <nav class="navbar top-navbar ">
-      <a class="btn border-0" id="menu-btn"><img src="https://img.icons8.com/carbon-copy/80/000000/arrow.png" /></a>
-    </nav>
-
-  </div>
 
   <!-- bootstrap js -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"

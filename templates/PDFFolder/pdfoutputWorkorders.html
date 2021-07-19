@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% load static%}
-{% load pdf_filters %}
+<!-- {% load pdf_filters %} -->
 
 <html>
 
@@ -146,7 +146,7 @@
     {%if part_workorder.cert_document %}
 
     <p>Image:</p>
-    <img src="{{part_workorder.cert_document.url | get64 }}" />
+    <img src="{{part_workorder.cert_document.url }}" />
 
     {%else%}
     {%endif%}

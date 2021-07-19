@@ -71,7 +71,7 @@
                             <button class="btn btn-dark sb-btn poschahnge" style="float:right;" type="url">Confirm
                                 Entry</button>
 
-                            {%if queryset.repaired_by == "SEND TO SHOP"%}
+                            {%if queryset.repaired_by == "SEND TO SUPPLIER"%}
                             <a class="btn btn-danger sb-btn" style="float:left;"
                                 href="{% url 'ShopReapirs' %}">Cancel</a>
                             {%else%}

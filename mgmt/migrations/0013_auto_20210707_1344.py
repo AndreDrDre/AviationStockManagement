@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='parts',
             name='repaired_by',
-            field=models.CharField(choices=[('INHOUSE REPAIR', 'INHOUSE REPAIR'), ('SEND TO SHOP', 'SEND TO SHOP')], default='', max_length=20),
+            field=models.CharField(choices=[('INHOUSE REPAIR', 'INHOUSE REPAIR'), (
+                'SEND TO SUPPLIER', 'SEND TO SUPPLIER')], default='', max_length=20),
         ),
     ]

@@ -102,8 +102,6 @@ class ReservedFilter(django_filters.FilterSet):
 
 
 class OHFilter(django_filters.FilterSet):
-    ordered_by = django_filters.ModelChoiceFilter(
-        queryset=Employees.objects.all())
 
     class Meta:
         model = OrderHistory

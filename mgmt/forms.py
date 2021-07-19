@@ -132,6 +132,7 @@ class CreateOrder(forms.Form):
 
 #Order Forms----------------------------------------------------------#
 
+
 class waybillForm(forms.ModelForm):
     class Meta:
         model = Parts

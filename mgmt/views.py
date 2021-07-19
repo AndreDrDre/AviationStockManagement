@@ -40,7 +40,6 @@ import xlwt
 
 #login Views-------------------------------------#
 
-
 def adminpage(request):
     return redirect('adminpage')
 
@@ -80,6 +79,7 @@ def signin(request):
     return render(request, 'mgmt/login.html')
 
 
+@login_required(login_url='signin')
 def logoutUser(request):
     logout(request)
     return redirect('signin')
@@ -249,7 +249,7 @@ def Qinventory(request):
     # ------------------------------------------------------------------#
 
     querysetShop = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False, recieve_part=True,
-                                        repaired_by='SEND TO SHOP', Repaired=True).order_by('date_received').reverse()
+                                        repaired_by='SEND TO SUPPLIER', Repaired=True).order_by('date_received').reverse()
 
     querysetInhouse = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False, recieve_part=True,
                                            repaired_by='INHOUSE REPAIR', Repaired=True).order_by('date_received').reverse()
@@ -289,7 +289,7 @@ def InhouseReapirs(request):
 def ShopReapirs(request):
 
     querysetShop = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False, recieve_part=True,
-                                        repaired_by='SEND TO SHOP', Repaired=True).order_by('date_received').reverse()
+                                        repaired_by='SEND TO SUPPLIER', Repaired=True).order_by('date_received').reverse()
 
     Partfilter = QuaratineFilter(request.GET, queryset=querysetShop)
     querysetShop = Partfilter.qs
@@ -313,9 +313,9 @@ def repair(request, pk):
             # queryset.save(update_fields=['Repaired'])
             form.save()
 
-            if queryset.repaired_by == "SEND TO SHOP":
+            if queryset.repaired_by == "SEND TO SUPPLIER":
                 if request.is_ajax():
-                    return JsonResponse({'success': 'Adding Part to Shop Repair...', 'redirect_to': reverse('transportInfo', kwargs={'pk': queryset.id})})
+                    return JsonResponse({'success': 'Adding Part to Supplier Repair...', 'redirect_to': reverse('transportInfo', kwargs={'pk': queryset.id})})
 
             else:
                 queryset.Repaired = True
@@ -340,7 +340,7 @@ def transportInfo(request, pk):
 
         if form.is_valid():
 
-            if queryset.repaired_by == "SEND TO SHOP":
+            if queryset.repaired_by == "SEND TO SUPPLIER":
                 queryset.date_received = timezone.now()
                 queryset.save(update_fields=['date_received'])
                 queryset.Repaired = True
@@ -351,7 +351,7 @@ def transportInfo(request, pk):
                     return JsonResponse({'success': 'Adding Shipping Information...', 'redirect_to': reverse('ShopReapirs')})
 
             else:
-                queryset.repaired_by = "SEND TO SHOP"
+                queryset.repaired_by = "SEND TO SUPPLIER"
                 queryset.date_received = timezone.now()
                 queryset.save(update_fields=['date_received'])
                 queryset.save(update_fields=['repaired_by'])
@@ -668,6 +668,8 @@ def addToInventory(request, Type):
                     # return redirect('instructions', pk=p.id)
     else:
         form = AddInventory(Type)
+        form.fields['inspector'].queryset = Employees.objects.filter(
+            user=request.user)
         print(form.errors)
     context = {"form": form, "check": check}
     if request.is_ajax():
@@ -679,62 +681,66 @@ def addToInventory(request, Type):
 @login_required(login_url='signin')
 def addToQuarentine(request):
 
-    form = addQuaretineInventory(
-        request.POST or None, request.FILES or None)
+    form = addQuaretineInventory()
+    if request.method == 'POST':
+        form = addQuaretineInventory(
+            request.POST, request.FILES)
+        if form.is_valid():
 
-    # we need to chage the quarentine component
+            order_quantity = form.cleaned_data['order_quantity']
+            condition = form.cleaned_data['condition']
+            part_type = form.cleaned_data['part_type']
+            description = form.cleaned_data['description']
+            part_number = form.cleaned_data['part_number']
+            indentifier = form.cleaned_data['indentifier']
+            cert_document = form.cleaned_data['cert_document']
+            inspector = form.cleaned_data['inspector']
 
-    if form.is_valid():
+            if part_type == 'Rotable' or part_type == 'Tires':
+                p = Parts(part_type=part_type,
+                          description=description,
+                          part_number=part_number,
+                          ipc_reference="",
+                          serial_number=indentifier,
+                          cert_document=cert_document,
+                          quantity=1,
+                          inspector=inspector,
+                          condition=condition,
+                          date_received=timezone.now(),
+                          Historical=False,
+                          recieve_part=True,
+                          Quarentine=True,
+                          user=request.user
+                          )
+                p.save()
+                if request.is_ajax():
+                    return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
+                # return redirect('Qinventory')
+            else:
+                p = Parts(part_type=part_type,
+                          description=description,
+                          part_number=part_number,
+                          ipc_reference="",
+                          batch_no=indentifier,
+                          cert_document=cert_document,
+                          quantity=order_quantity,
+                          inspector=inspector,
+                          condition=condition,
+                          date_received=timezone.now(),
+                          Historical=False,
+                          recieve_part=True,
+                          Quarentine=True,
+                          user=request.user
+                          )
+                p.save()
+                if request.is_ajax():
+                    return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
+                # return redirect('Qinventory')
 
-        order_quantity = form.cleaned_data['order_quantity']
-        condition = form.cleaned_data['condition']
-        part_type = form.cleaned_data['part_type']
-        description = form.cleaned_data['description']
-        part_number = form.cleaned_data['part_number']
-        indentifier = form.cleaned_data['indentifier']
-        cert_document = form.cleaned_data['cert_document']
-        inspector = form.cleaned_data['inspector']
-
-        if part_type == 'Rotable' or part_type == 'Tires':
-            p = Parts(part_type=part_type,
-                      description=description,
-                      part_number=part_number,
-                      ipc_reference="",
-                      serial_number=indentifier,
-                      cert_document=cert_document,
-                      quantity=1,
-                      inspector=inspector,
-                      condition=condition,
-                      date_received=timezone.now(),
-                      Historical=False,
-                      recieve_part=True,
-                      Quarentine=True,
-                      user=request.user
-                      )
-            p.save()
-            if request.is_ajax():
-                return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
-            # return redirect('Qinventory')
-        else:
-            p = Parts(part_type=part_type,
-                      description=description,
-                      part_number=part_number,
-                      ipc_reference="",
-                      batch_no=indentifier,
-                      cert_document=cert_document,
-                      quantity=order_quantity,
-                      inspector=inspector,
-                      condition=condition,
-                      date_received=timezone.now(),
-                      Historical=False,
-                      recieve_part=True,
-                      Quarentine=True,
-                      user=request.user
-                      )
-            p.save()
-            if request.is_ajax():
-                return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('Qinventory')})
-            # return redirect('Qinventory')
+    else:
+        form = addQuaretineInventory()
+        form.fields['inspector'].queryset = Employees.objects.filter(
+            user=request.user)
 
     context = {"form": form}
     if request.is_ajax():
@@ -822,6 +828,9 @@ def issuePart(request, pk):
 
     else:
         form = issueWorkForm(instance=queryset, user=request.user)
+        form.fields['issued_by'].queryset = Employees.objects.filter(
+            user=request.user)
+
     context = {'form': form, 'queryset': queryset, }
     if request.is_ajax():
         # form.save()
@@ -1236,6 +1245,9 @@ def orderhistory(request):
         user=request.user).order_by('date_ordered').reverse()
 
     myFilter = OHFilter(request.GET, queryset=query)
+
+    myFilter.filters['ordered_by'].queryset = Employees.objects.filter(
+        user=request.user)
     query = myFilter.qs
     # filter
 
@@ -1269,7 +1281,7 @@ def waybill(request, pk):
             queryset.urlWayBill = string + form.cleaned_data['waybill']
             form.save()
 
-            if queryset.repaired_by == "SEND TO SHOP":
+            if queryset.repaired_by == "SEND TO SUPPLIER":
                 return redirect('ShopReapirs')
             else:
                 return redirect('orderpart')
@@ -1288,7 +1300,7 @@ def deletepart(request, pk):
         return redirect('orderpart')
     else:
 
-        if part.repaired_by == "SEND TO SHOP":
+        if part.repaired_by == "SEND TO SUPPLIER":
             return redirect('ShopReapirs')
 
         if part.condition == 'REPAIRABLE':
@@ -1331,26 +1343,55 @@ def quickOrder(request, pk):
     except queryset.DoesNotExist:
         queryset = None
 
-    form = ReOrderForm(request.POST or None)
+    if request.method == "POST":
+        form = ReOrderForm(request.POST)
+        if form.is_valid():
+            orderedBy = form.cleaned_data['ordered_by']
+            orderQTY = form.cleaned_data['orderQTY']
+            tail_number = form.cleaned_data['tail_number']
 
-    if form.is_valid():
+            description = queryset.description
+            part_number = queryset.part_number
+            order_quantity = orderQTY
+            ipc_reference = queryset.ipc_reference
+            ordered_by = orderedBy
+            part_type = queryset.part_type
 
-        orderedBy = form.cleaned_data['ordered_by']
-        orderQTY = form.cleaned_data['orderQTY']
-        tail_number = form.cleaned_data['tail_number']
+            if part_type == 'Rotable' or part_type == 'Tires':
+                for count in range(order_quantity):
+                    p = Parts(description=description,
+                              part_number=part_number,
+                              order_quantity=1,
+                              ipc_reference=ipc_reference,
+                              date_ordered=timezone.now(),
+                              tail_number=tail_number,
+                              ordered_by=ordered_by,
+                              part_type=part_type,
+                              Historical=False,
+                              user=request.user)
+                    p.save()
 
-        description = queryset.description
-        part_number = queryset.part_number
-        order_quantity = orderQTY
-        ipc_reference = queryset.ipc_reference
-        ordered_by = orderedBy
-        part_type = queryset.part_type
+                h = OrderHistory(description=description,
+                                 part_number=part_number,
+                                 order_quantity=order_quantity,
+                                 ipc_reference=ipc_reference,
+                                 date_ordered=timezone.now(),
+                                 tail_number=tail_number,
+                                 ordered_by=ordered_by,
+                                 part_type=part_type,
+                                 user=request.user)
+                h.save()
+                if request.is_ajax():
+                    if p.tail_number.name == "Stock":
+                        return JsonResponse({'success': 'Placing new Stock Order...', 'redirect_to': reverse('reorderParts')})
+                    else:
+                        return JsonResponse({'success': 'Placing new Reserved Stock Order......', 'redirect_to': reverse('reorderParts')})
+                return redirect('reorderParts')
 
-        if part_type == 'Rotable' or part_type == 'Tires':
-            for count in range(order_quantity):
+            else:
                 p = Parts(description=description,
                           part_number=part_number,
-                          order_quantity=1,
+                          order_quantity=order_quantity,
                           ipc_reference=ipc_reference,
                           date_ordered=timezone.now(),
                           tail_number=tail_number,
@@ -1360,53 +1401,33 @@ def quickOrder(request, pk):
                           user=request.user)
                 p.save()
 
-            h = OrderHistory(description=description,
-                             part_number=part_number,
-                             order_quantity=order_quantity,
-                             ipc_reference=ipc_reference,
-                             date_ordered=timezone.now(),
-                             tail_number=tail_number,
-                             ordered_by=ordered_by,
-                             part_type=part_type,
-                             user=request.user)
-            h.save()
-            if request.is_ajax():
-                if p.tail_number.name == "Stock":
-                    return JsonResponse({'success': 'Placing new Stock Order...', 'redirect_to': reverse('reorderParts')})
-                else:
-                    return JsonResponse({'success': 'Placing new Reserved Stock Order......', 'redirect_to': reverse('reorderParts')})
-            return redirect('reorderParts')
+                h = OrderHistory(description=description,
+                                 part_number=part_number,
+                                 order_quantity=order_quantity,
+                                 ipc_reference=ipc_reference,
+                                 date_ordered=timezone.now(),
+                                 tail_number=tail_number,
+                                 ordered_by=ordered_by,
+                                 part_type=part_type,
+                                 user=request.user)
+                h.save()
+                if request.is_ajax():
+                    if p.tail_number.name == "Stock":
+                        return JsonResponse({'success': 'Placing new Stock Order...', 'redirect_to': reverse('reorderParts')})
+                    else:
+                        return JsonResponse({'success': 'Placing new Reserved Stock Order......', 'redirect_to': reverse('reorderParts')})
+
+                return redirect('reorderParts')
 
         else:
-            p = Parts(description=description,
-                      part_number=part_number,
-                      order_quantity=order_quantity,
-                      ipc_reference=ipc_reference,
-                      date_ordered=timezone.now(),
-                      tail_number=tail_number,
-                      ordered_by=ordered_by,
-                      part_type=part_type,
-                      Historical=False,
-                      user=request.user)
-            p.save()
+            form = CreateOrder()
+            form.fields['ordered_by'].queryset = Employees.objects.filter(
+                user=request.user)
 
-            h = OrderHistory(description=description,
-                             part_number=part_number,
-                             order_quantity=order_quantity,
-                             ipc_reference=ipc_reference,
-                             date_ordered=timezone.now(),
-                             tail_number=tail_number,
-                             ordered_by=ordered_by,
-                             part_type=part_type,
-                             user=request.user)
-            h.save()
-            if request.is_ajax():
-                if p.tail_number.name == "Stock":
-                    return JsonResponse({'success': 'Placing new Stock Order...', 'redirect_to': reverse('reorderParts')})
-                else:
-                    return JsonResponse({'success': 'Placing new Reserved Stock Order......', 'redirect_to': reverse('reorderParts')})
-
-            return redirect('reorderParts')
+    else:
+        form = ReOrderForm()
+        form.fields['ordered_by'].queryset = Employees.objects.filter(
+            user=request.user)
 
     context = {"form": form, "queryset": queryset}
     if request.is_ajax():
@@ -1435,12 +1456,14 @@ def orderpart(request):
 
     #Filters----------------------#
     myFilter_order = CreateOrderFilter(request.GET, queryset=queryset)
+    myFilter_order.filters['ordered_by'].queryset = Employees.objects.filter(
+        user=request.user)
     queryset = myFilter_order.qs
     #----------------------------#
 
-    form = CreateOrder(request.POST or None)
     if request.method == 'POST':
-        form = CreateOrder(request.POST or None)
+        form = CreateOrder(request.POST)
+
         if form.is_valid():
             description = form.cleaned_data['description']
             part_number = form.cleaned_data['part_number']
@@ -1505,6 +1528,9 @@ def orderpart(request):
 
     else:
         form = CreateOrder()
+        form.fields['ordered_by'].queryset = Employees.objects.filter(
+            user=request.user)
+
     context = {
         "form": form,
         "queryset": queryset,
@@ -1583,13 +1609,6 @@ def recieveorder(request, pk):
 
     pt = part.id
     time_received = timezone.now()
-
-    if part.part_type == 'Rotable' or part.part_type == 'Tires':
-        receiveForm = RecieveOrder(pt, instance=part)
-    elif part.part_type == 'Consumables' or part.part_type == 'Shelf-life':
-        receiveForm = RecieveconsumShelf(pt, instance=part)
-    else:
-        receiveForm = RecieveAgs(pt, instance=part)
 
     if request.method == 'POST':
         if part.part_type == 'Rotable' or part.part_type == 'Tires':
@@ -1683,6 +1702,20 @@ def recieveorder(request, pk):
                             return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('orderpart')})
                         # return redirect('orderpart')
 
+    else:
+        if part.part_type == 'Rotable' or part.part_type == 'Tires':
+            receiveForm = RecieveOrder(pt, instance=part)
+            receiveForm.fields['inspector'].queryset = Employees.objects.filter(
+                user=request.user)
+        elif part.part_type == 'Consumables' or part.part_type == 'Shelf-life':
+            receiveForm = RecieveconsumShelf(pt, instance=part)
+            receiveForm.fields['inspector'].queryset = Employees.objects.filter(
+                user=request.user)
+        else:
+            receiveForm = RecieveAgs(pt, instance=part)
+            receiveForm.fields['inspector'].queryset = Employees.objects.filter(
+                user=request.user)
+
     context = {'receiveForm': receiveForm,
                "part": part, 'time': time_received, }
     if request.is_ajax():
@@ -1770,6 +1803,8 @@ def exportorder(request):
         user=request.user, recieve_part=False).order_by('date_ordered').reverse()
 
     myFilter_order = CreateOrderFilter(request.GET, queryset=queryset)
+    myFilter_order.filters['ordered_by'].queryset = Employees.objects.filter(
+        user=request.user)
     queryset = myFilter_order.qs
 
     context = {"queryset": queryset, "myfilter": myFilter_order, }
@@ -2284,12 +2319,12 @@ def exportXlsInventory(request, Type):
         print(lst_tuple)
 
     if Type == 'Shop':
-        name = 'Send To Shop Repairs'
+        name = 'SEND TO SUPPLIER'
         namefile = 'attachment; filename="ShopRepairs.xls"'
         rows = []
         listx = []
         queryset = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False,
-                                        recieve_part=True, Repaired=True, repaired_by="SEND TO SHOP").order_by('date_received').reverse()
+                                        recieve_part=True, Repaired=True, repaired_by="SEND TO SUPPLIER").order_by('date_received').reverse()
 
         rows = queryset.values_list('description', 'part_number', 'part_type', 'inspector__name', 'condition', 'length', 'breadth', 'height', 'weight', 'date_received',
                                     )
