@@ -183,6 +183,9 @@ def shoppingList(request):
         user=request.user)
     queryset = myfilter.qs
 
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
+
     for x in queryset:
         if x.quantity < x.re_orderLevel or x.quantity == x.re_orderLevel:
             x.re_orderBoolean = True
