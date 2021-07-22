@@ -1,0 +1,294 @@
+{%extends 'mgmt/index.html'%}
+{% load static%}
+{% block content %}
+
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
+    <style>
+        .container-fluid {
+
+            padding-left: 200px;
+            padding-right: 200px;
+        }
+
+        .formStyle {
+
+            padding-top: 15px;
+            line-height: 10px;
+
+        }
+
+        .a {
+            color: black;
+        }
+
+        .export:hover {
+            transform: scale(1.05);
+        }
+
+
+        .circleme {
+            border-radius: 15px;
+            border: 1px solid;
+        }
+
+        .reciever {
+            background: #afb4b97c;
+        }
+
+        .btn-dre {
+            border-radius: 30px;
+            font-size: 18px;
+            width: 100%;
+            padding: 10px;
+            border-radius: 15px;
+
+            float: right;
+            transition: all .2s ease-in-out;
+        }
+
+        .btn-dre:hover {
+            transform: scale(1.1);
+        }
+
+        .export-layout {
+            display: flex;
+            margin: 0 auto;
+            padding-bottom: 20px;
+        }
+
+        .sb-export {
+            border-radius: 15px;
+            background: linear-gradient(135deg, #4fb945 0%, #10d13a60 100%);
+            float: right;
+            transition: all .2s ease-in-out;
+            font-size: 20px;
+            width: 200px;
+        }
+
+        .sb-export:hover {
+            transform: scale(1.1);
+        }
+
+
+        .btn-comp {
+            border-radius: 15px;
+            background: linear-gradient(135deg, #ce961c 0%, #ca1616 100%);
+            float: right;
+            transition: all .2s ease-in-out;
+        }
+
+        .btn-comp:hover {
+            transform: scale(1.1);
+        }
+
+        .display {
+            display: inline-block;
+            margin-left: 5px;
+            position: fixed;
+            bottom: 100px;
+
+        }
+    </style>
+</head>
+
+<body>
+    <script type="text/javascript">
+        function confirmDelete() {
+            var txt;
+            var agree = confirm("Are you sure you want to delete this item?");
+            if (agree) {
+
+                return true;
+            } else
+                return false;
+        }
+    </script>
+
+    <br>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="mx-auto" style="width: 800px;">
+                <div class="center-heading">
+                    <h2 class="section-title"> SHOPPING LIST </h2>
+                </div>
+            </div>
+            <div class="offset-lg-3 col-lg-6">
+                <div class="center-text">
+                    <p style="text-align:center">Search through and update your shopping list. Re-Order items that are
+                        low!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <br>
+    </div>
+    <br>
+    <br>
+    <br>
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-4">
+                <h3 style="text-align:center">ORDERS PENDING</h3>
+                <span class="NumberCheckPending">{{pending}}</span>
+                <span></span>
+                <div class="card card-body circleme">
+                    <table class="table table-med">
+                        <tr>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Description</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Quantity</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date</th>
+                        </tr>
+                        {% for instance in querysetPending %}
+                        <tr>
+
+                            <td class="tablestyle">{{instance.description}}</td>
+                            <td class="tablestyle">{{instance.order_quantity}}</td>
+                            <td class="tablestyle">{{instance.date|date:"M d, Y"}}</td>
+                            <td class="tablestyle"><a id='about-btn' class="btn btn-sm btn-dark form-btn"
+                                    href="{%url 'RecieveShop' instance.id%}">Receive
+                                </a>
+                            </td>
+
+                        </tr>
+                        {% endfor%}
+
+                    </table>
+                </div>
+
+            </div>
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <h3 style="text-align:center">REORDER ITEMS</h3>
+                <span class="NumberCheckReOrder">{{ReOrder}}</span>
+                <div class="card card-body circleme">
+                    <table class="table table-med">
+                        <tr>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Description</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Quantity
+                                Remaining</th>
+                        </tr>
+                        {% for instance in querysetReOrder %}
+                        <tr>
+
+                            <td class="tablestyle">{{instance.description}}</td>
+                            <td class="tablestyle">{{instance.quantity}}</td>
+
+
+                        </tr>
+                        {% endfor%}
+
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <br>
+        <br>
+    </div>
+
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-8">
+                <div class='card card-body circleme'>
+                    <form method="get">
+
+                        {{myfilter.form}}
+
+                        <button class="btn btn-info btn-search" type="submit"><img
+                                src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" /></button>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class='card card-body circleme '>
+                    <div class="export"> <a href="{%url 'shoppingListForm' %}"><img
+                                src="https://img.icons8.com/cotton/54/000000/--sale-paper-bag--v2.png" /></a>
+                        <span class="tooltiptext">Add Item</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <div class="card card-body circleme">
+                    <table class="table table-med">
+                        <tr>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Description</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Quantity</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Unit Price</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Re-Order lvl
+                            </th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Total
+                            </th>
+
+
+
+
+                        </tr>
+                        {% for instance in queryset %}
+                        <tr>
+
+                            <td class="tablestyle">{{instance.description}}</td>
+                            <td class="tablestyle">{{instance.part_number}}</td>
+                            <td class="tablestyle">{{instance.quantity}}</td>
+                            <td class="tablestyle">$ {{instance.unitPrice}}</td>
+
+                            {%if instance.quantity < instance.re_orderLevel or instance.quantity == instance.re_orderLevel%}
+                            <td style="color:red" class="tablestyle"><strong>{{instance.re_orderLevel}}</strong></td>
+                            {%else%}
+                            <td class="tablestyle">{{instance.re_orderLevel}}</td>
+                            {%endif%}
+
+                            <td class="tablestyle">$ {{instance.total}}</td>
+
+
+                            <td class="tablestyle"><a class="btn btn-sm btn-info form-btn"
+                                    href="{% url 'editShop' instance.id %}">Edit</a></td>
+                            <td class="tablestyle"><a id='about-btn' class="btn btn-sm btn-warning form-btn"
+                                    href="{%url 'OrderShop' instance.id%}">Order</a>
+                            </td>
+                            <td class="tablestyle"><a id='about-btn' class="btn btn-sm btn-dark form-btn"
+                                    href="{%url 'IssueOutShop' instance.id%}">Issue Out</a>
+                            </td>
+
+                        </tr>
+                        {% endfor%}
+
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+    </div>
+
+    <br>
+    <br>
+    <div class="row">
+
+        <div class="col-md-2">
+            <div class='card card-body circleme display'>
+                <a class="btn btn-danger back-btn" href="{%url 'store'%}">Back</a>
+            </div>
+        </div>
+        <div class="col-md-5">
+
+        </div>
+        <div class="col-md-5"></div>
+    </div>
+</body>
+
+{% endblock%}

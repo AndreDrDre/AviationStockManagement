@@ -78,6 +78,7 @@
 
                     {%endif%}
 
+
                     <hr>
                     <h5><strong>Step 2:</strong></h5>
                     <hr>
@@ -90,6 +91,38 @@
                     <hr>
                     <br>
 
+                    {%if check == True%}
+
+                    <form action="#" method="POST">
+                        <p>Please enter your own bin number if you wish to override the default!</p>
+                        {% csrf_token %}
+                        {{form.as_p}}
+                        <br>
+
+
+
+                        <div class="row">
+
+                            <div class="col-sm-6">
+                                <button class="btn btn-info sb-btn" type="submit"
+                                    href="{% url 'InterimOrder' %}">Receive
+                                    Another Part</button>
+
+                            </div>
+                            <!-- <div class="col-sm-1"></div> -->
+                            <div class="col-sm-6">
+                                <button class="btn btn-dark sb-btn" style="float: right" type="submit"
+                                    href="{% url 'store' %}">Navigate to
+                                    Invenotry
+                                </button>
+                            </div>
+                        </div>
+
+
+
+                    </form>
+
+                    {%else%}
 
                     <div class="row">
 
@@ -105,6 +138,10 @@
                             </a>
                         </div>
                     </div>
+
+                    {%endif%}
+
+
                 </div>
             </div>
 

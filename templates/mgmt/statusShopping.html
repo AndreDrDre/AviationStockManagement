@@ -1,0 +1,97 @@
+{% load static %}
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css'%}">
+    <style>
+        #display {
+            background: linear-gradient(135deg, #80d0c7 0%, #13547a 100%);
+
+            border-radius: 30px;
+            height: 150px;
+
+        }
+
+        .card-title {
+            font-size: 23px;
+        }
+
+
+        .card-body h3 {
+            font-size: 28px;
+        }
+
+        #display:hover {
+
+            transform: scale(1.1)
+        }
+
+        #total {
+            background: linear-gradient(135deg, #ce961c 0%, #ca1616 100%);
+
+            border-radius: 30px;
+            height: 150px;
+
+        }
+
+
+        #total:hover {
+            transform: scale(1.1)
+        }
+
+        @media (max-width: 1600px) {
+            #total {
+
+
+                height: 120px;
+            }
+
+            #display {
+
+
+                height: 120px;
+            }
+
+            .card-title {
+                font-size: 18px;
+            }
+
+
+            .card-body h3 {
+                font-size: 24px;
+            }
+
+        }
+    </style>
+</head>
+<br>
+
+
+<div class="container-fluid ">
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="card text-center text-white " id="total">
+                <div class="card-header">
+                    <h5 class="card-title">RE-ORDER ITEMS</h5>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">{{reorderparts}}</h3>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-md-4"></div>
+
+        <div class="col-md-4">
+            <div class="card text-center text-white" id="display">
+                <div class="card-header">
+                    <h5 class="card-title">PENDING ORDERS</h5>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">{{orderpending}}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

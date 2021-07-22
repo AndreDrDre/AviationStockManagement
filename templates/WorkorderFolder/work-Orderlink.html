@@ -194,7 +194,7 @@
                             <!--The quantity represented in the many to many associated with a work-order -->
                             <td class="tablestyle">{{part_workorder.issue_quantity}}</td>
                             <td class="tablestyle">$ {{part_workorder.part.price}}</td>
-                            <th class="tablestyle">$ {{part_workorder.total}} </th>
+                            <td class="tablestyle"><strong>$ {{part_workorder.total}} </strong> </td>
 
                             {% if part_workorder.part.cert_document %}
                             <td class="tablestyle"><a href="{{part_workorder.part.cert_document.url}}"

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+{% load static%}
+<!-- {% load pdf_filters %} -->
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Request Orders</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+
+    <style>
+        @page {
+            size: a4 portrait;
+            margin: 2cm;
+
+            @frame footer {
+                -pdf-frame-content: footer;
+                color: black;
+                bottom: 1cm;
+                margin-left: 10.5cm;
+                height: 1cm;
+                align-items: center;
+                text-align: center;
+            }
+
+        }
+
+        table {
+            -pdf-keep-with-next: true;
+        }
+
+        p {
+            margin: 0;
+            -pdf-keep-with-next: true;
+        }
+
+        h2 {
+            margin: 0;
+            -pdf-keep-with-next: true;
+        }
+
+        h2.seperator {
+            margin: 0;
+            -pdf-keep-with-next: true;
+        }
+
+        p.separator {
+            -pdf-keep-with-next: false;
+            font-size: 8pt;
+        }
+
+        .imgHolder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 80px;
+        }
+
+        .imgHolder img {
+
+            width: 100%;
+            height: 100%;
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="header_content">
+        <h2 style="text-align:center"> WORK-ORDER HISTORY </h2>
+    </div>
+
+    <br>
+    <hr>
+    <h5>This PDF was created on : {{date}}</h5>
+    <hr>
+    <h6>WORK-ORDER NUMBER : {{querysetDisplay.workorder_number}}</h6>
+    <h6>ESTIMATED COST :<strong>$ {{total}}</strong></h6>
+    <h6>TAIL NUMBER : {{querysetDisplay.tail_number}}</h6>
+    <h6>OPENED @ : {{querysetDisplay.date_added|date:"M d, Y"}}</h6>
+    <h6>CLOSED @ : {{querysetDisplay.date_closed|date:"M d, Y"}}</h6>
+    <h6>DURATION : {{querysetDisplay.duration}}</h6>
+
+    <hr>
+    <div class="row">
+        <h4 style="text-align:center">PARTS ISSUED </h4>
+
+        <hr>
+        <div class="card card-body circleme">
+            <table class="table table-md">
+                <tr>
+                    <th style="text-align:center; padding:8px; ">Descrption</th>
+                    <th style="text-align:center; padding:8px;">P#</th>
+                    <th style="text-align:center; padding:8px;">B#/S#</th>
+                    <th style="text-align:center;padding:8px; ">Issued By:</th>
+
+                    <th style="text-align:center; padding:8px;">Qty Issued</th>
+                    <th style="text-align:center; padding:8px;">Unit Price</th>
+                    <th style="text-align:center; padding:8px;">Total Price</th>
+
+                    <th style="text-align:center; padding:8px;">Work Card #:</th>
+                    <th style="text-align:center;padding:8px;">Isued On:</th>
+                </tr>
+                {% for part_workorder in partsIssue %}
+                <tr>
+                    <td style="text-align:center;padding:2px; ">{{part_workorder.part.description}}</td>
+                    <td style="text-align:center;">{{part_workorder.part.part_number}}</td>
+
+                    {%if part_workorder.part.serial_number%}
+                    <td style="text-align:center;">{{part_workorder.part.serial_number}}</td>
+                    {%else%}
+                    <td style="text-align:center;">{{part_workorder.part.batch_no}}</td>
+                    {%endif%}
+
+                    <td style="text-align:center;">{{part_workorder.issued_by}}</td>
+
+                    <!--The quantity represented in the many to many associated with a work-order -->
+                    <td style="text-align:center;">{{part_workorder.issue_quantity}}</td>
+                    <td style="text-align:center;">$ {{part_workorder.part.price}}</td>
+                    <th style="text-align:center;">$ {{part_workorder.total}} </th>
+                    <td style="text-align:center;"> {{part_workorder.jobCardNumber }} </td>
+                    <td style="text-align:center;"> {{part_workorder.created_at|date:"M d, Y" }} </td>
+                </tr>
+                {% endfor%}
+
+            </table>
+        </div>
+        <hr>
+    </div>
+
+    <br>
+    <pdf:nextpage />
+
+    <div class="row">
+        <hr>
+        <h4 style="text-align:center">PARTS REMOVED </h4>
+
+        <hr>
+        <div class="card card-body circleme">
+            <table class="table table-md">
+                <tr>
+                    <th style="text-align:center;padding:8px; ">Descrption</th>
+                    <th style="text-align:center; ">P#</th>
+                    <th style="text-align:center; ">S#/B#</th>
+                    <th style="text-align:center; ">Removed By:</th>
+                    <th style="text-align:center; ">Removed From:</th>
+                    <th style="text-align:center; ">Qty</th>
+                    <th style="text-align:center; ">Work Card #</th>
+                    <th style="text-align:center; ">Removed On:</th>
+                </tr>
+
+                {% for part_workorder in partsReceived %}
+                <tr>
+                    <td style="text-align:center;padding:2px; ">{{part_workorder.part.description}}</td>
+                    <td style="text-align:center;">{{part_workorder.part.part_number}}</td>
+                    {%if part_workorder.part.serial_number%}
+                    <td style="text-align:center;">{{part_workorder.part.serial_number}}</td>
+                    {%else%}
+                    <td style="text-align:center;">{{part_workorder.part.batch_no}}</td>
+                    {%endif%}
+
+                    <td style="text-align:center;">{{part_workorder.removed_by}}</td>
+
+                    <td style="text-align:center;">{{part_workorder.removed_from}}</td>
+                    <!--The quantity represented in the many to many associated with a work-order -->
+                    <td style="text-align:center;">1</td>
+                    <td style="text-align:center;"> {{part_workorder.jobCardNumber}}</td>
+
+                    <td style="text-align:center;"> {{part_workorder.created_at|date:"M d, Y" }} </td>
+
+
+
+                </tr>
+                {% endfor%}
+            </table>
+        </div>
+        <hr>
+    </div>
+
+    <pdf:nextpage />
+
+    <h2 style="text-align:center"> Issued Part Documentation </h2>
+    <hr>
+    <br>
+    {% for part_workorder in partsIssue %}
+    {%if part_workorder.cert_document %}
+
+
+    <p><strong>Description : </strong>{{part_workorder.part.description}} </p>
+    <p><strong>Part No : </strong>{{part_workorder.part.part_number}} </p>
+    <div class="imgHolder">
+        <img src="{{part_workorder.cert_document.path }}" />
+    </div>
+
+    {%else%}
+    {%endif%}
+    {% endfor %}
+
+
+    <h2 style="text-align:center"> Removed Part Documentation </h2>
+    <hr>
+    <br>
+    {% for part_workorder in partsReceived %}
+
+    {%if part_workorder.cert_document %}
+
+
+    <p><strong>Description : </strong>{{part_workorder.part.description}} </p>
+    <p><strong>Part No : </strong>{{part_workorder.part.part_number}} </p>
+    <div class="imgHolder">
+        <img src="{{part_workorder.cert_document.path }}" />
+    </div>
+
+    {%else%}
+    {%endif%}
+    {% endfor %}
+
+
+
+    <div id="footer">
+        <pdf:pagenumber />
+    </div>
+
+
+
+</body>
+
+</html>

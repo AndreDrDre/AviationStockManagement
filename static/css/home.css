@@ -371,6 +371,59 @@ a {
       justify-content: center;
     }
 
+    .navdiv .tipReorder{
+      width: 15px;
+      background-color: red;
+      color: #fff;
+      text-align: center;
+      border-radius: 100%;
+      
+
+      /* Position the tooltip */
+      position: absolute;
+      z-index: 1;
+      bottom: 50%;
+      left: 50%;
+      margin-left: -60px;
+
+    }
+    .navdiv:hover .tipReorder{
+      margin-left: 50px;
+      bottom: 50%;
+    }
+
+    .NumberCheckReOrder{
+      width: 25px;
+      background-color: red;
+      color: #fff;
+      text-align: center;
+      border-radius: 100%;
+      
+
+      /* Position the tooltip */
+      position: absolute;
+      z-index: 1;
+      bottom: 90%;
+      left: 50%;
+      margin-left: 110px;
+    }
+
+    .NumberCheckPending{
+      width: 25px;
+      background-color: red;
+      color: #fff;
+      text-align: center;
+      border-radius: 100%;
+      
+
+      /* Position the tooltip */
+      position: absolute;
+      z-index: 1;
+      bottom: 90%;
+      left: 50%;
+      margin-left: 120px;
+    }
+
     .export .tooltiptext {
       visibility: hidden;
       width: 120px;
@@ -482,6 +535,11 @@ a {
 
 }
 
+.btn-search:hover{
+ transform: scale(1.1);
+
+}
+
 @media (max-width: 1800px) {
   
   .filtertext{
@@ -516,6 +574,29 @@ a {
 }
 
 @media (max-width: 1500px) {
+  
+  .navdiv .tipReorder{
+    width: 15px;
+    height: 16px;
+    background-color: red;
+    color: #fff;
+    text-align: center;
+    border-radius: 100%;
+  
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    bottom: 40%;
+    left: 50%;
+    margin-left: -60px;
+
+  }
+  .navdiv:hover .tipReorder{
+    
+    bottom: 40%;
+    margin-left: 60px;
+  }
+
 
   td {
     font-size: 13px;

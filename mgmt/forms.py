@@ -29,15 +29,110 @@ CONDITIONS_CHOICES = (
 
 )
 
+#-----------------------------------#
+
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+
+class AddShoppingItem(forms.ModelForm):
+    class Meta:
+        model = ShoppingList
+        fields = ['description', 'part_number',
+                  'quantity', 're_orderLevel', 'unitPrice']
+        widgets = {
+            'description': forms.TextInput(attrs={'class': 'form-control', 'required': True},),
+            'quantity': forms.TextInput(attrs={'class': 'form-control', 'required': True},),
+            'part_number': forms.TextInput(attrs={'class': 'form-control', 'required': False},),
+            're_orderLevel': forms.TextInput(attrs={'class': 'form-control', 'required': True},),
+            'unitPrice': forms.NumberInput(attrs={'class': 'form-control', 'required': True, 'step': 0.01},),
+        }
+
+
+class OrderMoreForm(forms.ModelForm):
+    class Meta:
+        model = ShoppingList
+        fields = ['order_quantity', "unitPrice"]
+        widgets = {
+            'order_quantity': forms.NumberInput(attrs={'class': 'form-control', 'required': True},),
+            'unitPrice': forms.NumberInput(attrs={'class': 'form-control', 'required': True},),
+
+        }
+
+    def clean_order_quantity(self):
+        data = self.cleaned_data['order_quantity']
+        if data == 0 or data < 0:
+            raise ValidationError(
+                "You cannot Order zero quantity or less than zero quantity!")
+        else:
+            return data
+        return data
+
+
+class issueShopForm(forms.ModelForm):
+
+    class Meta:
+        model = ShoppingList
+        fields = ['issue_quantity']
+        widgets = {
+            'issue_quantity': forms.NumberInput(attrs={'class': 'form-control', 'required': True},),
+
+        }
+
+    def clean_issue_quantity(self):
+        data = self.cleaned_data['issue_quantity']
+        if data == 0 or data < 0:
+            raise ValidationError(
+                "You cannot issue zero quantity or less than zero quantity!")
+        elif self.instance.quantity < data:
+            raise ValidationError(
+                "You cannot issue out more than the avaliable amount!")
+        else:
+            return data
+        return data
+
+
+class ReceiveShopForm(forms.ModelForm):
+
+    class Meta:
+        model = ShoppingList
+        fields = ['receive_quantity']
+        widgets = {
+            'receive_quantity': forms.NumberInput(attrs={'class': 'form-control', 'required': True},),
+
+        }
+
+    def clean_receive_quantity(self):
+        data = self.cleaned_data['receive_quantity']
+        if data == 0 or data < 0:
+            raise ValidationError(
+                "You cannot receive zero quantity or less than zero quantity!")
+        elif self.instance.order_quantity < data:
+            raise ValidationError(
+                "You cannot receive more than the ordered amount!")
+        else:
+            return data
+        return data
+
+
+#-----------------------------------#
+
+
+class PartBinForm(forms.Form):
+
+    bin_number = forms.CharField(max_length=50, required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(PartBinForm, self).__init__(*args, **kwargs)
+        self.fields['bin_number'].label = "Bin Number:"
+
 
 class CreateUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username',  'password1', 'password2']
 
-
-class DateInput(forms.DateInput):
-    input_type = 'date'
 
 #Store Forms------------------------------#
 
@@ -46,7 +141,7 @@ class EditPartForm(forms.ModelForm):
     class Meta:
         model = Parts
         fields = ['description', 'part_number', 'serial_number',
-                  'ipc_reference', 'invoice_number', 'purchase_order_number', 'bin_number']
+                  'ipc_reference', 'invoice_number', 'purchase_order_number', 'bin_number', 'cert_document']
 
         widgets = {
             'reorder_level': forms.TextInput(attrs={'class': 'form-control'}),
@@ -57,7 +152,25 @@ class EditPartForm(forms.ModelForm):
             'purchase_order_number': forms.TextInput(attrs={'class': 'form-control'}),
             'bin_number': forms.TextInput(attrs={'class': 'form-control'}),
             'ipc_reference': forms.TextInput(attrs={'class': 'form-control'}),
+
         }
+    cert_document = forms.FileField(required=False)
+
+    def clean_cert_document(self):
+        uploaded_file = self.cleaned_data['cert_document']
+        try:
+            # create an ImageField instance
+            im = forms.ImageField()
+            # now check if the file is a valid image
+            im.to_python(uploaded_file)
+        except forms.ValidationError:
+            # file is not a valid image;
+            # so check if it's a pdf
+            name, ext = os.path.splitext(uploaded_file.name)
+            if ext not in ['.pdf', '.PDF']:
+                raise forms.ValidationError(
+                    "Only images and PDF files allowed")
+        return uploaded_file
 
 
 class ReorderLevelForm(forms.ModelForm):
@@ -163,8 +276,6 @@ class AddInventory(forms.Form):
     description = forms.CharField(max_length=100, required=True)
     part_number = forms.CharField(max_length=50, label='Part #', required=True)
     indentifier = forms.CharField(max_length=50, label="S#/B#", required=True)
-
-    # ipc_reference = forms.CharField(max_length=200)
     vendor = forms.CharField(max_length=200)
 
     # Receive-Part
@@ -172,9 +283,6 @@ class AddInventory(forms.Form):
     invoice_number = forms.CharField(label="Invoice No.", required=False)
     purchase_order_number = forms.CharField(
         label="Purchase Order No.", required=False)
-
-    # cert_document = forms.ImageField(
-    #     label='Certification Document', required=False)
     cert_document = forms.FileField(required=False)
 
     inspector = forms.ModelChoiceField(label='Inspector',
@@ -183,8 +291,8 @@ class AddInventory(forms.Form):
     condition = forms.ChoiceField(
         choices=CONDITIONS_CHOICES)
 
-    workorder = forms.ModelChoiceField(
-        queryset=WorkOrders.objects.filter(status='OPEN'), required=True)
+    workorder = forms.ModelChoiceField(label='Inspector',
+                                       queryset=WorkOrders.objects.filter(status='OPEN'), required=True)
 
     jobCardNumber = forms.CharField(
         max_length=100, label="Work Card #", required=True)
@@ -555,6 +663,7 @@ class repairReturnForm(forms.ModelForm):
 
 
 class issueWorkForm(forms.ModelForm):
+
     workorder = forms.ModelChoiceField(queryset=None)
 
     class Meta:
@@ -670,9 +779,6 @@ class UnCalibratedToolForm(forms.ModelForm):
 
 class CreateWorkOrderFormCali(forms.ModelForm):
 
-    workorder_no = forms.ModelChoiceField(
-        queryset=WorkOrders.objects.filter(status='OPEN'))
-
     class Meta:
         model = Tools_Calibrated
         fields = ['workorder_no']
@@ -693,9 +799,6 @@ class CreateWorkOrderFormCali(forms.ModelForm):
 
 
 class CreateWorkOrderFormUnCali(forms.ModelForm):
-
-    workorder_no = forms.ModelChoiceField(
-        queryset=WorkOrders.objects.filter(status='OPEN'))
 
     class Meta:
         model = Tools_UnCalibrated
@@ -727,9 +830,8 @@ class CompleteCalibrationForm(forms.ModelForm):
             'calibrated_date': DateInput(),
             'expiry_date': DateInput(),
 
-
         }
-    calibration_certificate = forms.FileField(required=False)
+    calibration_certificate = forms.FileField(required=True)
 
     def clean_calibration_certificate(self):
 

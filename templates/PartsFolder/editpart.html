@@ -57,17 +57,16 @@
                         <h6>Part-Type : {{queryset.part_type}}</h6>
 
                         <hr>
-
                         <br>
-
-
-                        <form action="#" method="POST">
-                            {% csrf_token %}
-
-                            {{form.as_p}}
+                        <form action="#" enctype="multipart/form-data" method="POST">
+                            <table class="tableforms">
+                                {{ form.management_data }}
+                                {% csrf_token %}
+                                {{form}}
+                            </table>
                             <hr>
                             <button class="btn btn-dark sb-btn" style="float:right" type="submit">Confirm Entry</button>
-                            {% if queryset.tail_number == 'Stock' %}
+                            {% if queryset.tail_number.name == 'Stock' %}
                             <a class="btn btn-danger sb-btn" style="float:left" href="{% url 'inventory' %}">Cancel</a>
                             {%else%}
                             <a class="btn btn-danger sb-btn" style="float:left" href="{% url 'Rinventory' %}">Cancel</a>

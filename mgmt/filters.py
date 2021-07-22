@@ -14,11 +14,17 @@ class WorkOrderFilter(django_filters.FilterSet):
         model = WorkOrders
         fields = '__all__'
         exclude = ['type_airframe', 'ldgs_at_open', "date_added",
-                   'status', 'hours_at_open', 'date_closed', 'user']
+                   'status', 'hours_at_open', 'date_closed', 'user', 'description']
 
     def __init__(self, *args, **kwargs):
         super(WorkOrderFilter, self).__init__(*args, **kwargs)
         self.filters['workorder_number'].label = 'Work-Order #'
+
+
+class shoppingListFilter(django_filters.FilterSet):
+    class Meta:
+        model = ShoppingList
+        fields = ['description', 'ordered_by', ]
 
 
 class CreateOrderFilter(django_filters.FilterSet):

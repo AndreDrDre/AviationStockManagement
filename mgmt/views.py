@@ -16,15 +16,20 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
-
+from weasyprint import HTML
 
 from django.template.loader import render_to_string
-from weasyprint import HTML
+
 import tempfile
 from django.db.models import Sum
 from django.db.models import F
 from django.db.models import Q
 from django.urls import reverse
+
+# pdfs converting
+
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 
 
 # Class imports
@@ -128,12 +133,15 @@ def PlaceNewPartNumber(string, listPartNo):
 
     return listPart
 
+
 #-------------------------------------------#
 
 
 @login_required(login_url='signin')
 def home(request):
     #status bar#
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
     workorders = WorkOrders.objects.filter(user=request.user)
     workordercount = workorders.filter(status='OPEN').count()
     workordercountclosed = workorders.filter(status='COMPLETED').count()
@@ -151,32 +159,171 @@ def home(request):
         "workordercountclosed": workordercountclosed,
         "orderpending": orderpending,
         "reorderparts": reorderparts,
+        "ReOrder": ReOrder,
     }
     return render(request, "mgmt/home.html", context)
 
 
 #Store Logic-------------------------------#
+@login_required(login_url='signin')
+def shoppingList(request):
+    queryset = ShoppingList.objects.filter(
+        user=request.user).order_by('date').reverse()
+
+    querysetPending = ShoppingList.objects.filter(
+        user=request.user, pending=True)
+    querysetReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True)
+
+    pending = ShoppingList.objects.filter(
+        user=request.user, pending=True).count()
+
+    myfilter = shoppingListFilter(request.GET, queryset=queryset)
+    myfilter.filters['ordered_by'].queryset = Employees.objects.filter(
+        user=request.user)
+    queryset = myfilter.qs
+
+    for x in queryset:
+        if x.quantity < x.re_orderLevel or x.quantity == x.re_orderLevel:
+            x.re_orderBoolean = True
+            x.save(update_fields=['re_orderBoolean'])
+            ReOrder = ShoppingList.objects.filter(
+                user=request.user, re_orderBoolean=True).count()
+        else:
+            x.re_orderBoolean = False
+            x.save(update_fields=['re_orderBoolean'])
+            ReOrder = ShoppingList.objects.filter(
+                user=request.user, re_orderBoolean=True).count()
+
+    context = {'queryset': queryset, 'querysetPending': querysetPending,
+               'querysetReOrder': querysetReOrder, 'pending': pending, 'ReOrder': ReOrder, "myfilter": myfilter}
+    return render(request, 'PartsFolder/shoppingList.html', context)
+
+
+@login_required(login_url='signin')
+def shoppingListForm(request):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
+
+    if request.method == 'POST':
+        form = AddShoppingItem(request.POST)
+        if form.is_valid():
+            form.instance.user = request.user
+            form.instance.date = timezone.now()
+            form.save()
+            return redirect('shoppingList')
+
+    else:
+        form = AddShoppingItem()
+
+    context = {'form': form, "ReOrder": ReOrder, }
+    return render(request, "PartsFolder/addItemShop.html", context)
+
+
+@login_required(login_url='signin')
+def editShop(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
+
+    queryset = ShoppingList.objects.get(
+        user=request.user, id=pk)
+
+    if request.method == 'POST':
+        form = AddShoppingItem(request.POST, instance=queryset)
+        if form.is_valid():
+            form.save()
+            return redirect('shoppingList')
+
+    else:
+        form = AddShoppingItem(instance=queryset)
+
+    context = {'form': form, "ReOrder": ReOrder, }
+    return render(request, "PartsFolder/editItemShop.html", context)
+
+
+@login_required(login_url='signin')
+def OrderShop(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
+
+    queryset = ShoppingList.objects.get(
+        user=request.user, id=pk)
+
+    if request.method == 'POST':
+        form = OrderMoreForm(request.POST, instance=queryset)
+        if form.is_valid():
+            form.instance.pending = True
+            form.instance.date = timezone.now()
+            form.save()
+            return redirect('shoppingList')
+
+    else:
+        form = OrderMoreForm(instance=queryset)
+
+    context = {'form': form, "ReOrder": ReOrder, }
+    return render(request, "PartsFolder/OrderItemShop.html", context)
+
+
+@login_required(login_url='signin')
+def IssueOutShop(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
+
+    queryset = ShoppingList.objects.get(
+        user=request.user, id=pk)
+
+    if request.method == 'POST':
+        form = issueShopForm(request.POST, instance=queryset)
+        if form.is_valid():
+            queryset.quantity = queryset.quantity-form.instance.issue_quantity
+            form.save()
+            return redirect('shoppingList')
+
+    else:
+        form = issueShopForm(instance=queryset)
+
+    context = {'form': form, "ReOrder": ReOrder, }
+    return render(request, "PartsFolder/OrderItemShop.html", context)
+
+
+@login_required(login_url='signin')
+def RecieveShop(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
+
+    queryset = ShoppingList.objects.get(
+        user=request.user, id=pk)
+
+    if request.method == 'POST':
+        form = ReceiveShopForm(request.POST, instance=queryset)
+        if form.is_valid():
+            queryset.quantity += form.instance.receive_quantity
+            queryset.order_quantity -= form.instance.receive_quantity
+            if queryset.order_quantity == 0:
+                queryset.pending = False
+            form.save()
+            return redirect('shoppingList')
+
+    else:
+        form = ReceiveShopForm(instance=queryset)
+
+    context = {'form': form, "ReOrder": ReOrder, }
+    return render(request, "PartsFolder/OrderItemShop.html", context)
+
 
 @login_required(login_url='signin')
 def store(request):
 
-    #statuc bar#
-    queryset = WorkOrders.objects.filter(user=request.user)
-    workordercount = queryset.filter(status='OPEN').count()
-    workordercountclosed = queryset.filter(status='COMPLETED').count()
-
-    queryset = Parts.objects.filter(user=request.user, recieve_part=False)
-    orderpending = queryset.count()
-
-    reorderparts = ReorderItems.objects.filter(
-        user=request.user, reorder_level__gte=F('quantity')).count()
-    #statuc bar#
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     context = {
-        "workordercount": workordercount,
-        "workordercountclosed": workordercountclosed,
-        "orderpending": orderpending,
-        "reorderparts": reorderparts,
+        "ReOrder": ReOrder,
 
     }
     return render(request, "mgmt/store.html", context)
@@ -184,18 +331,10 @@ def store(request):
 
 @login_required(login_url='signin')
 def Rinventory(request):
-    #statuc bar#
-    querysetW = WorkOrders.objects.filter(user=request.user)
-    workordercount = querysetW.filter(status='OPEN').count()
-    workordercountclosed = querysetW.filter(status='COMPLETED').count()
 
-    querysetS = Parts.objects.filter(user=request.user)
-    orderpending = querysetS.filter(recieve_part=False).count()
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
-    reorderparts = ReorderItems.objects.filter(
-        user=request.user, reorder_level__gte=F('quantity')).count()
-
-    #statuc bar#
     queryset = Parts.objects.filter(~Q(condition="REPAIRABLE"),
                                     tail_number__name__startswith="N", user=request.user, Quarentine=False, Historical=False,
                                     recieve_part=True,).order_by('date_received').reverse()
@@ -215,12 +354,10 @@ def Rinventory(request):
             q.save(update_fields=['Historical'])
 
     context = {
-        "workordercount": workordercount,
-        "workordercountclosed": workordercountclosed,
-        "orderpending": orderpending,
+        "ReOrder": ReOrder,
         "queryset": queryset,
         "partfilter": Partfilter,
-        "reorderparts": reorderparts,
+
     }
     return render(request, "PartsFolder/RInventory.html", context)
 
@@ -229,15 +366,8 @@ def Rinventory(request):
 def Qinventory(request):
 
     #statuc bar#
-    queryset = WorkOrders.objects.filter(user=request.user)
-    workordercount = queryset.filter(status='OPEN').count()
-    workordercountclosed = queryset.filter(status='COMPLETED').count()
-
-    querysetS = Parts.objects.filter(user=request.user)
-    orderpending = querysetS.filter(recieve_part=False).count()
-
-    reorderparts = ReorderItems.objects.filter(
-        user=request.user, reorder_level__gte=F('quantity')).count()
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     #statuc bar#
 
@@ -258,10 +388,7 @@ def Qinventory(request):
     queryset = Partfilter.qs
 
     context = {
-        "workordercount": workordercount,
-        "workordercountclosed": workordercountclosed,
-        "orderpending": orderpending,
-        "reorderparts": reorderparts,
+        "ReOrder": ReOrder,
         "queryset": queryset,
         "partfilter": Partfilter,
         "querysetShop": querysetShop,
@@ -272,6 +399,8 @@ def Qinventory(request):
 
 @login_required(login_url='signin')
 def InhouseReapirs(request):
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     querysetInhouse = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False, recieve_part=True,
                                            repaired_by='INHOUSE REPAIR', Repaired=True).order_by('date_received').reverse()
@@ -279,7 +408,7 @@ def InhouseReapirs(request):
     Partfilter = QuaratineFilter(request.GET, queryset=querysetInhouse)
     querysetInhouse = Partfilter.qs
 
-    context = {'querysetInhouse': querysetInhouse, "Partfilter": Partfilter
+    context = {'querysetInhouse': querysetInhouse, "Partfilter": Partfilter, "ReOrder": ReOrder,
 
                }
     return render(request, "PartsFolder/inhouseRepair.html", context)
@@ -287,6 +416,8 @@ def InhouseReapirs(request):
 
 @login_required(login_url='signin')
 def ShopReapirs(request):
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     querysetShop = Parts.objects.filter(user=request.user, Quarentine=True, Historical=False, recieve_part=True,
                                         repaired_by='SEND TO SUPPLIER', Repaired=True).order_by('date_received').reverse()
@@ -294,12 +425,16 @@ def ShopReapirs(request):
     Partfilter = QuaratineFilter(request.GET, queryset=querysetShop)
     querysetShop = Partfilter.qs
 
-    context = {'querysetShop': querysetShop, "Partfilter": Partfilter}
+    context = {'querysetShop': querysetShop,
+               "Partfilter": Partfilter, "ReOrder": ReOrder}
     return render(request, "PartsFolder/shopRepairs.html", context)
 
 
 @login_required(login_url='signin')
 def repair(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     queryset = Parts.objects.get(user=request.user, id=pk)
 
@@ -325,13 +460,16 @@ def repair(request, pk):
 
     else:
         form = RepairForm()
-    context = {"form": form, "queryset": queryset}
+    context = {"form": form, "queryset": queryset, "ReOrder": ReOrder}
 
     return render(request, "PartsFolder/repair.html", context)
 
 
 @login_required(login_url='signin')
 def transportInfo(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     queryset = Parts.objects.get(user=request.user, id=pk)
 
@@ -365,13 +503,16 @@ def transportInfo(request, pk):
     else:
         form = shippingInfoForm()
 
-    context = {"form": form, "queryset": queryset}
+    context = {"form": form, "queryset": queryset, "ReOrder": ReOrder}
 
     return render(request, "PartsFolder/transportInfo.html", context)
 
 
 @login_required(login_url='signin')
 def repairReturn(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     queryset = Parts.objects.get(user=request.user, id=pk)
     conditionCheck = queryset.condition
@@ -403,8 +544,10 @@ def repairReturn(request, pk):
 
     else:
         form = repairReturnForm(conditionCheck)
+        form.fields['inspector'].queryset = Employees.objects.filter(
+            user=request.user)
 
-    context = {"form": form, "queryset": queryset, }
+    context = {"form": form, "queryset": queryset, "ReOrder": ReOrder}
     if request.is_ajax():
         # form.save()
         return JsonResponse({'error': True})
@@ -414,19 +557,10 @@ def repairReturn(request, pk):
 
 @login_required(login_url='signin')
 def inventory(request):
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
     type = ''
-    #statuc bar#
-    querysetW = WorkOrders.objects.filter(user=request.user)
-    workordercount = querysetW.filter(status='OPEN').count()
-    workordercountclosed = querysetW.filter(status='COMPLETED').count()
 
-    querysetS = Parts.objects.filter(user=request.user)
-    orderpending = querysetS.filter(recieve_part=False).count()
-
-    reorderparts = ReorderItems.objects.filter(
-        user=request.user, reorder_level__gte=F('quantity')).count()
-
-    #statuc bar#
     queryset = Parts.objects.filter(user=request.user, tail_number__name__contains='Stock', Historical=False, Quarentine=False,
                                     recieve_part=True).order_by('date_received').reverse()
 
@@ -447,12 +581,10 @@ def inventory(request):
             checkerQ = i.SRN
 
     context = {
-        "workordercount": workordercount,
-        "workordercountclosed": workordercountclosed,
-        "orderpending": orderpending,
+
         "queryset": queryset,
         "partfilter": Partfilter,
-        "reorderparts": reorderparts
+        "ReOrder": ReOrder,
     }
     return render(request, "PartsFolder/Inventory.html", context)
 
@@ -460,8 +592,8 @@ def inventory(request):
 @login_required(login_url='signin')
 def addToInventory(request, Type):
 
-    print("somthing")
-
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
     check = 0
     checkType = 0
 
@@ -478,12 +610,8 @@ def addToInventory(request, Type):
     #The cancel Button------------#
 
     if request.method == 'POST':
-        # data = request.POST
         form = AddInventory(Type, request.POST, request.FILES)
-
         if form.is_valid():
-            print(request.is_ajax())
-
             if Type == "Reserved":
                 tail_number = form.cleaned_data['tail_number']
                 vendor = form.cleaned_data['vendor']
@@ -520,7 +648,7 @@ def addToInventory(request, Type):
 
             # If the part has been removed from an aircraft under a workorder
             if checkType == 1:
-                # qy = TailNumber.objects.all()[0]
+
                 if part_type == 'Rotable' or part_type == 'Tires':
                     p = Parts(part_type=part_type,
                               description=description,
@@ -670,8 +798,11 @@ def addToInventory(request, Type):
         form = AddInventory(Type)
         form.fields['inspector'].queryset = Employees.objects.filter(
             user=request.user)
-        print(form.errors)
-    context = {"form": form, "check": check}
+        if check == 2:
+            form.fields['workorder'].queryset = WorkOrders.objects.filter(
+                user=request.user, status='OPEN')
+
+    context = {"form": form, "check": check, "ReOrder": ReOrder}
     if request.is_ajax():
         # form.save()
         return JsonResponse({'error': True})
@@ -680,6 +811,9 @@ def addToInventory(request, Type):
 
 @login_required(login_url='signin')
 def addToQuarentine(request):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     form = addQuaretineInventory()
     if request.method == 'POST':
@@ -742,7 +876,7 @@ def addToQuarentine(request):
         form.fields['inspector'].queryset = Employees.objects.filter(
             user=request.user)
 
-    context = {"form": form}
+    context = {"form": form, "ReOrder": ReOrder}
     if request.is_ajax():
         return JsonResponse({'error': True})
 
@@ -752,11 +886,19 @@ def addToQuarentine(request):
 @login_required(login_url='signin')
 def interimtransfer(request):
 
-    return render(request, 'PartsFolder/InterimTransfer.html')
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
+
+    context = {"ReOrder": ReOrder}
+
+    return render(request, 'PartsFolder/InterimTransfer.html', context)
 
 
 @login_required(login_url='signin')
 def createneworder(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     part = Parts.objects.get(user=request.user, id=pk)
     createForm = CreateNewOrder(instance=part)
@@ -776,6 +918,7 @@ def createneworder(request, pk):
         context = {
             'createForm': createForm,
             'part': part,
+            "ReOrder": ReOrder
         }
 
     return render(request, 'OrdersFolder/createneworder.html', context)
@@ -783,11 +926,12 @@ def createneworder(request, pk):
 
 @login_required(login_url='signin')
 def issuePart(request, pk):
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
     check = ""
     queryset = Parts.objects.get(user=request.user, id=pk)
     check = queryset.tail_number.name
     sender = queryset.id
-    print(check)
 
     form = issueWorkForm(instance=queryset, user=request.user)
 
@@ -831,7 +975,7 @@ def issuePart(request, pk):
         form.fields['issued_by'].queryset = Employees.objects.filter(
             user=request.user)
 
-    context = {'form': form, 'queryset': queryset, }
+    context = {'form': form, 'queryset': queryset, "ReOrder": ReOrder}
     if request.is_ajax():
         # form.save()
         return JsonResponse({'error': True})
@@ -840,6 +984,9 @@ def issuePart(request, pk):
 
 @login_required(login_url='signin')
 def reorder_level(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     queryset = ReorderItems.objects.get(user=request.user, id=pk)
 
@@ -860,6 +1007,7 @@ def reorder_level(request, pk):
     context = {
         'queryset': queryset,
         'form': form,
+        "ReOrder": ReOrder
     }
     return render(request, "OrdersFolder/re-order.html", context)
 
@@ -867,18 +1015,25 @@ def reorder_level(request, pk):
 @login_required(login_url='signin')
 def edit_part(request, pk):
 
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
+
     queryset = Parts.objects.get(user=request.user, id=pk)
-
-    form = EditPartForm(request.POST or None, instance=queryset)
-
-    if form.is_valid():
-        instance = form.save(commit=False)
-        instance.save()
-
-        return redirect('Rinventory')
+    form = EditPartForm(request.POST, request.FILES, instance=queryset)
+    if request.method == 'POST':
+        if form.is_valid():
+            print("valid")
+            form.save()
+            if queryset.tail_number.name == "Stock":
+                return redirect('inventory')
+            else:
+                return redirect('Rinventory')
+    else:
+        form = EditPartForm(instance=queryset)
     context = {
         'queryset': queryset,
         'form': form,
+        "ReOrder": ReOrder
     }
     return render(request, "PartsFolder/editpart.html", context)
 #------------------------------------------#
@@ -889,6 +1044,8 @@ def edit_part(request, pk):
 @login_required(login_url='signin')
 def PartsHistory(request):
     # All parts with which have been exhausted through work-order assigning
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
     queryset = Parts.objects.filter(user=request.user, Historical=True)
     Partfilter = PartsFilter(request.GET, queryset=queryset)
     queryset = Partfilter.qs
@@ -896,6 +1053,7 @@ def PartsHistory(request):
     context = {
         "queryset": queryset,
         "partfilter": Partfilter,
+        "ReOrder": ReOrder,
     }
 
     return render(request, "PartsFolder/completeParts.html", context)
@@ -904,7 +1062,8 @@ def PartsHistory(request):
 @login_required(login_url='signin')
 def WorkOrderHistory(request):
 
-    # completed work-orders
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     querysetclosed = WorkOrders.objects.filter(
         user=request.user, status='COMPLETED')
@@ -914,6 +1073,7 @@ def WorkOrderHistory(request):
     context = {
         "querysetclosed": querysetclosed,
         "workOrderFilter": myFilter_workorder,
+        "ReOrder": ReOrder
     }
 
     return render(request, "WorkorderFolder/completedWO.html", context)
@@ -921,6 +1081,10 @@ def WorkOrderHistory(request):
 
 @login_required(login_url='signin')
 def historical_inventory(request):
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
+
+    context = {"ReOrder": ReOrder}
 
     return render(request, "PartsFolder/historical_Inventory.html")
 
@@ -928,8 +1092,9 @@ def historical_inventory(request):
 @login_required(login_url='signin')
 def historialWO(request, pk):
 
-    # workorder_specific = WorkOrders.objects.get(id=pk)
-    # partsIssue = workorder_specific.partworkorders_set.all()
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
+
     counter = 0
     partspecific = Parts.objects.get(user=request.user, id=pk, Historical=True)
     parthistory = partspecific.partworkorders_set.all().filter(receivedRepair=False)
@@ -943,6 +1108,7 @@ def historialWO(request, pk):
         'partspecific': partspecific,
         'counter': counter,
         "parthistoryRemoved": parthistoryRemoved,
+        "ReOrder": ReOrder
 
     }
     return render(request, "PartsFolder/partshistory.html", context)
@@ -953,6 +1119,9 @@ def historialWO(request, pk):
 
 @login_required(login_url='signin')
 def workorders(request):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     #statuc bar#
     queryset = WorkOrders.objects.filter(user=request.user)
@@ -1004,6 +1173,7 @@ def workorders(request):
         "myfilter": myFilter_workorder,
         "orderpending": orderpending,
         "reorderparts": reorderparts,
+        "ReOrder": ReOrder,
     }
     return render(request, "WorkorderFolder/workorder.html", context)
 
@@ -1026,13 +1196,13 @@ def deleteWO(request, pk):
     queryPartWO.delete()
 
     for calitool in QueryCalibrated:
-        print("deleting cali")
+
         calitool.workorder_no = None
         calitool.save(update_fields=['workorder_no'])
         calitool.issued = False
         calitool.save(update_fields=['issued'])
     for uncalitool in QueryUnCalibrated:
-        print("deleting Uncali")
+
         uncalitool.workorder_no = None
         uncalitool.save(update_fields=['workorder_no'])
         uncalitool.issued = False
@@ -1045,6 +1215,8 @@ def deleteWO(request, pk):
 
 @login_required(login_url='signin')
 def partslink(request, pk, Type):
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
     total = 0
     #status bar#
     queryset = WorkOrders.objects.filter(user=request.user)
@@ -1096,6 +1268,7 @@ def partslink(request, pk, Type):
         "total": total,
         "partsReceived": partsReceived,
         "filter": filter,
+        "ReOrder": ReOrder
 
 
     }
@@ -1158,6 +1331,8 @@ def change_order_status(request, pk):
 
 @login_required(login_url='signin')
 def changeWorkOrderCali(request, pk):
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
     calitool = Tools_Calibrated.objects.get(user=request.user, id=pk)
     formissueCali = CreateWorkOrderFormCali(instance=calitool)
 
@@ -1173,7 +1348,11 @@ def changeWorkOrderCali(request, pk):
 
     else:
         formissueCali = CreateWorkOrderFormCali(instance=calitool)
-    context = {'formissueCali': formissueCali, "calitool": calitool}
+        formissueCali.fields['workorder_no'].queryset = WorkOrders.objects.filter(
+            user=request.user, status='OPEN')
+
+    context = {'formissueCali': formissueCali,
+               "calitool": calitool, "ReOrder": ReOrder}
     if request.is_ajax():
         return JsonResponse({'error': True})
     return render(request, 'ToolsFolder/issueworkorderCali.html', context)
@@ -1181,6 +1360,8 @@ def changeWorkOrderCali(request, pk):
 
 @login_required(login_url='signin')
 def changeWorkOrderUnCali(request, pk):
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
     Uncalitool = Tools_UnCalibrated.objects.get(user=request.user, id=pk)
 
     if request.method == 'POST':
@@ -1195,8 +1376,11 @@ def changeWorkOrderUnCali(request, pk):
 
     else:
         formissueUnCali = CreateWorkOrderFormUnCali(instance=Uncalitool)
+        formissueUnCali.fields['workorder_no'].queryset = WorkOrders.objects.filter(
+            user=request.user, status='OPEN')
+
     context = {'formissueUnCali': formissueUnCali,
-               'Uncalitool': Uncalitool}
+               'Uncalitool': Uncalitool, "ReOrder": ReOrder}
     if request.is_ajax():
         return JsonResponse({'error': True})
     return render(request, 'ToolsFolder/issueUncali.html', context)
@@ -1229,15 +1413,8 @@ def sendhometoolUnCali(request, pk):
 def orderhistory(request):
 
     #statuc bar#
-    workqueryset = WorkOrders.objects.filter(user=request.user)
-    workordercount = workqueryset.filter(status='OPEN').count()
-    workordercountclosed = workqueryset.filter(status='COMPLETED').count()
-
-    order = Parts.objects.filter(user=request.user)
-    orderpending = order.filter(recieve_part=False).count()
-
-    reorderparts = ReorderItems.objects.filter(
-        user=request.user, reorder_level__gte=F('quantity')).count()
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     #statuc bar#
 
@@ -1254,10 +1431,7 @@ def orderhistory(request):
     context = {
         "query": query,
         "myFilter": myFilter,
-        "workordercount": workordercount,
-        "workordercountclosed": workordercountclosed,
-        "orderpending": orderpending,
-        "reorderparts": reorderparts,
+        "ReOrder": ReOrder
     }
 
     return render(request, "OrdersFolder/orderhistory.html", context)
@@ -1265,6 +1439,8 @@ def orderhistory(request):
 
 @login_required(login_url='signin')
 def waybill(request, pk):
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
     placeholder = ""
     waybill = ""
     string = 'https://www.google.com/search?q='
@@ -1286,7 +1462,7 @@ def waybill(request, pk):
             else:
                 return redirect('orderpart')
 
-    context = {"queryset": queryset, "form": form}
+    context = {"queryset": queryset, "form": form, "ReOrder": ReOrder}
 
     return render(request, "OrdersFolder/waybill.html", context)
 
@@ -1307,16 +1483,18 @@ def deletepart(request, pk):
             return redirect('Qinventory')
 
         if part.tail_number.name == 'Stock':
-            print(part.tail_number.name)
+
             return redirect('inventory')
 
         if part.tail_number.name != 'Stock' and part.condition != 'REPAIRABLE':
-            print(part.tail_number.name)
+
             return redirect('Rinventory')
 
 
 @login_required(login_url='signin')
 def pricechange(request, pk):
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     queryset = Parts.objects.get(user=request.user, id=pk)
     form = PriceForm(instance=queryset)
@@ -1331,12 +1509,14 @@ def pricechange(request, pk):
 
             return redirect('orderpart')
 
-    context = {"queryset": queryset, "form": form}
+    context = {"queryset": queryset, "form": form, "ReOrder": ReOrder}
     return render(request, "PartsFolder/pricechange.html", context)
 
 
 @login_required(login_url='signin')
 def quickOrder(request, pk):
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     try:
         queryset = ReorderItems.objects.get(user=request.user, id=pk)
@@ -1429,7 +1609,7 @@ def quickOrder(request, pk):
         form.fields['ordered_by'].queryset = Employees.objects.filter(
             user=request.user)
 
-    context = {"form": form, "queryset": queryset}
+    context = {"form": form, "queryset": queryset, "ReOrder": ReOrder}
     if request.is_ajax():
         return JsonResponse({'error': True})
 
@@ -1440,15 +1620,8 @@ def quickOrder(request, pk):
 def orderpart(request):
 
     #statuc bar#
-    workqueryset = WorkOrders.objects.filter(user=request.user)
-    workordercount = workqueryset.filter(status='OPEN').count()
-    workordercountclosed = workqueryset.filter(status='COMPLETED').count()
-
-    order = Parts.objects.filter(user=request.user)
-    orderpending = order.filter(recieve_part=False).count()
-
-    reorderparts = ReorderItems.objects.filter(
-        user=request.user, reorder_level__gte=F('quantity')).count()
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     #statuc bar#
 
@@ -1534,28 +1707,18 @@ def orderpart(request):
     context = {
         "form": form,
         "queryset": queryset,
-        "workordercountclosed": workordercountclosed,
-        "workordercount": workordercount,
         "myfilter": myFilter_order,
-        "orderpending": orderpending,
-        "reorderparts": reorderparts,
+        "ReOrder": ReOrder
+
     }
     return render(request, "OrdersFolder/orderpart.html", context)
 
 
 @login_required(login_url='signin')
 def reorderParts(request):
-    #status bar#
-    workorders = WorkOrders.objects.filter(user=request.user)
-    workordercount = workorders.filter(status='OPEN').count()
-    workordercountclosed = workorders.filter(status='COMPLETED').count()
 
-    order = Parts.objects.filter(user=request.user)
-    orderpending = order.filter(recieve_part=False).count()
-    reorderparts = ReorderItems.objects.filter(
-        user=request.user, reorder_level__gte=F('quantity')).count()
-
-    #status bar#
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     queryset = ReorderItems.objects.filter(user=request.user)
 
@@ -1564,12 +1727,9 @@ def reorderParts(request):
 
     context = {
 
-        "workordercount": workordercount,
-        "workordercountclosed": workordercountclosed,
-        "orderpending": orderpending,
-        "reorderparts": reorderparts,
         "queryset": queryset,
-        "filter": filter
+        "filter": filter,
+        "ReOrder": ReOrder
     }
 
     return render(request, 'OrdersFolder/reorderParts.html', context)
@@ -1578,25 +1738,12 @@ def reorderParts(request):
 @login_required(login_url='signin')
 def InterimOrder(request):
 
-    #statuc bar#
-    workqueryset = WorkOrders.objects.filter(user=request.user)
-    workordercount = workqueryset.filter(status='OPEN').count()
-    workordercountclosed = workqueryset.filter(status='COMPLETED').count()
-
-    order = Parts.objects.filter(user=request.user)
-    orderpending = order.filter(recieve_part=False).count()
-
-    reorderparts = Parts.objects.filter(
-        user=request.user, reorder_level__gte=F('quantity')).count()
-
-    #statuc bar#
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     context = {
+        "ReOrder": ReOrder,
 
-        "workordercountclosed": workordercountclosed,
-        "workordercount": workordercount,
-        "orderpending": orderpending,
-        "reorderparts": reorderparts,
     }
 
     return render(request, "PartsFolder/interim-order.html", context)
@@ -1604,6 +1751,9 @@ def InterimOrder(request):
 
 @login_required(login_url='signin')
 def recieveorder(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     part = Parts.objects.get(user=request.user, id=pk)
 
@@ -1717,7 +1867,7 @@ def recieveorder(request, pk):
                 user=request.user)
 
     context = {'receiveForm': receiveForm,
-               "part": part, 'time': time_received, }
+               "part": part, 'time': time_received, "ReOrder": ReOrder}
     if request.is_ajax():
         return JsonResponse({'error': True})
 
@@ -1726,12 +1876,16 @@ def recieveorder(request, pk):
 
 @login_required(login_url='signin')
 def instructions(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
+
     reorderExist = False
     check = False
     label = ""
     listPart = []
     dictPartNumbers = {}
-    # obtain the specific the part link
+    # obtain the specific part link
     part = Parts.objects.get(user=request.user, id=pk)
 
     catagory = part.part_type
@@ -1741,10 +1895,11 @@ def instructions(request, pk):
     querysetPartList = Parts.objects.filter(
         user=request.user, recieve_part=True, part_type=catagory, Quarentine=False)
 
+    # Adding all the part numbers to a list
     for x in querysetPartList:
         PartNumberList.append(x.part_number)
 
-    # Below is representation of unqiue p# list for a specifc catagory
+    # Below is representation of unqiue p# list for a specifc catagory (Removing the duplicates)
     PartNumberList = sorted(set(PartNumberList))
 
     listPart = PlaceNewPartNumber(part.part_number, PartNumberList)
@@ -1752,17 +1907,37 @@ def instructions(request, pk):
     part.recieve_part = True
     part.save(update_fields=['recieve_part'])
 
-    if part.part_type != 'Consumables' and part.tail_number.name == 'Stock':
-        part.bin_number = listPart[1]
-        part.save(update_fields=['bin_number'])
-    else:
-        pass
+    # if part.part_type != 'Consumables' and part.tail_number.name == 'Stock':
+    #     part.bin_number = listPart[1]
+    #     part.save(update_fields=['bin_number'])
+    # else:
+    #     pass
 
     if listPart[0] == True:
         label = listPart[1]
         check = True
     else:
         label = listPart[1]
+
+    if request.method == 'POST':
+        form = PartBinForm(request.POST)
+        if form.is_valid():
+            bin_number = form.cleaned_data['bin_number']
+            if bin_number != "":
+                part.bin_number = bin_number
+                part.save(update_fields=['bin_number'])
+                return redirect('store')
+            else:
+                part.bin_number = listPart[1]
+
+                part.save(update_fields=['bin_number'])
+                return redirect('store')
+
+    else:
+        form = PartBinForm(request.POST or None)
+    #--------------------------------------------------------------------#
+
+    # Re-order Evaluation
 
     quersetReOrder = ReorderItems.objects.all()
     if part.tail_number.name == 'Stock':
@@ -1792,12 +1967,16 @@ def instructions(request, pk):
     else:
         pass
 
-    context = {'part': part, 'label': label, 'check': check}
+    context = {'part': part, 'label': label,
+               'check': check, 'form': form, "ReOrder": ReOrder}
     return render(request, 'OrdersFolder/recieveInstructions.html', context)
 
 
 @login_required(login_url='signin')
 def exportorder(request):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     queryset = Parts.objects.filter(
         user=request.user, recieve_part=False).order_by('date_ordered').reverse()
@@ -1807,7 +1986,8 @@ def exportorder(request):
         user=request.user)
     queryset = myFilter_order.qs
 
-    context = {"queryset": queryset, "myfilter": myFilter_order, }
+    context = {"queryset": queryset,
+               "myfilter": myFilter_order, "ReOrder": ReOrder}
     return render(request, "OrdersFolder/exportorders.html", context)
 
 
@@ -1835,6 +2015,8 @@ def exportstatusdel(request, pk):
 
 @login_required(login_url='signin')
 def tools(request):
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
     condition = False
     Check = 0
     queryset = Tools_Calibrated.objects.filter(user=request.user)
@@ -1952,6 +2134,7 @@ def tools(request):
         "orderpending": orderpending,
         "reorderparts": reorderparts,
         "Check": Check,
+        "ReOrder": ReOrder,
     }
 
     return render(request, "ToolsFolder/tools.html", context)
@@ -1959,12 +2142,14 @@ def tools(request):
 
 @login_required(login_url='signin')
 def toolinstructions(request, pk):
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
     tools = Tools_Calibrated.objects.get(user=request.user, id=pk)
 
     if request.is_ajax():
         return JsonResponse({'success': 'Adding Calibrated Tool to Database...', 'redirect_to': reverse('tools')})
 
-    context = {"tools": tools}
+    context = {"tools": tools, "ReOrder": ReOrder}
     return render(request, "ToolsFolder/toolinstructions.html", context)
 
 
@@ -1994,6 +2179,8 @@ def deleteCali(request, pk):
 
 @login_required(login_url='signin')
 def editCali(request, pk):
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
     condition = True
     calitool = Tools_Calibrated.objects.get(user=request.user, id=pk)
     formCali = CalibratedToolForm(condition, instance=calitool)
@@ -2006,12 +2193,15 @@ def editCali(request, pk):
             formCali.save()  # save the form into the database
             return redirect('tools')  # redirect to home page
 
-    context = {'formCali': formCali}
+    context = {'formCali': formCali, "ReOrder": ReOrder}
     return render(request, 'ToolsFolder/editCali.html', context)
 
 
 @login_required(login_url='signin')
 def editUnCali(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     UnCaliTool = Tools_UnCalibrated.objects.get(user=request.user, id=pk)
     UnCaliform = UnCalibratedToolForm(instance=UnCaliTool)
@@ -2024,12 +2214,15 @@ def editUnCali(request, pk):
             UnCaliform.save()  # save the form into the database
             return redirect('tools')  # redirect to home page
 
-    context = {'UnCaliform': UnCaliform}
+    context = {'UnCaliform': UnCaliform, "ReOrder": ReOrder}
     return render(request, 'ToolsFolder/editUnCali.html', context)
 
 
 @login_required(login_url='signin')
 def issueworkorderCali(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     calitool = Tools_Calibrated.objects.get(user=request.user, id=pk)
     formissueCali = CreateWorkOrderFormCali(instance=calitool)
@@ -2043,19 +2236,24 @@ def issueworkorderCali(request, pk):
             formissueCali.save()
             wo = formissueCali.cleaned_data['workorder_no']
             if request.is_ajax():
-                print("True")
+
                 return JsonResponse({'success': 'Adding Calibrated Tool to Work Order ' + str(wo) + "...", 'redirect_to': reverse('tools')})
     else:
         formissueCali = CreateWorkOrderFormCali(instance=calitool)
-    context = {'formissueCali': formissueCali, "calitool": calitool}
+        formissueCali.fields['workorder_no'].queryset = WorkOrders.objects.filter(
+            user=request.user, status='OPEN')
+    context = {'formissueCali': formissueCali,
+               "calitool": calitool, "ReOrder": ReOrder}
     if request.is_ajax():
-        # form.save()
         return JsonResponse({'error': True})
     return render(request, 'ToolsFolder/issueworkorderCali.html', context)
 
 
 @login_required(login_url='signin')
 def issueUnCali(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     Uncalitool = Tools_UnCalibrated.objects.get(user=request.user, id=pk)
     # formissueUnCali = CreateWorkOrderFormUnCali(instance=Uncalitool)
@@ -2073,8 +2271,10 @@ def issueUnCali(request, pk):
 
     else:
         formissueUnCali = CreateWorkOrderFormUnCali(instance=Uncalitool)
+        formissueUnCali.fields['workorder_no'].queryset = WorkOrders.objects.filter(
+            user=request.user, status='OPEN')
     context = {'formissueUnCali': formissueUnCali,
-               'Uncalitool': Uncalitool}
+               'Uncalitool': Uncalitool, "ReOrder": ReOrder}
     if request.is_ajax():
         # form.save()
         return JsonResponse({'error': True})
@@ -2083,6 +2283,9 @@ def issueUnCali(request, pk):
 
 @login_required(login_url='signin')
 def calicomplete(request, pk):
+
+    ReOrder = ShoppingList.objects.filter(
+        user=request.user, re_orderBoolean=True).count()
 
     calitool = Tools_Calibrated.objects.get(user=request.user, id=pk)
     formCaliComp = CompleteCalibrationForm(
@@ -2099,7 +2302,10 @@ def calicomplete(request, pk):
     else:
         formCaliComp = CompleteCalibrationForm()
 
-    context = {'formCaliComp': formCaliComp, "calitool": calitool}
+    context = {'formCaliComp': formCaliComp,
+               "calitool": calitool, "ReOrder": ReOrder}
+    if request.is_ajax():
+        return JsonResponse({'error': True})
     return render(request, 'ToolsFolder/calibrationcomplete.html', context)
 #-----------------------------------------#
 
@@ -2203,9 +2409,6 @@ def exportXlsInventory(request, Type):
         listx = []
         queryset = Parts.objects.filter(user=request.user, tail_number__name='Stock', Historical=False,
                                         recieve_part=True).order_by('date_received').reverse()
-
-        for x in queryset:
-            print(x.inspector)
 
         rows = queryset.values_list('description', 'part_number', 'part_type', 'batch_no',
                                     'serial_number', 'bin_number', 'quantity', 'inspector__name', 'condition')
@@ -2314,9 +2517,7 @@ def exportXlsInventory(request, Type):
                 del listx[5]
                 tups += listx
 
-        print(tups)
         lst_tuple = [x for x in zip(*[iter(tups)]*7)]
-        print(lst_tuple)
 
     if Type == 'Shop':
         name = 'SEND TO SUPPLIER'
@@ -2551,3 +2752,41 @@ def exportPDFWorkorder(request, pk):
 
 #pdf------------------------------#
 #------------------------------------------#
+
+def pdf_report_create(request, pk):
+    total = 0
+    #Linking to the correct Model files----------------------#
+    workorder_specific = WorkOrders.objects.get(user=request.user, id=pk)
+    querysetDisplay = WorkOrders.objects.get(user=request.user, id=pk)
+
+    partsIssue = workorder_specific.partworkorders_set.filter(
+        receivedRepair=False).order_by('created_at').reverse()
+
+    partsReceived = workorder_specific.partworkorders_set.filter(
+        receivedRepair=True).order_by('created_at').reverse()
+
+    for parts in partsIssue:
+        total += parts.price * parts.issue_quantity
+
+    workordernumber = workorder_specific.workorder_number
+    date = timezone.now()
+    #Linking to the correct Model files----------------------#
+
+    #creating the PDF document#
+    template_path = 'PDFFolder/pdf_printer.html'
+    context = {'partsIssue': partsIssue, 'partsReceived': partsReceived,
+               'querysetDisplay': querysetDisplay, "total": total, "date": date}
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="workOrder.pdf"'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+        html, dest=response)
+    # if error then show some funy view
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response

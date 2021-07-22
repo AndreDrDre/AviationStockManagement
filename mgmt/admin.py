@@ -11,7 +11,6 @@ admin.site.register(Tools_Calibrated)
 admin.site.register(Tools_UnCalibrated)
 admin.site.register(ToolChecker)
 admin.site.register(Profile)
-admin.site.register(ReorderItems)
 
 
 class PartWorkOrdersAdmin(admin.ModelAdmin):
@@ -74,6 +73,26 @@ class TailNumberAdmin(admin.ModelAdmin):
     list_per_page = 25
 
 
+class ShoppingListAdmin(admin.ModelAdmin):
+    list_display = ('description', 'quantity',  'user'
+                    )
+
+    list_filter = ('user',)
+
+    list_per_page = 25
+
+
+class ReorderItemsAdmin(admin.ModelAdmin):
+    list_display = ('description', 'part_number', 'quantity', 'reorder_level', 'user'
+                    )
+
+    list_filter = ('user',)
+
+    list_per_page = 25
+
+
+admin.site.register(ReorderItems, ReorderItemsAdmin)
+admin.site.register(ShoppingList, ShoppingListAdmin)
 admin.site.register(Employees, EmployeesAdmin)
 admin.site.register(PartWorkOrders, PartWorkOrdersAdmin)
 admin.site.register(Parts, PartsAdmin)

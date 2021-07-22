@@ -145,8 +145,11 @@
     {% for part_workorder in partsIssue %}
     {%if part_workorder.cert_document %}
 
-    <p>Image:</p>
-    <img src="{{part_workorder.cert_document.url }}" />
+    <p>Description : {{part_workorder.part.description}} </p>
+    <p>Part No : {{part_workorder.part.part_number}} </p>
+    <p>Image:{{part_workorder.cert_document.url}} </p>
+
+
 
     {%else%}
     {%endif%}
@@ -157,7 +160,16 @@
     <hr>
     <br>
     {% for part_workorder in partsReceived %}
-    {{part_workorder.cert_document.url}}
+
+    {%if part_workorder.cert_document %}
+
+    <p>Description : {{part_workorder.part.description}} </p>
+    <p>Part No : {{part_workorder.part.part_number}} </p>
+    <p>Image:</p>
+
+
+    {%else%}
+    {%endif%}
 
     {% endfor %}
 

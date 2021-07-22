@@ -109,7 +109,8 @@
     <div class="container-fluid">
 
         <div class="row">
-            <div class="col-md-10">
+            <div class="col-md-1"></div>
+            <div class="col-md-8">
                 <div class='card card-body circleme '>
                     <form method="get">
                         {{workOrderFilter.form}}
@@ -133,7 +134,8 @@
         <br>
 
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
                 <div class="card card-body circleme">
                     <table class="table table-med table-md">
                         <tr>
@@ -142,7 +144,6 @@
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Tail No</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Airframe Type
                             </th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">LDGS @Close</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Open</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Closed</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Duration</th>
@@ -157,7 +158,6 @@
                             <td class="tablestyle">{{instance.workorder_number}}</td>
                             <td class="tablestyle">{{instance.tail_number}}</td>
                             <td class="tablestyle">{{instance.type_airframe}}</td>
-                            <td class="tablestyle">{{instance.ldgs_at_open}}</td>
                             <td class="tablestyle">{{instance.date_added|date:"M d, Y"}}</td>
                             <td class="tablestyle">{{instance.date_closed|date:"M d, Y"}}</td>
                             <td class="tablestyle"><strong>{{instance.duration}}</strong></td>
@@ -166,8 +166,13 @@
 
                             <td class="tablestyle"><a class="btn btn-sm btn-info sb-btn"
                                     href="{%url 'partslink' instance.id 'Historical'%}">View</a></td>
+                            <!-- <td class="tablestyle"><a class="btn btn-sm btn-dark sb-btn"
+                                    href="{%url 'exportPDFWorkorder' instance.id %}">Print PDF</a></td> -->
+
                             <td class="tablestyle"><a class="btn btn-sm btn-dark sb-btn"
-                                    href="{%url 'exportPDFWorkorder' instance.id %}">Print PDF</a></td>
+                                    href="{%url 'pdf_report_create' instance.id %}">Print PDF</a></td>
+
+
 
                         </tr>
                         {% endfor%}
@@ -175,6 +180,7 @@
                     </table>
                 </div>
             </div>
+            <div class="col-md-1"></div>
         </div>
     </div>
 

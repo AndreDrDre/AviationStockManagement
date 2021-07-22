@@ -6,55 +6,55 @@
 
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
-    
+
     <link rel="stylesheet" src="{% static 'js/home.js' %}">
-  
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
-<style>
-    .circleme{
+    <style>
+        .circleme {
             border-radius: 20px;
             border: 1px solid;
         }
 
-    .sb-btn:hover{
+        .sb-btn:hover {
             transform: scale(1.1);
         }
 
-    .btn-comp{
+        .btn-comp {
             border-radius: 15px;
-            background:linear-gradient(135deg, #ce961c 0%, #ca1616 100%);
+            background: linear-gradient(135deg, #ce961c 0%, #ca1616 100%);
             float: right;
-            transition: all .2s ease-in-out; 
+            transition: all .2s ease-in-out;
         }
 
-    .btn-comp:hover{
+        .btn-comp:hover {
             transform: scale(1.1);
         }
 
-    .btn-comp-b{
+        .btn-comp-b {
             border-radius: 15px;
-            background:linear-gradient(135deg, #1caace 0%, #1664ca 100%);
+            background: linear-gradient(135deg, #1caace 0%, #1664ca 100%);
             float: right;
-            transition: all .2s ease-in-out; 
+            transition: all .2s ease-in-out;
         }
 
-    .btn-comp-b:hover{
+        .btn-comp-b:hover {
             transform: scale(1.1);
         }
 
-    .btn-comp-Q{
+        .btn-comp-Q {
             border-radius: 15px;
-            background:linear-gradient(135deg, #1cce25 0%, #136302 100%);
+            background: linear-gradient(135deg, #1cce25 0%, #136302 100%);
             float: right;
-            transition: all .2s ease-in-out; 
+            transition: all .2s ease-in-out;
         }
 
-    .btn-comp-Q:hover{
+        .btn-comp-Q:hover {
             transform: scale(1.1);
         }
-</style>
-  
+    </style>
+
 </head>
 
 
@@ -76,72 +76,85 @@
                 </div>
             </div>
 
-      
-          <br>
-  
+
+            <br>
+
             <div class="row">
-            <div class="col-md-3">
-                  
-            </div>
-              
-            
-            <div class="col-md-2 ">
+                <div class="col-md-3">
+
+                </div>
+
+
+                <div class="col-md-2 ">
                     <a href="{%url 'addToInventory' 'Reserved' %}" class="services-small-item">
                         <div class="icon">
-                            <img src="https://img.icons8.com/color/96/000000/scan-stock.png"/>                        
+                            <img src="https://img.icons8.com/color/96/000000/scan-stock.png" />
                         </div>
                         <br>
                         <h5 class="services-title">RESERVED AIRCRAFT PARTS</h5>
                         <p>Parts received for a specific tail number.</p>
                         <div class="button">
-                          
+
                         </div>
                     </a>
                     <div class="item-bg"></div>
+                </div>
+
+                <div class="col-md-2 ">
+                    <a href="{%url 'addToQuarentine' %}" class="services-small-item">
+                        <div class="icon">
+                            <img src="https://img.icons8.com/color/96/000000/contactless-delivery.png" />
+                        </div>
+                        <br>
+                        <h5 class="services-title">QUARANTINE PART</h5>
+                        <p>If there is an issue associated with the part, deeming it non-serviceable.</p>
+                        <div class="button">
+
+                        </div>
+                    </a>
+                    <div class="item-bg"></div>
+                </div>
+
+                <div class="col-md-2 ">
+                    <a href="{% url 'addToInventory' 'Stock' %}" class="services-small-item">
+                        <div class="icon">
+                            <img src="https://img.icons8.com/color/96/000000/open-box.png" />
+
+                        </div>
+                        <br>
+                        <h5 class="services-title"> RECEIVE STOCK PARTS</h5>
+                        <p>Parts received with the intention of being placed into stock.</p>
+                        <div class="button">
+
+                        </div>
+                    </a>
+                    <div class="item-bg"></div>
+                </div>
+
+
+
+                <div class="col-md-3">
+
+                </div>
+
             </div>
 
-            <div class="col-md-2 ">
-                <a href="{%url 'addToQuarentine' %}" class="services-small-item">
-                    <div class="icon">
-                        <img src="https://img.icons8.com/color/96/000000/contactless-delivery.png"/>
-                    </div>
-                    <br>
-                    <h5 class="services-title">QUARANTINE PART</h5>
-                    <p>If there is an issue associated with the part, deeming it non-serviceable.</p>
-                    <div class="button">
-                
-                    </div>
-                </a>
-                <div class="item-bg"></div>
-              </div>
-  
-            <div class="col-md-2 ">
-                  <a href="{% url 'addToInventory' 'Stock' %}" class="services-small-item">
-                      <div class="icon">
-                        <img src="https://img.icons8.com/color/96/000000/open-box.png"/>
-                      
-                      </div>
-                      <br>
-                      <h5 class="services-title"> RECEIVE STOCK PARTS</h5>
-                      <p>Parts received with the intention of being placed into stock.</p>
-                      <div class="button">
-                        
-                      </div>
-                  </a>
-                  <div class="item-bg"></div>
-              </div>
-  
-             
-
-              <div class="col-md-3">
-                  
-            </div>
-          
-            </div>
-      
-      </div>
+        </div>
     </section>
-    
+    <br>
+    <br>
+    <div class="row">
+
+        <div class="col-md-2">
+            <div class='card card-body circleme display'>
+                <a class="btn btn-danger back-btn" href="{%url 'InterimOrder'%}">Back</a>
+            </div>
+        </div>
+        <div class="col-md-5">
+
+        </div>
+        <div class="col-md-5"></div>
+    </div>
 </body>
 
 {% endblock%}

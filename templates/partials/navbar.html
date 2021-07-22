@@ -58,6 +58,10 @@
         <i class="fa fa-home fa-lg"></i>
         <span class="nav-text">Home</span>
       </a>
+      <a href="{%url 'InterimOrder'%}">
+        <i class="fa fa-credit-card fa-lg"></i>
+        <span class="nav-text">Order Part</span>
+      </a>
 
       <a href="{%url 'store' %} ">
         <i class="fa fa-archive fa-lg"></i>
@@ -72,6 +76,13 @@
           <i class="fa fa-truck fa-lg"></i>
           <span class="nav-text">Supplier</span>
         </a>
+        <a href="{%url 'shoppingList' %} ">
+          <i class="fa fa-tag fa-lg"></i>
+          <span class="nav-text">Shop List</span>
+          {%if ReOrder > 0%}
+          <span class="tipReorder">{{ReOrder}}</span>
+          {%endif%}
+        </a>
       </div>
 
       <a href="{%url 'workorders' %}">
@@ -80,7 +91,7 @@
       </a>
 
       <div class="mid-block-2">
-        <a href=" ">
+        <a href="{%url 'WorkOrderHistory' %} ">
           <i class="fa fa-arrows fa-lg"></i>
           <span class="nav-text">W/O History</span>
         </a>
@@ -109,12 +120,12 @@
         <i class="fa fa-signal fa-lg"></i>
         <span class="nav-text">Re-Order</span>
       </a>
-      <div class="mid-block">
-        <a href="{%url 'adminpage'%} ">
-          <i class="fa fa-user fa-lg"></i>
-          <span class="nav-text">Admin</span>
-        </a>
-      </div>
+
+      <a href="{%url 'adminpage'%} ">
+        <i class="fa fa-user fa-lg"></i>
+        <span class="nav-text">Admin</span>
+      </a>
+
 
     </div>
   </nav>

@@ -17,6 +17,15 @@ urlpatterns = [
     # General Routing
 
     #Store Logic -------------------------------------------------#
+    path('shoppingList/', views.shoppingList, name='shoppingList'),
+
+    path('RecieveShop/<str:pk>/', views.RecieveShop, name='RecieveShop'),
+    path('IssueOutShop/<str:pk>/', views.IssueOutShop, name='IssueOutShop'),
+    path('OrderShop/<str:pk>/', views.OrderShop, name='OrderShop'),
+
+    path('editShop/<str:pk>/', views.editShop, name='editShop'),
+    path('shoppingListForm/',
+         views.shoppingListForm, name='shoppingListForm'),
 
 
     path('PartsHistory/', views.PartsHistory, name='PartsHistory'),
@@ -154,6 +163,9 @@ urlpatterns = [
     path('reorder_level/<str:pk>/', views.reorder_level, name="reorder_level"),
 
     path('quickOrder/<str:pk>/', views.quickOrder, name="quickOrder"),
+
+    path('pdf_report_create/<str:pk>/',
+         views.pdf_report_create, name="pdf_report_create"),
 
 
 

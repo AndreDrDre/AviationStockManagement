@@ -194,20 +194,19 @@
 
                             <td class="tablestyle">{{part_workorder.issued_by}}</td>
 
-
-
                             <!--The quantity represented in the many to many associated with a work-order -->
                             <td class="tablestyle">{{part_workorder.issue_quantity}}</td>
                             <td class="tablestyle">$ {{part_workorder.part.price}}</td>
-                            <th class="tablestyle">$ {{part_workorder.total}} </th>
+                            <td class="tablestyle"><strong>$ {{part_workorder.total}}</strong> </td>
 
                             {% if part_workorder.part.cert_document %}
 
-
                             <td class="tablestyle"><a href="{{part_workorder.part.cert_document.url}}"
-                                    target="_blank""><img src=" https://img.icons8.com/ios/30/000000/paper.png"/> </a>
-                                    </td> {%else%} <td style="text-align:center;"><img
-                                        src="https://img.icons8.com/offices/30/000000/cancel-2.png" /> </td>
+                                    target="_blank"><img src=" https://img.icons8.com/ios/30/000000/paper.png" /> </a>
+                            </td>
+                            {%else%}
+                            <td style="text-align:center;"><img
+                                    src="https://img.icons8.com/offices/30/000000/cancel-2.png" /> </td>
                             {% endif %}
 
                             <td class="tablestyle"> {{part_workorder.part.condition }} </td>

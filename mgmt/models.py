@@ -70,6 +70,40 @@ class Profile(models.Model):
         return self.name
 
 
+class ShoppingList(models.Model):
+
+    description = models.CharField(max_length=50, blank=True, null=True)
+    part_number = models.CharField(max_length=50, blank=True, null=True)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    ordered_by = models.ForeignKey(
+        Employees, null=True, blank=True, related_name='orderedShopList', on_delete=models.SET_NULL, verbose_name="Orderd By:")
+    quantity = models.IntegerField(default='0', blank=True, null=True)
+    order_quantity = models.IntegerField(default='0', blank=True, null=True)
+    issue_quantity = models.IntegerField(default='0', blank=True, null=True)
+    receive_quantity = models.IntegerField(default='0', blank=True, null=True)
+
+    re_orderBoolean = models.BooleanField(
+        default='False', blank=True, null=True)
+    re_orderLevel = models.IntegerField(default='0', blank=True, null=True)
+    unitPrice = models.FloatField(default='0', blank=True, null=True)
+
+    pending = models.BooleanField(default='False', blank=True, null=True)
+    date = models.DateField(
+        auto_now_add=False, blank=True, null=True)
+
+    @property
+    def total(self):
+        num = round((self.quantity*self.unitPrice), 2)
+        return num
+
+    class Meta:
+        verbose_name = 'Shopping List'
+
+    def __str__(self):
+        if self is not None:
+            return self.description
+
+
 def calculateCheck(EAN13):
     listIntheck = []
     checkdigit = 0
