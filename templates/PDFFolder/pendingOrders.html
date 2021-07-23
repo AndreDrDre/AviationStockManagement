@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+{% load static%}
+<!-- {% load pdf_filters %} -->
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Request Orders</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+
+    <style>
+        @page {
+            size: a4 portrait;
+            margin: 2cm;
+
+            @frame footer {
+                -pdf-frame-content: footer;
+                color: black;
+                bottom: 1cm;
+                margin-left: 10.5cm;
+                height: 1cm;
+                align-items: center;
+                text-align: center;
+            }
+
+        }
+
+        table {
+            -pdf-keep-with-next: true;
+        }
+
+        p {
+            margin: 0;
+            -pdf-keep-with-next: true;
+        }
+
+        h2 {
+            margin: 0;
+            -pdf-keep-with-next: true;
+        }
+
+        h2.seperator {
+            margin: 0;
+            -pdf-keep-with-next: true;
+        }
+
+        p.separator {
+            -pdf-keep-with-next: false;
+            font-size: 8pt;
+        }
+
+        .imgHolder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 80px;
+        }
+
+        .imgHolder img {
+
+            width: 100%;
+            height: 100%;
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="header_content">
+        <h2 style="text-align:center"> SHOPPING LIST </h2>
+    </div>
+
+    <br>
+    <hr>
+    <h5>This PDF was created on : {{date}}</h5>
+
+    <h6>ESTIMATED COST :<strong>$ {{totalprice}}</strong></h6>
+
+    <hr>
+    <div class="row">
+        <h4 style="text-align:center">ORDER ITEMS</h4>
+
+        <hr>
+        <div class="card card-body circleme">
+            <table class="table table-md">
+                <tr>
+                    <th style="text-align:center; padding:8px; ">Descrption</th>
+                    <th style="text-align:center; padding:8px;">P#</th>
+                    <th style="text-align:center; padding:8px;">Unit Price</th>
+                    <th style="text-align:center;padding:8px; ">Quantity </th>
+
+                    <th style="text-align:center; padding:8px;">Total</th>
+                    <th style="text-align:center; padding:8px;">Order Date</th>
+
+                </tr>
+                {% for item in querysetPending %}
+                <tr>
+                    <td style="text-align:center;padding:2px; ">{{item.description}}</td>
+                    <td style="text-align:center;">{{item.part_number}}</td>
+                    <td style="text-align:center;">$ {{item.unitPrice}}</td>
+
+                    <!--The quantity represented in the many to many associated with a work-order -->
+                    <td style="text-align:center;">{{item.order_quantity}}</td>
+                    <td style="text-align:center;">$ {{item.total}}</td>
+                    <th style="text-align:center;">{{item.date|date:"M d, Y" }} </th>
+
+                </tr>
+                {% endfor%}
+
+            </table>
+        </div>
+        <hr>
+    </div>
+
+    <br>
+
+
+    <div id="footer">
+        <pdf:pagenumber />
+    </div>
+
+
+
+</body>
+
+</html>

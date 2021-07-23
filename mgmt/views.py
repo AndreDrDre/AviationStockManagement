@@ -260,11 +260,14 @@ def OrderShop(request, pk):
         if form.is_valid():
             form.instance.pending = True
             form.instance.date = timezone.now()
+
             form.save()
             return redirect('shoppingList')
 
     else:
         form = OrderMoreForm(instance=queryset)
+        form.fields['ordered_by'].queryset = Employees.objects.filter(
+            user=request.user)
 
     context = {'form': form, "ReOrder": ReOrder, }
     return render(request, "PartsFolder/OrderItemShop.html", context)
@@ -309,6 +312,8 @@ def RecieveShop(request, pk):
             queryset.order_quantity -= form.instance.receive_quantity
             if queryset.order_quantity == 0:
                 queryset.pending = False
+                queryset.ordered = False
+                queryset.save(update_fields=['ordered'])
             form.save()
             return redirect('shoppingList')
 
@@ -317,6 +322,18 @@ def RecieveShop(request, pk):
 
     context = {'form': form, "ReOrder": ReOrder, }
     return render(request, "PartsFolder/OrderItemShop.html", context)
+
+
+@login_required(login_url='signin')
+def changeOrderShoppingStatus(request, pk):
+
+    queryset = ShoppingList.objects.get(
+        user=request.user, id=pk)
+
+    queryset.ordered = True
+    queryset.save(update_fields=['ordered'])
+
+    return redirect('shoppingList')
 
 
 @login_required(login_url='signin')
@@ -1089,7 +1106,7 @@ def historical_inventory(request):
 
     context = {"ReOrder": ReOrder}
 
-    return render(request, "PartsFolder/historical_Inventory.html")
+    return render(request, "PartsFolder/historical_Inventory.html", context)
 
 
 @login_required(login_url='signin')
@@ -2781,7 +2798,42 @@ def pdf_report_create(request, pk):
                'querysetDisplay': querysetDisplay, "total": total, "date": date}
     # Create a Django response object, and specify content_type as pdf
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="workOrder.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="workOrder.pdf"'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+        html, dest=response)
+    # if error then show some funy view
+    if pisa_status.err:
+        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
+def pdf_report_pendingOrders(request):
+
+    totalprice = 0
+    #Linking to the correct Model files----------------------#
+    querysetPending = ShoppingList.objects.filter(
+        user=request.user, pending=True)
+    #Linking to the correct Model files----------------------#
+
+    #creating the PDF document#
+    template_path = 'PDFFolder/pendingOrders.html'
+
+    for price in querysetPending:
+        totalprice += price.unitPrice * price.order_quantity
+
+    totalprice = round(totalprice, 2)
+
+    date = timezone.now()
+    context = {'querysetPending': querysetPending,
+               "date": date, "totalprice": totalprice}
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="ShoppingOrders.pdf"'
     # find the template and render it.
     template = get_template(template_path)
     html = template.render(context)

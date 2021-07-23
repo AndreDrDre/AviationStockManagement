@@ -9,8 +9,9 @@
   <!-- BOX ICONS CSS-->
   <link href="https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css" rel="stylesheet" />
   <!-- custom css -->
-  <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"
-    rel="stylesheet">
+  <!-- <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css"
+    rel="stylesheet"> -->
+  <link href="{% static 'fontawesome_free/css/all.min.css' %}" rel="stylesheet" type="text/css">
 
   <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/nav.css'%}">
@@ -55,29 +56,29 @@
     <div class="navdiv">
 
       <a href="{%url 'home'%}">
-        <i class="fa fa-home fa-lg"></i>
+        <i class="fas fa-home fa-lg"></i>
         <span class="nav-text">Home</span>
       </a>
       <a href="{%url 'InterimOrder'%}">
-        <i class="fa fa-credit-card fa-lg"></i>
-        <span class="nav-text">Order Part</span>
+        <i class="fas fa-sort-amount-down-alt fa-lg"></i>
+        <span class="nav-text">Order/Receive</span>
       </a>
 
       <a href="{%url 'store' %} ">
-        <i class="fa fa-archive fa-lg"></i>
+        <i class="fas fa-boxes fa-lg"></i>
         <span class="nav-text">Inventory</span>
       </a>
       <div class="mid-block-2">
         <a href="{%url 'InhouseReapirs' %} ">
-          <i class="fa fa-exchange fa-lg"></i>
+          <i class="fas fa-tools fa-lg"></i>
           <span class="nav-text">Inhouse</span>
         </a>
         <a href="{%url 'ShopReapirs' %} ">
-          <i class="fa fa-truck fa-lg"></i>
+          <i class="fas fa-truck-moving fa-lg"></i>
           <span class="nav-text">Supplier</span>
         </a>
         <a href="{%url 'shoppingList' %} ">
-          <i class="fa fa-tag fa-lg"></i>
+          <i class="fas fa-list-ol fa-lg"></i>
           <span class="nav-text">Shop List</span>
           {%if ReOrder > 0%}
           <span class="tipReorder">{{ReOrder}}</span>
@@ -86,13 +87,13 @@
       </div>
 
       <a href="{%url 'workorders' %}">
-        <i class="fa fa-code-fork fa-lg"></i>
+        <i class="fas fa-network-wired fa-lg"></i>
         <span class="nav-text">Work-Orders</span>
       </a>
 
       <div class="mid-block-2">
         <a href="{%url 'WorkOrderHistory' %} ">
-          <i class="fa fa-arrows fa-lg"></i>
+          <i class="fas fa-history fa-lg"></i>
           <span class="nav-text">W/O History</span>
         </a>
       </div>
@@ -102,27 +103,36 @@
 
 
       <a href="{%url 'tools'%} ">
-        <i class="fa fa-cogs fa-lg"></i>
+        <i class="fas fa-toolbox fa-lg"></i>
         <span class="nav-text">Tool Box</span>
       </a>
 
+      <div class="mid-block-2">
+        <a href="{%url 'tools'%} ">
+          <i class="fas fa-business-time fa-lg"></i>
+          <span class="nav-text">Out Tools</span>
+        </a>
+      </div>
+
+
+
       <a href="{%url 'historical_inventory' %} ">
-        <i class="fa fa-book fa-lg"></i>
+        <i class="fas fa-database fa-lg"></i>
         <span class="nav-text">Historical Data</span>
       </a>
 
       <a href="{%url 'orderhistory'%} ">
-        <i class="fa fa-th-list fa-lg"></i>
+        <i class="fas fa-book-open fa-lg"></i>
         <span class="nav-text">Historical Order</span>
       </a>
 
       <a href="{%url 'reorderParts' %} ">
-        <i class="fa fa-signal fa-lg"></i>
+        <i class="fas fa-arrows-alt fa-lg"></i>
         <span class="nav-text">Re-Order</span>
       </a>
 
       <a href="{%url 'adminpage'%} ">
-        <i class="fa fa-user fa-lg"></i>
+        <i class="fas fa-user-shield fa-lg"></i>
         <span class="nav-text">Admin</span>
       </a>
 
@@ -137,23 +147,5 @@
     integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous">
   </script>
 
-  <script>
-    var menu_btn = document.querySelector("#menu-btn");
-    var sidebar = document.querySelector("#sidebar");
-    var container = document.querySelector(".my-container");
 
-    var movement = document.querySelector(".container-fluid");
-
-    sidebar.classList.toggle("active-nav");
-    container.classList.toggle("active-cont");
-
-    menu_btn.addEventListener("click", () => {
-
-      sidebar.classList.toggle("active-nav");
-      container.classList.toggle("active-cont");
-
-      document.getElementById(".container-fluid").style.paddinglLeft = "200px";
-
-    });
-  </script>
 </body>

@@ -53,10 +53,12 @@ class AddShoppingItem(forms.ModelForm):
 class OrderMoreForm(forms.ModelForm):
     class Meta:
         model = ShoppingList
-        fields = ['order_quantity', "unitPrice"]
+        fields = ['order_quantity', "unitPrice", "ordered_by", "From"]
         widgets = {
             'order_quantity': forms.NumberInput(attrs={'class': 'form-control', 'required': True},),
             'unitPrice': forms.NumberInput(attrs={'class': 'form-control', 'required': True},),
+            'ordered_by': forms.Select(attrs={'class': 'form-control', 'required': True},),
+            'From': forms.TextInput(attrs={'class': 'form-control', 'required': True},),
 
         }
 

@@ -91,6 +91,7 @@
 
         }
     </style>
+
 </head>
 
 <body>
@@ -132,39 +133,62 @@
     <div class="container-fluid">
 
         <div class="row">
-            <div class="col-md-4">
-                <h3 style="text-align:center">ORDERS PENDING</h3>
+
+            <div class="col-md-6">
+                <h3 style="text-align:center">REQUIRED ITEMS</h3>
                 <span class="NumberCheckPending">{{pending}}</span>
+                <br>
                 <span></span>
                 <div class="card card-body circleme">
                     <table class="table table-med">
                         <tr>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Description</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Quantity</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">From:</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">By:</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Ordered</th>
                         </tr>
                         {% for instance in querysetPending %}
                         <tr>
 
                             <td class="tablestyle">{{instance.description}}</td>
                             <td class="tablestyle">{{instance.order_quantity}}</td>
+                            <td class="tablestyle">{{instance.From}}</td>
+                            <td class="tablestyle">{{instance.ordered_by}}</td>
                             <td class="tablestyle">{{instance.date|date:"M d, Y"}}</td>
+
+                            {%if instance.ordered == False%}
+                            <td class="tablestyle"><a id="show" class="btn btn-sm btn-danger"
+                                    href="{%url 'changeOrderShoppingStatus' instance.id%}"></a>
+                                </a>
+                            </td>
+                            {%else%}
+
+                            <td class="tablestyle">
+                                <img src="https://img.icons8.com/fluent/30/000000/double-tick.png" />
+                            </td>
+                            {%endif%}
+
                             <td class="tablestyle"><a id='about-btn' class="btn btn-sm btn-dark form-btn"
                                     href="{%url 'RecieveShop' instance.id%}">Receive
                                 </a>
                             </td>
+
 
                         </tr>
                         {% endfor%}
 
                     </table>
                 </div>
-
             </div>
-            <div class="col-md-4"></div>
+
+            <div class="col-md-2"></div>
+
             <div class="col-md-4">
-                <h3 style="text-align:center">REORDER ITEMS</h3>
+                <h3 style="text-align:center">LOW QTY ITEMS</h3>
                 <span class="NumberCheckReOrder">{{ReOrder}}</span>
+                <br>
                 <div class="card card-body circleme">
                     <table class="table table-med">
                         <tr>
@@ -177,6 +201,8 @@
 
                             <td class="tablestyle">{{instance.description}}</td>
                             <td class="tablestyle">{{instance.quantity}}</td>
+                            <td class="tablestyle"><a id='about-btn' class="btn btn-sm btn-warning form-btn"
+                                    href="{%url 'OrderShop' instance.id%}">Order</a>
 
 
                         </tr>
@@ -208,11 +234,19 @@
                 </div>
             </div>
 
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <div class='card card-body circleme '>
                     <div class="export"> <a href="{%url 'shoppingListForm' %}"><img
-                                src="https://img.icons8.com/cotton/54/000000/--sale-paper-bag--v2.png" /></a>
+                                src="https://img.icons8.com/cotton/50/000000/--sale-paper-bag--v2.png" /></a>
                         <span class="tooltiptext">Add Item</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1">
+                <div class='card card-body circleme '>
+                    <div class="export"> <a href="{%url 'pdf_report_pendingOrders' %}"><img
+                                src="https://img.icons8.com/ios/50/000000/export-pdf-2.png" /></a>
+                        <span class="tooltiptext">Print PDF!</span>
                     </div>
                 </div>
             </div>
@@ -258,9 +292,10 @@
 
                             <td class="tablestyle"><a class="btn btn-sm btn-info form-btn"
                                     href="{% url 'editShop' instance.id %}">Edit</a></td>
+
+                            </td>
                             <td class="tablestyle"><a id='about-btn' class="btn btn-sm btn-warning form-btn"
                                     href="{%url 'OrderShop' instance.id%}">Order</a>
-                            </td>
                             <td class="tablestyle"><a id='about-btn' class="btn btn-sm btn-dark form-btn"
                                     href="{%url 'IssueOutShop' instance.id%}">Issue Out</a>
                             </td>
@@ -289,6 +324,8 @@
         </div>
         <div class="col-md-5"></div>
     </div>
+
+
 </body>
 
 {% endblock%}

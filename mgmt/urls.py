@@ -19,6 +19,13 @@ urlpatterns = [
     #Store Logic -------------------------------------------------#
     path('shoppingList/', views.shoppingList, name='shoppingList'),
 
+
+
+    path('changeOrderShoppingStatus/<str:pk>/',
+         views.changeOrderShoppingStatus, name='changeOrderShoppingStatus'),
+
+    path('pdf_report_pendingOrders/',
+         views.pdf_report_pendingOrders, name='pdf_report_pendingOrders'),
     path('RecieveShop/<str:pk>/', views.RecieveShop, name='RecieveShop'),
     path('IssueOutShop/<str:pk>/', views.IssueOutShop, name='IssueOutShop'),
     path('OrderShop/<str:pk>/', views.OrderShop, name='OrderShop'),

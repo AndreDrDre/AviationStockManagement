@@ -403,7 +403,7 @@ a {
       /* Position the tooltip */
       position: absolute;
       z-index: 1;
-      bottom: 90%;
+      bottom: 92%;
       left: 50%;
       margin-left: 110px;
     }
@@ -419,9 +419,9 @@ a {
       /* Position the tooltip */
       position: absolute;
       z-index: 1;
-      bottom: 90%;
+      bottom: 92%;
       left: 50%;
-      margin-left: 120px;
+      margin-left: 115px;
     }
 
     .export .tooltiptext {

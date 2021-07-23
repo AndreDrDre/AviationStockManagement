@@ -73,6 +73,7 @@ class Profile(models.Model):
 class ShoppingList(models.Model):
 
     description = models.CharField(max_length=50, blank=True, null=True)
+    From = models.CharField(max_length=50, blank=True, null=True)
     part_number = models.CharField(max_length=50, blank=True, null=True)
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     ordered_by = models.ForeignKey(
@@ -81,7 +82,8 @@ class ShoppingList(models.Model):
     order_quantity = models.IntegerField(default='0', blank=True, null=True)
     issue_quantity = models.IntegerField(default='0', blank=True, null=True)
     receive_quantity = models.IntegerField(default='0', blank=True, null=True)
-
+    ordered = models.BooleanField(
+        default='False', blank=True, null=True)
     re_orderBoolean = models.BooleanField(
         default='False', blank=True, null=True)
     re_orderLevel = models.IntegerField(default='0', blank=True, null=True)
@@ -499,3 +501,66 @@ class ReorderItems(models.Model):
                 str(self.user),
                 str(self.description),
                 str(self.part_number))
+
+
+class Tools_Calibrated_issued(models.Model):
+
+    description = models.CharField(max_length=50, blank=True, null=True)
+    serial_number = models.CharField(max_length=50, blank=True, null=True)
+    part_number = models.CharField(max_length=50, blank=True, null=True)
+    recieved = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    expiry_date = models.DateTimeField(
+        auto_now_add=False, blank=True, null=True)
+    cert_no = models.CharField(max_length=50, blank=True, null=True)
+
+    calibration_certificate = models.ImageField(upload_to="Cert-Tools",
+                                                blank=True, null=True, verbose_name='Certification Document')
+
+    range_no = models.CharField(max_length=50, blank=True, null=True)
+
+    workorder_no = models.ForeignKey(
+        WorkOrders, null=True, blank=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Calibrated Tool'
+
+    @property
+    def timecalculated(self):
+
+        if self.expiry_date:
+            exp = self.expiry_date
+            now = timezone.now()
+            total = (exp-now).days
+            return int(total)+1
+        else:
+            return "N/A"
+
+    def save(self, *args, **kwargs):
+        if self.barcode == None:
+            number = 0
+            EAN = barcode.get_barcode_class('ean13')
+            now = datetime.now()  # current date and time
+            year = now.strftime("%Y%m%d")
+            number = random.randint(1000, 9999)
+            year = year+str(number)
+
+            self.cert_no = calculateCheck(year)
+
+            ean = EAN(year, writer=ImageWriter())
+            buffer = BytesIO()
+            ean.write(buffer)
+            self.barcode.save('barcode.png', File(buffer), save=False)
+            return super().save(*args, **kwargs)
+        else:
+            try:
+                this = Tools_Calibrated.objects.get(id=self.id)
+                if this.calibration_certificate != self.calibration_certificate:
+                    this.calibration_certificate.delete(save=True)
+            except:
+                pass  # when new photo then we do nothing, normal case
+            super(Tools_Calibrated, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.description

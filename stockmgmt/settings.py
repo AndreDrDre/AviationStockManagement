@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'jquery',
     'django_cleanup',
+    'fontawesome-free'
 
 
 ]
