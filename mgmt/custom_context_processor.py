@@ -3,12 +3,12 @@ from .models import *
 
 def subject_renderer(request):
     return {"Calicount": Tools_Calibrated.objects.filter(
-        calibrated=True, issued=True).count(),
+        user=request.user, calibrated=True, issued=True).count(),
     }
 
 
 def uncali_renderer(request):
-    return {"UnCalicount": Tools_UnCalibrated.objects.filter(issued=True).count(),
+    return {"UnCalicount": Tools_UnCalibrated.objects.filter(user=request.user, issued=True).count(),
             }
 
 
