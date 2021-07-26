@@ -371,6 +371,29 @@ a {
       justify-content: center;
     }
 
+    .navdiv .tipReorderUnCali{
+      width: 15px;
+      background-color: red;
+      color: #fff;
+      text-align: center;
+      border-radius: 100%;
+      
+
+      /* Position the tooltip */
+      position: absolute;
+      z-index: 1;
+      bottom: 50%;
+      left: 50%;
+      margin-left: -60px;
+
+    }
+
+    .navdiv:hover .tipReorderUnCali{
+      margin-left: 70px;
+      bottom: 50%;
+    }
+
+
     .navdiv .tipReorder{
       width: 15px;
       background-color: red;

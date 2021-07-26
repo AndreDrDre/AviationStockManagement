@@ -7,7 +7,6 @@ from django.contrib import admin
 # Register your models here.
 
 
-admin.site.register(Tools_Calibrated)
 admin.site.register(Tools_UnCalibrated)
 admin.site.register(ToolChecker)
 admin.site.register(Profile)
@@ -91,6 +90,24 @@ class ReorderItemsAdmin(admin.ModelAdmin):
     list_per_page = 25
 
 
+class Tools_CalibratedAdmin(admin.ModelAdmin):
+    list_display = ('description', 'user'
+                    )
+
+    list_filter = ('user',)
+
+    list_per_page = 25
+
+
+class Tools_Calibrated_issuedAdmin(admin.ModelAdmin):
+    list_display = ('description', 'user'
+                    )
+
+    list_filter = ('user',)
+
+    list_per_page = 25
+
+
 admin.site.register(ReorderItems, ReorderItemsAdmin)
 admin.site.register(ShoppingList, ShoppingListAdmin)
 admin.site.register(Employees, EmployeesAdmin)
@@ -99,3 +116,5 @@ admin.site.register(Parts, PartsAdmin)
 admin.site.register(WorkOrders, WorkOrdersAdmin)
 admin.site.register(OrderHistory, OrderHistoryAdmin)
 admin.site.register(TailNumber, TailNumberAdmin)
+admin.site.register(Tools_Calibrated, Tools_CalibratedAdmin)
+admin.site.register(Tools_Calibrated_issued, Tools_Calibrated_issuedAdmin)

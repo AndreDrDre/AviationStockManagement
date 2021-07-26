@@ -327,16 +327,17 @@
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Descrption</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#/B#</th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Recieved
-                            </th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Issued By</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Calibrated
                             </th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Expiry Date</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">DTE</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Cert No</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Job Card #</th>
+
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Range</th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Issued On:</th>
+
 
                         </tr>
                         {% for tool in Cali %}
@@ -344,16 +345,17 @@
                             <td class="tablestyle">{{tool.description}}</td>
                             <td class="tablestyle">{{tool.part_number}}</td>
                             <td class="tablestyle">{{tool.serial_number}}</td>
-                            <td class="tablestyle">{{tool.recieved|date:"M d, Y"}}</td>
+                            <td class="tablestyle">{{tool.issuedby}}</td>
+
                             <td class="tablestyle">{{tool.calibrated_date|date:"M d, Y"}}</td>
                             <td class="tablestyle">{{tool.expiry_date|date:"M d, Y"}}</td>
                             <td class="tablestyle">{{tool.timecalculated}}</td>
                             <td class="tablestyle">{{tool.cert_no}}</td>
+                            <td class="tablestyle">{{tool.jobcard}}</td>
                             <td class="tablestyle">{{tool.range_no}}</td>
-                            <td class="tablestyle"><a class="btn btn-sm btn-danger form-btn"
-                                    href="{% url 'sendhometoolCali' tool.id %}">Remove</a></td>
-                            <td class="tablestyle"><a class="btn btn-sm btn-dark form-btn"
-                                    href="{% url 'changeWorkOrderCali' tool.id %}">Issue to W/O</a></td>
+                            <td class="tablestyle">{{tool.recieved|date:"M d, Y"}}</td>
+                            <td class="tablestyle"><a style="float:right" class="btn btn-sm btn-dark form-btn"
+                                    href="{% url 'changeWorkOrderCali' tool.id %}">Move W/O</a></td>
                         </tr>
                         {% endfor%}
 
@@ -389,11 +391,9 @@
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Descrption</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#</th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Recieved
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Issued On:
                             </th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
+
                         </tr>
                         {% for tool in UnCali %}
                         <tr>
@@ -407,7 +407,7 @@
                             <td><a class="btn btn-sm btn-danger form-btn" href="{% url 'sendhometoolUnCali' tool.id %}"
                                     target="_blank">Remove</a></td>
                             <td><a class="btn btn-sm btn-dark form-btn"
-                                    href="{%url 'changeWorkOrderUnCali' tool.id%}">Issue to W/O</a></td>
+                                    href="{%url 'changeWorkOrderUnCali' tool.id%}">Move to W/O</a></td>
                         </tr>
                         {% endfor %}
 

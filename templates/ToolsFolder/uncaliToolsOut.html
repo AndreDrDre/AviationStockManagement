@@ -1,0 +1,184 @@
+{%extends 'mgmt/index.html'%}
+{% load static%}
+{% block content %}
+{% load widget_tweaks %}
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
+    <style>
+        .container-fluid {
+            padding-left: 190px;
+            padding-right: 190px;
+        }
+
+        .circleme {
+            border-radius: 15px;
+            border: 1px solid;
+        }
+
+        .reciever {
+            background: #afb4b97c;
+        }
+
+        .btn-dre {
+            border-radius: 30px;
+            font-size: 18px;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .sb-btn {
+            border-radius: 15px;
+
+            float: right;
+            transition: all .2s ease-in-out;
+        }
+
+        .sb-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-comp {
+            border-radius: 15px;
+
+            float: right;
+            transition: all .2s ease-in-out;
+        }
+
+        .btn-comp:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <script type="text/javascript">
+        function confirmDelete() {
+            var txt;
+            var agree = confirm("Are you sure you want to delete this item?");
+            if (agree) {
+
+                return true;
+            } else
+                return false;
+        }
+    </script>
+    <br>
+    <br>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mx-auto" style="width: 400px;">
+                    <h4 style="text-align:center">ISSUED UNCALIBRATED TOOLS <img
+                            src="https://img.icons8.com/fluent/48/000000/share-2.png" /></h4>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <br>
+        <div id="form_response" class="mb-4 text-center"></div>
+
+        <div class="turbinedisplay">
+            <img id="Turbine" src="https://img.icons8.com/ios-filled/100/000000/jet-engine.png" />
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-8">
+                <div class='card card-body circleme '>
+                    <form class="myfilter" method="get">
+                        <div style="display: flex;">
+                            <div class="filterC">
+                                <p class="filtertextSelect">Description : {{UnCaliFilter.form.description}}</p>
+                            </div>
+                            <div class="filterC">
+                                <p class="filtertextSelect">Part #:{{UnCaliFilter.form.part_number}}</p>
+                            </div>
+                            <div class="filterC">
+                                <p class="filtertextSelect">Work-Order #:{{UnCaliFilter.form.workorder_no}}</p>
+                            </div>
+                            <button class="btn btn-info btn-search" type="submit"><img
+                                    src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" /></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class='card card-body circleme '>
+
+                    <div class="export">
+                        {%if UnCalicount != 0 %}
+                        <a id="btn-move-Tools" href="{% url 'UncaliOutToolsReturnALL' %}"><img
+                                src="https://img.icons8.com/ios-filled/50/000000/return.png" />
+                        </a>
+                        <span class="tooltiptext">Return All</span>
+                        {%else%}
+                        <a><img src="https://img.icons8.com/ios-filled/50/000000/return.png" />
+                        </a>
+                        <span class="tooltiptext">Return ...</span>
+                        {%endif%}
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <div class="card card-body circleme">
+                    <table class="table table-md">
+                        <tr>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Descrption</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#</th>
+
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">WO #</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Job Card #</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Issued On :</th>
+
+                        </tr>
+                        {% for tool in UnCali %}
+                        <tr>
+                            <td class="tablestyle">{{tool.description}}</td>
+                            <td class="tablestyle">{{tool.part_number}}</td>
+                            <td class="tablestyle">{{tool.serial_number}}</td>
+
+                            <td class="tablestyle">{{tool.workorder_no}}</td>
+                            <td class="tablestyle">{{tool.workorder_no}}</td>
+                            <td class="tablestyle">{{tool.recieved|date:"M d, Y" }}</td>
+
+
+
+                            <td><a class="btn btn-sm btn-danger form-btn" href="{% url 'sendhometoolUnCali' tool.id %}"
+                                    target="_blank">Return</a></td>
+                            <td><a class="btn btn-sm btn-warning form-btn" href="#">Move to W/O</a></td>
+
+                            <td><a class="btn btn-sm btn-dark form-btn"
+                                    href="{%  url 'partslink' tool.workorder_no.id 'NotHistorical' %}">Navigate to
+                                    W/O</a></td>
+                        </tr>
+                        {% endfor %}
+
+                    </table>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+
+{% endblock%}

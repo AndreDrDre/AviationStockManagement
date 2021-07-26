@@ -108,9 +108,19 @@
       </a>
 
       <div class="mid-block-2">
-        <a href="{%url 'tools'%} ">
+        <a href="{%url 'caliOutTools'%} ">
           <i class="fas fa-business-time fa-lg"></i>
-          <span class="nav-text">Out Tools</span>
+          <span class="nav-text">Issued Cal</span>
+          {%if Calicount > 0%}
+          <span class="tipReorder">{{Calicount}}</span>
+          {%endif%}
+        </a>
+        <a href="{%url 'UncaliOutTools'%} ">
+          <i class="fas fa-hammer fa-lg"></i>
+          <span class="nav-text">Issued UnCal</span>
+          {%if UnCalicount > 0%}
+          <span class="tipReorderUnCali">{{UnCalicount}}</span>
+          {%endif%}
         </a>
       </div>
 

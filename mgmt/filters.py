@@ -41,8 +41,30 @@ class CalibratedFilter(django_filters.FilterSet):
     def __init__(self, *args, **kwargs):
         super(CalibratedFilter, self).__init__(*args, **kwargs)
         self.filters['part_number'].label = 'Part #'
+        self.filters['cert_no'].label = 'CN #'
+
+
+class CalibratedOutFilter(django_filters.FilterSet):
+    class Meta:
+        model = Tools_Calibrated
+        fields = ['description', 'cert_no', 'workorder_no', ]
+
+    def __init__(self, *args, **kwargs):
+        super(CalibratedOutFilter, self).__init__(*args, **kwargs)
 
         self.filters['cert_no'].label = 'CN #'
+        self.filters['workorder_no'].label = 'WorkOrder #'
+
+
+class UnCalibratedOutFilter(django_filters.FilterSet):
+    class Meta:
+        model = Tools_UnCalibrated
+        fields = ['description', 'part_number', 'workorder_no']
+
+    def __init__(self, *args, **kwargs):
+        super(UnCalibratedOutFilter, self).__init__(*args, **kwargs)
+        self.filters['part_number'].label = 'Part #'
+        self.filters['workorder_no'].label = 'WorkOrder #'
 
 
 class UnCalibratedFilter(django_filters.FilterSet):
@@ -140,11 +162,6 @@ class reOrderFilter(django_filters.FilterSet):
 
 
 class WorkOrderLinkPartFilter(django_filters.FilterSet):
-
-    # jobCardNumber = forms.ModelChoiceField(
-    #     queryset=WorkOrders.objects.filter(status='OPEN'))
-
-    # jobCardNumber = filters.ModelChoiceFilter(queryset=self.jobCardNumber)
 
     class Meta:
         model = PartWorkOrders

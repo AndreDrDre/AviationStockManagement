@@ -128,6 +128,17 @@ urlpatterns = [
 
 
     # Tools -----------------------------#
+
+
+
+    path('UncaliOutToolsReturnALL/', views.UncaliOutToolsReturnALL,
+         name='UncaliOutToolsReturnALL'),
+    path('UncaliOutTools/', views.UncaliOutTools, name='UncaliOutTools'),
+
+    path('caliOutToolsReturnALL/', views.caliOutToolsReturnALL,
+         name='caliOutToolsReturnALL'),
+
+    path('caliOutTools/', views.caliOutTools, name='caliOutTools'),
     path('tools/', views.tools, name='tools'),
     path('deleteUnCali/<str:pk>/', views.deleteUnCali, name='deleteUnCali'),
     path('deleteCali/<str:pk>/', views.deleteCali, name='deleteCali'),

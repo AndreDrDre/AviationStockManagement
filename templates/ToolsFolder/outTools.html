@@ -1,0 +1,224 @@
+{%extends 'mgmt/index.html'%}
+{% load static%}
+{% block content %}
+{% load widget_tweaks %}
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/home.css'%}">
+    <style>
+        .container-fluid {
+            padding-left: 190px;
+            padding-right: 190px;
+        }
+
+        .circleme {
+            border-radius: 15px;
+            border: 1px solid;
+        }
+
+        .reciever {
+            background: #afb4b97c;
+        }
+
+        .btn-dre {
+            border-radius: 30px;
+            font-size: 18px;
+            width: 100%;
+            padding: 10px;
+        }
+
+        .sb-btn {
+            border-radius: 15px;
+
+            float: right;
+            transition: all .2s ease-in-out;
+        }
+
+        .sb-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-comp {
+            border-radius: 15px;
+
+            float: right;
+            transition: all .2s ease-in-out;
+        }
+
+        .btn-comp:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <script type="text/javascript">
+        function confirmDelete() {
+            var txt;
+            var agree = confirm("Are you sure you want to delete this item?");
+            if (agree) {
+
+                return true;
+            } else
+                return false;
+        }
+    </script>
+    <br>
+    <br>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mx-auto" style="width: 400px;">
+                    <h4 style="text-align:center">ISSUED CALIBRATED TOOLS <img
+                            src="https://img.icons8.com/fluent/48/000000/share-2.png" /></h4>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <br>
+        <div id="form_response" class="mb-4 text-center"></div>
+
+        <div class="turbinedisplay">
+            <img id="Turbine" src="https://img.icons8.com/ios-filled/100/000000/jet-engine.png" />
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-8">
+                <div class='card card-body circleme '>
+                    <form class="myfilter" method="get">
+                        <div style="display: flex;">
+                            <div class="filterC">
+                                <p class="filtertextSelect">CRN : {{CaliFilter.form.cert_no}}</p>
+                            </div>
+                            <div class="filterC">
+                                <p class="filtertextSelect">Description:{{CaliFilter.form.description}}</p>
+                            </div>
+                            <div class="filterC">
+                                <p class="filtertextSelect">Work-Order #:{{CaliFilter.form.workorder_no}}</p>
+                            </div>
+                            <button class="btn btn-info btn-search" type="submit"><img
+                                    src="https://img.icons8.com/pastel-glyph/36/000000/search--v1.png" /></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class='card card-body circleme '>
+
+                    <div class="export">
+                        {%if Calicount != 0 %}
+                        <a id="btn-move-Tools" href="{% url 'caliOutToolsReturnALL' %}"><img
+                                src="https://img.icons8.com/ios-filled/50/000000/return.png" />
+                        </a>
+                        <span class="tooltiptext">Return All</span>
+                        {%else%}
+                        <a><img src="https://img.icons8.com/ios-filled/50/000000/return.png" />
+                        </a>
+                        <span class="tooltiptext">Return ...</span>
+                        {%endif%}
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <div class="card card-body circleme">
+                    <table class="table table-min table-md">
+                        <tr>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Descrption</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Issued By</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#</th>
+
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">CN #</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">WO #</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Job Card #</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">DTE</th>
+
+                        </tr>
+                        {% for tool in Cali %}
+                        <tr>
+                            <td class="tablestyle">{{tool.description}}</td>
+                            <td class="tablestyle">{{tool.issuedby}}</td>
+                            <td class="tablestyle">{{tool.part_number}}</td>
+                            <td class="tablestyle">{{tool.serial_number}}</td>
+
+
+
+                            <td class="tablestyle">{{tool.cert_no}}</td>
+
+
+                            <td class="tablestyle">{{tool.workorder_no}}</td>
+                            <td class="tablestyle">{{tool.jobcard}}</td>
+
+                            {% if tool.timecalculated < 30 %}
+                            <td class="tablestyle" style="text-align:center; color:red; margin: auto; font-weight:bold">
+                                {{tool.timecalculated}} days</td>
+
+
+                            <td class="tablestyle"><a class="btn btn-sm btn-danger form-btn"
+                                    href="{% url 'sendhometoolCali' tool.id %}">Return</a></td>
+                            <td><a class="btn btn-sm btn-warning form-btn" href="#">Move to W/O</a></td>
+                            <td class="tablestyle"><a class="btn btn-sm btn-dark sb-btn"
+                                    href="{%  url 'partslink' tool.workorder_no.id 'NotHistorical' %}">Navigate to
+                                    W/O</a>
+                            </td>
+
+
+                            {% elif tool.timecalculated < 60 %}
+                            <td class="tablestyle"
+                                style="text-align:center; color:rgb(255, 187, 0); margin: auto; font-weight:bold">
+                                {{tool.timecalculated}} days</td>
+
+                            <td class="tablestyle"><a class="btn btn-sm btn-danger form-btn"
+                                    href="{% url 'sendhometoolCali' tool.id %}">Return</a></td>
+                            <td><a class="btn btn-sm btn-warning form-btn" href="#">Move to W/O</a></td>
+                            <td class="tablestyle"><a class="btn btn-sm btn-dark sb-btn"
+                                    href="{%  url 'partslink' tool.workorder_no.id 'NotHistorical' %}">Navigate to
+                                    W/O</a>
+                            </td>
+
+                            {% else %}
+                            <td class="tablestyle"
+                                style="text-align:center; color:rgb(71, 173, 30); margin: auto; font-weight:bold">
+                                {{tool.timecalculated}} days</td>
+
+                            <td class="tablestyle"><a class="btn btn-sm btn-danger form-btn"
+                                    href="{% url 'sendhometoolCali' tool.id %}">Return</a></td>
+                            <td><a class="btn btn-sm btn-warning form-btn" href="#">Move to W/O</a></td>
+                            <td class="tablestyle"><a class="btn btn-sm btn-dark sb-btn"
+                                    href="{% url 'partslink' tool.workorder_no.id 'NotHistorical' %}">Navigate to
+                                    W/O</a>
+                            </td>
+                            {% endif %}
+
+
+                        </tr>
+                        {% endfor%}
+
+                    </table>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</body>
+
+{% endblock%}

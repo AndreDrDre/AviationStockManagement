@@ -120,12 +120,12 @@
                             $("#Car").show();
                             $("#Car").css("animation-play-state", "running");
                             $("#form_response").show();
-                            $("#form_response").fadeOut(1000).fadeIn(2000).fadeOut(1000).fadeIn(
+                            $("#form_response").fadeIn(1000).fadeOut(1000).fadeIn(
                                 2000);
                             $("#form_response").html(response.success);
                             setTimeout(() => {
                                 window.location.href = response.redirect_to;
-                            }, 5000);
+                            }, 3000);
 
                         }
                     }

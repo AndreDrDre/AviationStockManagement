@@ -783,9 +783,11 @@ class CreateWorkOrderFormCali(forms.ModelForm):
 
     class Meta:
         model = Tools_Calibrated
-        fields = ['workorder_no']
+        fields = ['workorder_no', 'issuedby', 'jobcard']
         widgets = {
             'workorder_no': forms.Select(attrs={'class': 'form-control', 'required': True, }),
+            'issuedby': forms.Select(attrs={'class': 'form-control', 'required': True, }),
+            'jobcard': forms.TextInput(attrs={'class': 'form-control', 'required': True, }),
         }
 
     def clean_workorder_no(self):
