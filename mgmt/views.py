@@ -2210,8 +2210,8 @@ def calicomplete(request, pk):
 @login_required(login_url='signin')
 def caliOutTools(request):
 
-    Cali = Tools_Calibrated.objects.filter(
-        calibrated=True, issued=True).order_by('expiry_date')
+    Cali = Tools_Calibrated.objects.filter(user=request.user,
+                                           calibrated=True, issued=True).order_by('expiry_date')
 
     CaliFilter = CalibratedOutFilter(
         request.GET, queryset=Cali)
@@ -2227,8 +2227,8 @@ def caliOutTools(request):
 @login_required(login_url='signin')
 def caliOutToolsReturnALL(request):
 
-    Cali = Tools_Calibrated.objects.filter(
-        calibrated=True, issued=True).order_by('expiry_date')
+    Cali = Tools_Calibrated.objects.filter(user=request.user,
+                                           calibrated=True, issued=True).order_by('expiry_date')
 
     for x in Cali:
         x.issued = False
@@ -2242,7 +2242,7 @@ def caliOutToolsReturnALL(request):
 @login_required(login_url='signin')
 def UncaliOutToolsReturnALL(request):
 
-    UnCali = Tools_UnCalibrated.objects.filter(issued=True)
+    UnCali = Tools_UnCalibrated.objects.filter(user=request.user, issued=True)
 
     for x in UnCali:
         x.issued = False
@@ -2256,7 +2256,7 @@ def UncaliOutToolsReturnALL(request):
 @login_required(login_url='signin')
 def UncaliOutTools(request):
 
-    UnCali = Tools_UnCalibrated.objects.filter(issued=True)
+    UnCali = Tools_UnCalibrated.objects.filter(user=request.user, issued=True)
 
     UnCaliFilter = UnCalibratedOutFilter(
         request.GET, queryset=UnCali)
