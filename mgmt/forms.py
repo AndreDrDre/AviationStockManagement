@@ -123,7 +123,11 @@ class ReceiveShopForm(forms.ModelForm):
 
 class PartBinForm(forms.Form):
 
-    bin_number = forms.CharField(max_length=50, required=False)
+    bin_number = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Enter Unique Bin #', 'required': False})
+    )
 
     def __init__(self, *args, **kwargs):
         super(PartBinForm, self).__init__(*args, **kwargs)

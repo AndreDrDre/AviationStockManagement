@@ -64,13 +64,11 @@
                     {%else%}
                     {%if check == True%}
                     <p><strong>1. Navigate to the <u>{{part.part_type}} </u>Shelf.</strong></p>
-                    <p><strong>2. Place the part in exisitng bin : {{label}}</strong></p>
+                    <p><strong>2. Navigate to <i>EXISTING</i> Bin : {{label}}</strong></p>
                     {%else%}
                     <p><strong>1. Navigate to the <u>{{part.part_type}} </u>Shelf</strong></p>
-                    <p><strong>2. Create a new Bin with the label : {{label}}</strong></p>
-                    <p><strong>3. Insert new Bin in the correct position on <u>{{part.part_type}} </u>Shelf </strong>
-                    </p>
-                    <p><strong>4. Place part in bin : {{label}}</strong></p>
+                    <p><strong>2. Create a <i>NEW</i> Bin with the label : {{label}}</strong></p>
+
 
                     {%endif%}
 
@@ -91,15 +89,14 @@
                     <hr>
                     <br>
 
-                    {%if check == True%}
+                    {%if check != True%}
 
                     <form action="#" method="POST">
-                        <p>Please enter your own bin number if you wish to override the default!</p>
+                        <h5>BIN # OVER-RIDE</h5>
+                        <br>
                         {% csrf_token %}
                         {{form.as_p}}
                         <br>
-
-
 
                         <div class="row">
 
