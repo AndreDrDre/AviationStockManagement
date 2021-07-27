@@ -439,7 +439,10 @@ class Tools_UnCalibrated(models.Model):
     part_number = models.CharField(max_length=50, blank=True, null=True)
     recieved = models.DateField(auto_now_add=False, auto_now=True)
     issued = models.BooleanField(default='False', blank=True, null=True)
-    # calibrated special Tool
+    issuedby = models.ForeignKey(
+        Employees, null=True, blank=True, on_delete=models.SET_NULL, verbose_name="Issued By:")
+
+    jobcard = models.CharField(max_length=50, blank=True, null=True)
 
     workorder_no = models.ForeignKey(
         WorkOrders, null=True, blank=True, on_delete=models.SET_NULL)

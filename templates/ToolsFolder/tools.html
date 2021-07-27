@@ -215,7 +215,7 @@
                 </div>
             </div>
         </div>
-        <hr>
+
 
         <div class="row">
             <div class="col-md-10">
@@ -334,7 +334,7 @@
                                     href="{% url 'change_calibration_status' tool.id%}"
                                     onClick='return confirmCali()'>Calibrate</a></td>
                             <td class="tablestyle"><a class="btn btn-sm btn-dark sb-btn"
-                                    href="{% url 'issueworkorderCali' tool.id%}">Issue to W/O</a></td>
+                                    href="{% url 'issueworkorderCali' tool.id%}">Issue</a></td>
                             {% endif %}
 
 
@@ -365,10 +365,11 @@
                 </div>
             </div>
         </div>
-        <hr>
+
 
         <div class="row">
-            <div class="col-md-10">
+            <div class="col-md-1"></div>
+            <div class="col-md-8">
                 <div class='card card-body circleme '>
                     <form method="get">
                         {{UnCaliFilter.form}}
@@ -392,15 +393,15 @@
         <br>
 
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
                 <div class="card card-body circleme">
                     <table class="table table-min table-md">
                         <tr>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Descrption</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#</th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Recieved
-                            </th>
+
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"></th>
@@ -410,7 +411,6 @@
                             <td class="tablestyle">{{tool.description}}</td>
                             <td class="tablestyle">{{tool.part_number}}</td>
                             <td class="tablestyle">{{tool.serial_number}}</td>
-                            <td class="tablestyle">{{tool.recieved|date:"M d, Y" }}</td>
 
 
                             <td class="tablestyle"><a class="btn btn-sm btn-info sb-btn"

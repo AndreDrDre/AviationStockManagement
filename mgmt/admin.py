@@ -100,7 +100,7 @@ class Tools_CalibratedAdmin(admin.ModelAdmin):
 
 
 class Tools_Calibrated_issuedAdmin(admin.ModelAdmin):
-    list_display = ('description', 'user'
+    list_display = ('description', 'workorder_no', 'user'
                     )
 
     list_filter = ('user',)

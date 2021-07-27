@@ -134,7 +134,7 @@ def PlaceNewPartNumber(string, listPartNo):
     return listPart
 
 
-def CalibrationToolExists(currentCRN, QueryToolsCalibrated, calitool,):
+def CalibrationToolExists(currentCRN, QueryToolsCalibrated, calitool, request, wo):
 
     listCRN = []
 
@@ -142,25 +142,32 @@ def CalibrationToolExists(currentCRN, QueryToolsCalibrated, calitool,):
         listCRN.append(x.cert_no)
 
     if currentCRN in listCRN:
-        pass
+        print("yes it does exist")
+
+        # It is deleting the first one because they have the same CRN the problem is here
+        query = Tools_Calibrated_issued.objects.filter(
+            cert_no=currentCRN, workorder_no=wo)
+        query.delete()
+
     else:
-        p = Tools_Calibrated_issued(description=calitool.description,
-                                    serial_number=calitool.serial_number,
-                                    part_number=calitool.part_number,
-                                    calibrated_date=calitool.calibrated_date,
-                                    expiry_date=calitool.expiry_date,
-                                    cert_no=calitool.cert_no,
-                                    calibration_certificate=calitool.calibration_certificate,
-                                    range_no=calitool.range_no,
-                                    issuedby=calitool.issuedby,
-                                    jobcard=calitool.jobcard,
-                                    workorder_no=calitool.workorder_no,
-                                    recieved=timezone.now(),
-                                    user=calitool.user,
-                                    )
-        p.save()
-
-
+        pass
+    print("I am still creating one")
+    p = Tools_Calibrated_issued(description=calitool.description,
+                                serial_number=calitool.serial_number,
+                                part_number=calitool.part_number,
+                                calibrated_date=calitool.calibrated_date,
+                                expiry_date=calitool.expiry_date,
+                                cert_no=calitool.cert_no,
+                                calibration_certificate=calitool.calibration_certificate,
+                                range_no=calitool.range_no,
+                                issuedby=calitool.issuedby,
+                                jobcard=calitool.jobcard,
+                                workorder_no=calitool.workorder_no,
+                                recieved=timezone.now(),
+                                user=calitool.user,
+                                )
+    print(p)
+    p.save()
 #-------------------------------------------#
 
 
@@ -990,7 +997,6 @@ def edit_part(request, pk):
     form = EditPartForm(request.POST, request.FILES, instance=queryset)
     if request.method == 'POST':
         if form.is_valid():
-            print("valid")
             form.save()
             if queryset.tail_number.name == "Stock":
                 return redirect('inventory')
@@ -1180,7 +1186,6 @@ def partslink(request, pk, Type):
 
     # Link To Specific WorkOrder
     workorder_specific = WorkOrders.objects.get(user=request.user, id=pk)
-    print(workorder_specific)
 
     querysetDisplay = WorkOrders.objects.get(user=request.user, id=pk)
 
@@ -1198,10 +1203,16 @@ def partslink(request, pk, Type):
         total += parts.price * parts.issue_quantity
 
     # singletotal = part.price * part.issue_quantity
+    if Type == "NotHistorical":
+        toolscali = workorder_specific.tools_calibrated_set.all().order_by(
+            'recieved').reverse()
 
-    toolscali = workorder_specific.tools_calibrated_issued_set.all()
+    else:
+        toolscali = workorder_specific.tools_calibrated_issued_set.all().order_by(
+            'recieved').reverse()
 
-    toolsUncali = workorder_specific.tools_uncalibrated_set.all()
+    toolsUncali = workorder_specific.tools_uncalibrated_set.all().order_by(
+        'recieved').reverse()
 
     # Displaying the workorder we are linking too
     workordernumber = workorder_specific.workorder_number
@@ -1216,9 +1227,6 @@ def partslink(request, pk, Type):
         "total": total,
         "partsReceived": partsReceived,
         "filter": filter,
-
-
-
     }
 
     if Type == "NotHistorical":
@@ -1290,13 +1298,21 @@ def changeWorkOrderCali(request, pk):
             calitool.issued = True
             calitool.save(update_fields=['issued'])
             formissueCali.save()
-            wo = calitool.workorder_no
-            return JsonResponse({'success': 'Moving Calibrated Tool to ' + str(wo) + "...", 'redirect_to': reverse('partslink', kwargs={'pk': calitool.workorder_no.id, 'Type': 'NotHistorical'}, )})
+
+            wo = formissueCali.cleaned_data['workorder_no']
+            toolscali = wo.tools_calibrated_issued_set.all()
+
+            CalibrationToolExists(
+                calitool.cert_no, toolscali, calitool, request, wo)
+            if request.is_ajax():
+                return JsonResponse({'success': 'Moving Calibrated Tool to ' + str(wo) + "...", 'redirect_to': reverse('partslink', kwargs={'pk': calitool.workorder_no.id, 'Type': 'NotHistorical'}, )})
 
     else:
         formissueCali = CreateWorkOrderFormCali(instance=calitool)
         formissueCali.fields['workorder_no'].queryset = WorkOrders.objects.filter(
             user=request.user, status='OPEN')
+        formissueCali.fields['issuedby'].queryset = Employees.objects.filter(
+            user=request.user)
 
     context = {'formissueCali': formissueCali,
                "calitool": calitool, }
@@ -2134,7 +2150,7 @@ def issueworkorderCali(request, pk):
                 user=request.user, cert_no=calitool.cert_no)
 
             CalibrationToolExists(
-                calitool.cert_no, toolscali, calitool,)
+                calitool.cert_no, toolscali, calitool, request, wo)
 
             if request.is_ajax():
                 return JsonResponse({'success': 'Adding Calibrated Tool to Work Order ' + str(wo) + "...", 'redirect_to': reverse('tools')})
@@ -2174,6 +2190,8 @@ def issueUnCali(request, pk):
         formissueUnCali = CreateWorkOrderFormUnCali(instance=Uncalitool)
         formissueUnCali.fields['workorder_no'].queryset = WorkOrders.objects.filter(
             user=request.user, status='OPEN')
+        formissueUnCali.fields['issuedby'].queryset = Employees.objects.filter(
+            user=request.user)
     context = {'formissueUnCali': formissueUnCali,
                'Uncalitool': Uncalitool, }
     if request.is_ajax():
@@ -2730,6 +2748,9 @@ def pdf_report_create(request, pk):
     partsReceived = workorder_specific.partworkorders_set.filter(
         receivedRepair=True).order_by('created_at').reverse()
 
+    toolscali = workorder_specific.tools_calibrated_issued_set.all().order_by(
+        'recieved').reverse()
+
     for parts in partsIssue:
         total += parts.price * parts.issue_quantity
 
@@ -2740,7 +2761,7 @@ def pdf_report_create(request, pk):
     #creating the PDF document#
     template_path = 'PDFFolder/pdf_printer.html'
     context = {'partsIssue': partsIssue, 'partsReceived': partsReceived,
-               'querysetDisplay': querysetDisplay, "total": total, "date": date}
+               'querysetDisplay': querysetDisplay, "total": total, "date": date, "toolscali": toolscali}
     # Create a Django response object, and specify content_type as pdf
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="workOrder.pdf"'

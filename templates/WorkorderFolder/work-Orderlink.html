@@ -148,7 +148,7 @@
                     <h4 style="text-align:center">PARTS ISSUED <img
                             src="https://img.icons8.com/ios-filled/50/000000/passport.png" /></h4>
                 </div>
-                <hr>
+                <br>
 
                 <div class="row">
                     <div class="col-md-12">
@@ -239,7 +239,7 @@
                     <h4 style="text-align:center">PARTS REMOVED <img
                             src="https://img.icons8.com/plasticine/50/000000/fighter-jet.png" /></h4>
                 </div>
-                <hr>
+                <br>
                 <div class="card card-body circleme">
                     <table class="table table-md">
                         <tr>
@@ -314,7 +314,7 @@
                 </div>
             </div>
         </div>
-        <hr>
+
 
 
         <br>
@@ -328,10 +328,9 @@
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#/B#</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Issued By</th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Date Calibrated
-                            </th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Last Calibrated
+                                @</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Expiry Date</th>
-                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">DTE</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Cert No</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Job Card #</th>
 
@@ -348,7 +347,6 @@
                             <td class="tablestyle">{{tool.issuedby}}</td>
 
                             <td class="tablestyle">{{tool.calibrated_date|date:"M d, Y"}}</td>
-                            <td class="tablestyle">{{tool.expiry_date|date:"M d, Y"}}</td>
                             <td class="tablestyle">{{tool.timecalculated}}</td>
                             <td class="tablestyle">{{tool.cert_no}}</td>
                             <td class="tablestyle">{{tool.jobcard}}</td>
@@ -381,9 +379,9 @@
             </div>
         </div>
 
-        <hr>
         <br>
         <div class="row">
+            <div class="col-md-2"></div>
             <div class="col-md-8">
                 <div class="card card-body circleme">
                     <table class="table table-md">
@@ -391,6 +389,8 @@
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Descrption</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Issued By</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Job Card #</th>
                             <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Issued On:
                             </th>
 
@@ -400,6 +400,8 @@
                             <td class="tablestyle">{{tool.description}}</td>
                             <td class="tablestyle">{{tool.part_number}}</td>
                             <td class="tablestyle">{{tool.serial_number}}</td>
+                            <td class="tablestyle">{{tool.issuedby}}</td>
+                            <td class="tablestyle">{{tool.jobcard}}</td>
                             <td class="tablestyle">{{tool.recieved|date:"M d, Y" }}</td>
 
 

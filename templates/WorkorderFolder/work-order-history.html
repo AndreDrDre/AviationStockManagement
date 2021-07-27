@@ -260,32 +260,32 @@
 
                         {% for part_workorder in partsReceived %}
                         <tr>
-                            <td style="text-align:center;">{{part_workorder.part.description}}</td>
-                            <td style="text-align:center;">{{part_workorder.part.part_number}}</td>
+                            <td class="tablestyle">{{part_workorder.part.description}}</td>
+                            <td class="tablestyle">{{part_workorder.part.part_number}}</td>
                             {%if part_workorder.part.serial_number%}
-                            <td style="text-align:center;">{{part_workorder.part.serial_number}}</td>
+                            <td class="tablestyle">{{part_workorder.part.serial_number}}</td>
                             {%else%}
-                            <td style="text-align:center;">{{part_workorder.part.batch_no}}</td>
+                            <td class="tablestyle">{{part_workorder.part.batch_no}}</td>
                             {%endif%}
 
-                            <td style="text-align:center;">{{part_workorder.removed_by}}</td>
-                            <td style="text-align:center;">{{part_workorder.removed_from}}</td>
+                            <td class="tablestyle">{{part_workorder.removed_by}}</td>
+                            <td class="tablestyle">{{part_workorder.removed_from}}</td>
 
                             <!--The quantity represented in the many to many associated with a work-order -->
-                            <td style="text-align:center;">1</td>
-                            <td style="text-align:center;"> {{part_workorder.jobCardNumber }} </td>
+                            <td class="tablestyle">1</td>
+                            <td class="tablestyle"> {{part_workorder.jobCardNumber }} </td>
 
                             {% if part_workorder.cert_document %}
-                            <td style="text-align:center;"><a href="{{part_workorder.cert_document.url}}"
-                                    target="_blank"><img src="https://img.icons8.com/ios/30/000000/paper.png" /></a>
+                            <td class="tablestyle"><a href="{{part_workorder.cert_document.url}}" target="_blank"><img
+                                        src="https://img.icons8.com/ios/30/000000/paper.png" /></a>
                             </td>
                             {%else%}
-                            <td style="text-align:center;"><img
-                                    src="https://img.icons8.com/offices/30/000000/cancel-2.png" /> </td>
+                            <td class="tablestyle"><img src="https://img.icons8.com/offices/30/000000/cancel-2.png" />
+                            </td>
                             {% endif %}
 
 
-                            <td style="text-align:center;"> {{part_workorder.created_at|date:"M d, Y" }} </td>
+                            <td class="tablestyle"> {{part_workorder.created_at|date:"M d, Y" }} </td>
 
 
 
@@ -303,6 +303,70 @@
 
         </div>
 
+    </div>
+
+    <br>
+    <br>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="mx-auto" style="width: 400px;">
+                    <h4 style="text-align:center">CALIBRATED TOOLS <img
+                            src="https://img.icons8.com/fluent/48/000000/level-tool.png" /></h4>
+                </div>
+            </div>
+        </div>
+
+
+
+        <br>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-body circleme">
+                    <table class="table table-md">
+                        <tr>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Descrption</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">P#</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">S#/B#</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Issued By</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);"> Last Calibrated
+                                @
+                            </th>
+
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Cert No</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Job Card #</th>
+
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Range</th>
+                            <th style="text-align:center; background-color:rgba(128, 128, 128, 0.644);">Issued On:</th>
+
+
+                        </tr>
+                        {% for tool in Cali %}
+                        <tr>
+                            <td class="tablestyle">{{tool.description}}</td>
+                            <td class="tablestyle">{{tool.part_number}}</td>
+                            <td class="tablestyle">{{tool.serial_number}}</td>
+                            <td class="tablestyle">{{tool.issuedby}}</td>
+
+                            <td class="tablestyle">{{tool.calibrated_date|date:"M d, Y"}}</td>
+
+                            <td class="tablestyle">{{tool.cert_no}}</td>
+                            <td class="tablestyle">{{tool.jobcard}}</td>
+                            <td class="tablestyle">{{tool.range_no}}</td>
+                            <td class="tablestyle">{{tool.recieved|date:"M d, Y"}}</td>
+
+                        </tr>
+                        {% endfor%}
+
+                    </table>
+
+
+
+                </div>
+            </div>
+        </div>
     </div>
 
     <br>

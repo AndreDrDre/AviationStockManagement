@@ -71,7 +71,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="mx-auto" style="width: 400px;">
-                    <h4 style="text-align:center">ISSUED UNCALIBRATED TOOLS <img
+                    <h4 style="text-align:center">UNCALIBRATED ISSUED TOOLS <img
                             src="https://img.icons8.com/fluent/48/000000/share-2.png" /></h4>
                 </div>
             </div>
@@ -158,11 +158,11 @@
 
 
 
-                            <td><a class="btn btn-sm btn-danger form-btn" href="{% url 'sendhometoolUnCali' tool.id %}"
-                                    target="_blank">Return</a></td>
-                            <td><a class="btn btn-sm btn-warning form-btn" href="#">Move to W/O</a></td>
+                            <td class="tablestyle"><a class="btn btn-sm btn-danger form-btn"
+                                    href="{% url 'sendhometoolUnCali' tool.id %}" target="_blank">Return</a></td>
 
-                            <td><a class="btn btn-sm btn-dark form-btn"
+
+                            <td class="tablestyle"><a class="btn btn-sm btn-dark form-btn"
                                     href="{%  url 'partslink' tool.workorder_no.id 'NotHistorical' %}">Navigate to
                                     W/O</a></td>
                         </tr>

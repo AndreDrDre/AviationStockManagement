@@ -807,9 +807,11 @@ class CreateWorkOrderFormUnCali(forms.ModelForm):
     class Meta:
         model = Tools_UnCalibrated
 
-        fields = ['workorder_no']
+        fields = ['issuedby', 'workorder_no', 'jobcard', ]
         widgets = {
             'workorder_no': forms.Select(attrs={'class': 'form-control', 'required': True, }),
+            'jobcard': forms.TextInput(attrs={'class': 'form-control', 'required': True, }),
+            'issuedby': forms.Select(attrs={'class': 'form-control', 'required': True, }),
 
         }
 
