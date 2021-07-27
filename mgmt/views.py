@@ -111,22 +111,28 @@ def convertAlpha(string):
     return int(sum)
 
 
-def PlaceNewPartNumber(string, listPartNo):
+def PlaceNewPartNumber(string, listPartNo, request, catagory):
     dictPartNumbers = {}
     listPart = []
     bin_number = ""
     exists = False
+
     for x in listPartNo:
         dictPartNumbers[x] = convertAlpha(x)
 
     if string in listPartNo:
-        bin_number = 'AZ-' + str(dictPartNumbers[string])
-        label = bin_number
+        # So our part number exists
+        # Find the corresponding Bin Number
+        query = Parts.objects.filter(
+            user=request.user, recieve_part=True, part_type=catagory, Quarentine=False, part_number=string)
+
+        bin_number = query[0].bin_number
+        # label = bin_number
         exists = True
     else:
         dictPartNumbers[string] = convertAlpha(string)
-        bin_number = 'AZ-' + str(dictPartNumbers[string])
-        label = bin_number
+        bin_number = catagory[0:3].upper() + "-" + str(dictPartNumbers[string])
+        # label = bin_number
 
     listPart.append(exists)
     listPart.append(bin_number)
@@ -1807,7 +1813,7 @@ def instructions(request, pk):
 
     reorderExist = False
     check = False
-    label = ""
+    # label = ""
     listPart = []
     dictPartNumbers = {}
     # obtain the specific part link
@@ -1823,33 +1829,39 @@ def instructions(request, pk):
     # Adding all the part numbers to a list
     for x in querysetPartList:
         PartNumberList.append(x.part_number)
-
-    # Below is representation of unqiue p# list for a specifc catagory (Removing the duplicates)
+    # (Removing the duplicates)
     PartNumberList = sorted(set(PartNumberList))
 
-    listPart = PlaceNewPartNumber(part.part_number, PartNumberList)
+    # [Returns : Part Number Exists? : Bin Number]
+    listPart = PlaceNewPartNumber(
+        part.part_number, PartNumberList, request, catagory)
 
     part.recieve_part = True
     part.save(update_fields=['recieve_part'])
 
+    # If the part exists
     if listPart[0] == True:
         label = listPart[1]
+        part.bin_number = listPart[1]
+        part.save(update_fields=['bin_number'])
         check = True
+    # If the part does not exist yet
     else:
         label = listPart[1]
+        part.bin_number = label
+        part.save(update_fields=['bin_number'])
 
     if request.method == 'POST':
         form = PartBinForm(request.POST)
         if form.is_valid():
             bin_number = form.cleaned_data['bin_number']
             if bin_number != "":
+                # Override the previous value
+                part.bin_number = ""
                 part.bin_number = bin_number
                 part.save(update_fields=['bin_number'])
                 return redirect('store')
             else:
-                part.bin_number = listPart[1]
-
-                part.save(update_fields=['bin_number'])
                 return redirect('store')
 
     else:
