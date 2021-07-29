@@ -315,6 +315,9 @@ class AddInventory(forms.Form):
             im = forms.ImageField()
             # now check if the file is a valid image
             im.to_python(uploaded_file)
+            name, ext = os.path.splitext(uploaded_file.name)
+            if ext in ['.pdf', '.PDF']:
+                print("This is a pdf")
         except forms.ValidationError:
             # file is not a valid image;
             # so check if it's a pdf

@@ -22,6 +22,7 @@ google==3.0.0
 gunicorn==20.1.0
 html5lib==1.1
 idna==2.10
+pdf2image==1.16.0
 Pillow==8.1.2
 psycopg2-binary==2.8.6
 pycodestyle==2.7.0

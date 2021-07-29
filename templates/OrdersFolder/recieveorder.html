@@ -77,13 +77,13 @@
               {{ receiveForm.management_data }} {% csrf_token %}
               <h5><strong>PART INFORMATION</strong></h5>
               <hr />
-              <h6>Receiving For : {{part.tail_number}}</h6>
-              <h6>Part description : {{part.description}}</h6>
-              <h6>Part Catagory : {{part.part_type}}</h6>
-              <h6>Receiving Part # : {{part.part_number}}</h6>
-              <h6>Receiving Qty : {{part.order_quantity}}</h6>
+              <h6>Reserved For : {{part.tail_number}}</h6>
+              <h6>Description : {{part.description}}</h6>
+              <h6>Catagory : {{part.part_type}}</h6>
+              <h6>Part # : {{part.part_number}}</h6>
+              <h6>Ordered Qty : {{part.order_quantity}}</h6>
 
-              <h6>Receiving @ : {{time}}</h6>
+              <h6>Received @ : {{time|date:"M d, Y"}}</h6>
 
               <hr />
 

@@ -1,4 +1,5 @@
 # Django Imports
+from pdf2image import convert_from_path
 from django.shortcuts import render, redirect
 from django.contrib import messages
 import django_filters
@@ -39,6 +40,11 @@ from .forms import *
 from .filters import *
 import json
 import xlwt
+
+import os
+from django.conf import settings
+from django.http import HttpResponse
+from django.contrib.staticfiles import finders
 
 
 # Create your views here.-------------------#
@@ -1720,6 +1726,7 @@ def recieveorder(request, pk):
                 part.condition = 'NEW'
                 part.save(update_fields=['condition'])
 
+            # Not a problem go through
             if part.receive_quantity == part.order_quantity:
 
                 part.ticketed = False
@@ -1781,9 +1788,9 @@ def recieveorder(request, pk):
                             return JsonResponse({'success': 'Adding Part to Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': part.id})})
                         else:
                             return JsonResponse({'success': 'Adding Part to Reserved Stock Database...', 'redirect_to': reverse('instructions', kwargs={'pk': part.id})})
-                    else:
-                        if request.is_ajax():
-                            return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('orderpart')})
+                else:
+                    if request.is_ajax():
+                        return JsonResponse({'success': 'Adding Part to Quarentine Database...', 'redirect_to': reverse('orderpart')})
                         # return redirect('orderpart')
 
     else:
@@ -2747,6 +2754,44 @@ def exportPDFWorkorder(request, pk):
 #pdf------------------------------#
 #------------------------------------------#
 
+
+# from pdf2image import convert_from_path
+# pages = convert_from_path('pdf_file', 500)
+
+# #Saving pages in jpeg format
+
+# for page in pages:
+#     page.save('out.jpg', 'JPEG')
+
+
+def link_callback(uri, rel):
+
+    result = finders.find(uri)
+    if result:
+        if not isinstance(result, (list, tuple)):
+            result = [result]
+            result = list(os.path.realpath(path) for path in result)
+            path = result[0]
+    else:
+        sUrl = settings.STATIC_URL  # Typically /static/
+        sRoot = settings.STATIC_ROOT  # Typically /home/userX/project_
+        mUrl = settings.MEDIA_URL  # Typically /media/
+        mRoot = settings.MEDIA_ROOT  # Typically /home/userX/project_
+
+        if uri.startswith(mUrl):
+            path = os.path.join(mRoot, uri.replace(mUrl, ""))
+        elif uri.startswith(sUrl):
+            path = os.path.join(sRoot, uri.replace(sUrl, ""))
+        else:
+            return uri
+
+    if not os.path.isfile(path):
+        raise Exception(
+            'media URI must start with %s or %s' % (sUrl, mUrl)
+        )
+    return path
+
+
 @login_required(login_url='signin')
 def pdf_report_create(request, pk):
     total = 0
@@ -2776,14 +2821,15 @@ def pdf_report_create(request, pk):
                'querysetDisplay': querysetDisplay, "total": total, "date": date, "toolscali": toolscali}
     # Create a Django response object, and specify content_type as pdf
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename="workOrder.pdf"'
+    response['Content-Disposition'] = 'filename="workOrder.pdf"'
     # find the template and render it.
     template = get_template(template_path)
     html = template.render(context)
 
     # create a pdf
+
     pisa_status = pisa.CreatePDF(
-        html, dest=response)
+        html, dest=response, link_callback=link_callback)
     # if error then show some funy view
     if pisa_status.err:
         return HttpResponse('We had some errors <pre>' + html + '</pre>')

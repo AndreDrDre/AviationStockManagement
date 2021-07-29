@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% load static%}
-<!-- {% load pdf_filters %} -->
+{% load pdf_filters %}
 
 <html>
 
@@ -157,7 +157,7 @@
 
                 {% for part_workorder in partsReceived %}
                 <tr>
-                    <td style="text-align:center;padding:2px; ">{{part_workorder.part.description}}</td>
+                    <td style="text-align:center;">{{part_workorder.part.description}}</td>
                     <td style="text-align:center;">{{part_workorder.part.part_number}}</td>
                     {%if part_workorder.part.serial_number%}
                     <td style="text-align:center;">{{part_workorder.part.serial_number}}</td>
@@ -196,11 +196,8 @@
                 <th style="text-align:center; ">S#/B#</th>
                 <th style="text-align:center; ">Issued By</th>
                 <th style="text-align:center; ">Last Calibrated @</th>
-
-
                 <th style="text-align:center; ">Cert No</th>
                 <th style="text-align:center; ">Job Card #</th>
-
                 <th style="text-align:center; ">Range</th>
                 <th style="text-align:center; ">Issued On:</th>
 
@@ -212,10 +209,7 @@
                 <td style="text-align:center; ">{{tool.part_number}}</td>
                 <td style="text-align:center; ">{{tool.serial_number}}</td>
                 <td style="text-align:center; ">{{tool.issuedby}}</td>
-
                 <td style="text-align:center; ">{{tool.calibrated_date|date:"M d, Y"}}</td>
-
-
                 <td style="text-align:center; ">{{tool.cert_no}}</td>
                 <td style="text-align:center; ">{{tool.jobcard}}</td>
                 <td style="text-align:center; ">{{tool.range_no}}</td>
@@ -238,8 +232,23 @@
     {%if part_workorder.cert_document %}
 
 
-    <p><strong>Description : </strong>{{part_workorder.part.description}} </p>
-    <p><strong>Part No : </strong>{{part_workorder.part.part_number}} </p>
+
+    <div class="imgHolder">
+        <img src="{{part_workorder.cert_document.path  }}" />
+    </div>
+
+    {%else%}
+    {%endif%}
+    {% endfor %}
+
+    <pdf:nextpage />
+
+    <h2 style="text-align:center"> Removed Part Documentation </h2>
+    <hr>
+    <br>
+    {% for part_workorder in partsReceived %}
+    {%if part_workorder.cert_document %}
+
     <div class="imgHolder">
         <img src="{{part_workorder.cert_document.path }}" />
     </div>
@@ -248,19 +257,16 @@
     {%endif%}
     {% endfor %}
 
+    <pdf:nextpage />
 
-    <h2 style="text-align:center"> Removed Part Documentation </h2>
+    <h2 style="text-align:center"> Calibrated Tool Documentation </h2>
     <hr>
     <br>
-    {% for part_workorder in partsReceived %}
+    {% for tool in toolscali %}
+    {%if tool.calibration_certificate %}
 
-    {%if part_workorder.cert_document %}
-
-
-    <p><strong>Description : </strong>{{part_workorder.part.description}} </p>
-    <p><strong>Part No : </strong>{{part_workorder.part.part_number}} </p>
     <div class="imgHolder">
-        <img src="{{part_workorder.cert_document.path }}" />
+        <img src="{{tool.calibration_certificate.path }}" />
     </div>
 
     {%else%}
