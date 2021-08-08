@@ -17,7 +17,7 @@ A few features include:
 
 ## Images
 
-![](https://github.com/AndreDrDre/Xamarin.FuelSlip/blob/master/Project/FuelSlip.png)
+![](https://github.com/AndreDrDre/AviationStockManagement/blob/master/pic1.png)
 
 ## Access
 
