@@ -16,8 +16,10 @@ A few features include:
 - Work-order costing.
 
 ## Images
+# Home Page
 
 ![](https://github.com/AndreDrDre/AviationStockManagement/blob/master/pic1.png)
+![](https://github.com/AndreDrDre/AviationStockManagement/blob/master/pic2.png)
 
 ## Access
 
